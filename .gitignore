@@ -1,0 +1,49 @@
+# Editors / IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# OS cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Python (scripts/ contains .py tooling)
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Virtualenvs
+.venv/
+venv/
+env/
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+
+# Logs / temp
+*.log
+*.tmp
+tmp/
+
+# Coverage
+.coverage
+.coverage.*
+htmlcov/
+
+# Node (potential future tooling)
+node_modules/
+npm-debug.log*
