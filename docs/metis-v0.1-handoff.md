@@ -978,45 +978,37 @@ These were worked through in conversation and shouldn't be re-opened unless new 
 
 ## Build order
 
-Build from the deepest layer outward. Each layer depends only on what's below it.
+Build from the deepest layer outward. Each layer depends only on what's below it. **Complete each layer in full before starting the next.**
 
 ### Order
 
-1. **Conventions** first (5 files). Everything else depends on these.
-2. **Skills** (12 skills). The substance of agent behavior.
-3. **Subagents** (3 subagents). Containers that compose skills + tool restrictions.
-4. **Commands** (22 commands). Thin wrappers that dispatch subagents or invoke skills.
-5. **`/metis:init`** last. It scaffolds everything else.
+1. **Conventions** (5 files). Everything else depends on these: `task-format.md`, `epic-format.md`, `decision-format.md`, `frontmatter-schema.md`, `write-rules.md`.
+2. **Templates** (3 files). Directly instantiate the conventions — `task.md`, `epic.md`, `decision.md` — and serve as canonical starting points for each artifact type. Built immediately after conventions because writing the templates solidifies the convention spec by making it concrete.
+3. **Skills** (12 skills). The substance of agent behavior. Each skill is a directory with `SKILL.md` plus an `examples/` folder. Examples are critical — skills without examples are hand-wavy.
+4. **Subagents** (3 subagents). Containers that compose skills + tool restrictions: `task-planner`, `task-implementer`, `task-reviewer`.
+5. **Commands** (22 commands). Thin wrappers that dispatch subagents or invoke skills. **Within this step, `/metis:init` is built last** because it scaffolds everything else; knowing what "everything else" looks like helps.
 
-### Recommended first vertical slice
+### Why layer-by-layer instead of vertical slice
 
-Smallest thing that exercises the full stack:
+An earlier draft of this section recommended building the smallest vertical slice first (one convention + one skill + one command) to validate the convention → skill → command relationship before investing in 22 commands. That approach was considered and rejected in favor of the layer-by-layer order above. The reasons:
 
-1. `.metis/conventions/task-format.md`
-2. `.metis/conventions/frontmatter-schema.md`
-3. `.claude/skills/metis/writing-task-files/SKILL.md` + examples
-4. `.claude/commands/metis/generate-tasks.md`
+- Per-layer focus is cleaner and less context-switchy than bouncing between convention, skill, and command authoring.
+- Writing each layer as a coherent set produces stronger internal consistency (the 5 conventions naturally feel like a family when written together; same for the 12 skills).
+- The conventions and templates layers are essentially zero-risk because they're pure spec — build them in full and cash in the cohesion benefit immediately.
 
-Test end-to-end. If it works, the pattern scales.
+The tradeoff being accepted: if the convention → skill → command relationship has a structural flaw, it surfaces after writing 5 conventions + 3 templates + 12 skills + 3 subagents rather than after one of each. Mitigations: most of these files are short and well-specified by this document, the structural risk is real but bounded, and refactoring skills when the first command lands is a tolerable cost.
 
-### After first slice, the feature loop
+If the first command lands and reveals a shape change, expect to revisit some skills. Treat that as expected, not as a failure.
 
-Unlocks the most downstream value:
+### Within-layer ordering hints
 
-5. `.claude/skills/metis/planning-a-task/SKILL.md`
-6. `.claude/skills/metis/reviewing-against-criteria/SKILL.md`
-7. `.claude/skills/metis/honest-scope-reporting/SKILL.md`
-8. `.claude/agents/metis/task-planner.md`
-9. `.claude/agents/metis/task-implementer.md`
-10. `.claude/agents/metis/task-reviewer.md`
-11. `.claude/commands/metis/plan-task.md`
-12. `.claude/commands/metis/implement-task.md`
-13. `.claude/commands/metis/review-task.md`
-14. `.claude/commands/metis/scope-check.md`
+Inside each layer, dependency order still matters for a few specific items:
 
-After this, Phase 3 feature loop works end-to-end.
-
-Then build Phase 0, Phase 1, Phase 2 commands and remaining skills, finishing with `/metis:init` that scaffolds all of the above.
+- **Conventions**: `frontmatter-schema.md` before `task-format.md` and `epic-format.md` (they reference it). `write-rules.md` last (it encodes cross-file rules that depend on understanding the other formats).
+- **Templates**: Any order; they're peers.
+- **Skills**: `writing-decisions` early (other skills reference it). `reconciling-docs` is the heaviest skill; budget accordingly.
+- **Subagents**: Any order; they're peers once the skills they reference exist.
+- **Commands**: `/metis:init` last (scaffolds everything). Otherwise any order, though grouping by workflow phase (setup → planning → feature loop → sessions → change management → epic boundaries → maintenance) is a sensible default.
 
 ---
 
@@ -1075,7 +1067,7 @@ Things not fully decided. Worth addressing when building.
 
 If you're a new Claude conversation reading this to continue the work:
 
-**Where to start**: The first vertical slice. Build `task-format.md` (convention), `writing-task-files/SKILL.md` (skill with examples), and `generate-tasks.md` (command). Test end-to-end. This validates the pattern before you invest in the rest.
+**Where to start**: Layer by layer, per §14. Build all 5 conventions first, then all 3 templates, then all 12 skills (with examples), then all 3 subagents, then all 22 commands (with `/metis:init` last). Propose a concrete plan for the current layer before writing, and surface any ambiguity against the doc as you go.
 
 **What to reference**:
 
@@ -1095,7 +1087,7 @@ If you're a new Claude conversation reading this to continue the work:
 
 **What to focus on**:
 
-- Getting the first slice working.
+- Completing the current layer cleanly before starting the next.
 - Dogfooding Metis on one real project after v0.1 is built. This is the only real validation.
 - Writing out examples in each skill directory. Examples make skills concrete.
 - Keeping command files thin. If a command is >100 lines, its skill isn't pulling its weight.
