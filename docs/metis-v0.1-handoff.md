@@ -1090,7 +1090,6 @@ If you're a new Claude conversation reading this to continue the work:
 - [Claude Code docs on custom commands](https://code.claude.com/docs/en/slash-commands) for the command file format.
 - [Claude Code docs on skills](https://code.claude.com/docs/en/extend-claude-code) for skill file format.
 - [Claude Code docs on subagents](https://code.claude.com/docs/en/subagents) for the agent file format.
-- Superpowers repo (obra/superpowers) as the reference for well-written skills.
 
 **What NOT to do**:
 
