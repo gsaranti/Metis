@@ -34,7 +34,9 @@ Note the quoted strings on `id` and `depends_on` values — leading-zero numbers
 
 ### `id` — required
 
-Zero-padded 4-digit string. Unique within the project. Immutable once assigned. The filename prefix matches (`0007-stripe-webhook-handler.md`).
+Zero-padded 4-digit string. Unique within the project. The filename prefix matches (`0007-stripe-webhook-handler.md`).
+
+Stable by default: other artifacts (frontmatter `depends_on`, decisions, `CURRENT.md`, etc.) reference this id, so changing it has cascading cost. If it must change, reconcile the dependents via `/metis:log-work` or a resync.
 
 Valid: `"0007"`, `"0042"`, `"1234"`.
 Invalid: `7`, `"00007"`, `"7"`.
@@ -47,7 +49,7 @@ Example: `002-billing`.
 
 ### `title` — required
 
-One-line human-readable summary. Immutable once assigned. If the title would change, the task is wrong — supersede it with a new task rather than renaming.
+One-line human-readable summary. Stable by default — other artifacts may refer to it, and renames ripple — but the user may change it. When scope has genuinely shifted, superseding the task with a new one is usually cleaner than retitling.
 
 ### `status` — required
 

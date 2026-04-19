@@ -1,8 +1,8 @@
 # Task file format
 
-A task file is a self-sufficient brief for one unit of implementation work. A subagent loading a task file — plus `CLAUDE.md` and the docs the task references — must have everything it needs to plan, implement, or review without reading any other task file.
+A task file is a self-sufficient brief for one unit of implementation work. A subagent loading a task file — plus `CLAUDE.md`, the docs the task references, and the parent `EPIC.md` in epic mode — must have everything it needs to plan, implement, or review without reading any other task file.
 
-If a subagent needs context beyond the task file to do its job, the task file is underspecified. Fix the task file; don't widen the context.
+If a subagent needs context beyond that to do its job, the task file is underspecified. Fix the task file; don't widen the context.
 
 ## Filename
 
@@ -64,6 +64,8 @@ Why: subagents work in fresh context. If the task file only links to docs, the s
 
 When an excerpt would run beyond ~30 lines, summarize in the task's own words and retain one or two key quotes. Do not paste whole sections wholesale.
 
-## Immutability
+## Editing
 
-`id` and `title` are immutable once assigned (see `frontmatter-schema.md`). If the scope genuinely changes, supersede the task — do not rewrite its identity. All other fields change freely, subject to `write-rules.md`.
+Task files are stable by default, not immutable. The user may edit any field — including `id` and `title` — at any time. Keeping those two stable once a task is underway is strongly preferred because other artifacts refer to them, but if they do change, reconcile via `/metis:log-work` or a resync rather than treating it as an error.
+
+If a task's scope genuinely changes mid-flight, superseding it with a new task (and pointing to the old one in Notes) is usually cleaner than heavy in-place rewriting — but this is a judgment call, not a rule.

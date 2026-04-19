@@ -2,6 +2,17 @@
 
 Decisions (ADRs) live in `decisions/` as an append-only log that spans epics and sessions. Each file records one decision at the moment it was made. Decisions are never edited in place; if a decision is revisited, write a new decision that supersedes it.
 
+## Who writes decisions
+
+Decisions are created by:
+
+- **`/metis:walk-open-items`** — one decision per resolved item (contradiction or question) during doc reconciliation.
+- **`/metis:sync`** — one decision per accepted cascading change when a source doc or `BUILD.md` edit propagates through epics and tasks.
+- **`/metis:log-work`** — one decision when code written outside the workflow touches architecture-level concerns.
+- **The main session** — when a change to `BUILD.md`, a doc, or an epic warrants a standing record, the user and main agent can write a decision directly.
+
+The three task-level subagents (planner, implementer, reviewer) do not write decisions. Their observations land in the task's Notes section; if something warrants a decision, the parent session writes it.
+
 ## Filename
 
 `YYYY-MM-DD-kebab-case-slug.md`.

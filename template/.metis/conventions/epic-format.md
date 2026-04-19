@@ -1,6 +1,6 @@
 # Epic format
 
-An `EPIC.md` file defines one capability-level unit of work — a group of 10–30 tasks with a single testable exit criterion. Epics only exist in epic mode.
+An `EPIC.md` file defines one capability-level unit of work: a cluster of tasks held together by a single testable exit criterion. Epics only exist in epic mode. There is no target task count — the work dictates that.
 
 ## Filename and location
 
@@ -27,7 +27,7 @@ depends_on: []
 
 Fields:
 
-- **`name`** — required. Matches the directory name. Immutable.
+- **`name`** — required. Matches the directory name. Stable by default: other artifacts (task frontmatter `epic:`, decisions, `depends_on`) reference it. Renames require a resync.
 - **`goal`** — required. One sentence. Outcome-framed; states what users or the system can do when this epic is done.
 - **`status`** — required. Enum: `pending`, `in-progress`, `done`. Simpler than task status; epics have no review gate in v0.1, and blockers live on the individual tasks.
 - **`exit_criterion`** — required. One sentence. A single testable condition that marks the epic complete. See the Exit-criterion discipline section below.

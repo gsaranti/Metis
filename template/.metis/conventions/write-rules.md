@@ -1,21 +1,25 @@
 # Write rules
 
-Cross-cutting rules about *who* writes to *which* files, *when*, and *under what discipline*. These rules exist to keep Metis's "state on disk" property honest: if everyone can write to everything, the filesystem stops being a reliable record of intent.
+A design-time reference. This file exists so the full who-writes-where picture is readable in one place. **It is not bulk-loaded at runtime.** Individual skills and subagent system prompts carry only the one or two rules they actually need. If this file is growing such that it has to be read in full during a task, one of the skills is underspecified.
 
 File *structure* is covered in `task-format.md`, `epic-format.md`, `decision-format.md`, and `frontmatter-schema.md`. This file is about *behavior*.
+
+## The underlying property
+
+Metis's value is that a fresh agent can read on-disk state and know where the project stands. That only works if the state on disk is a reliable record. These rules exist to keep that property honest — they do not exist to prevent the user from editing their own files. The user can edit anything. The rules govern who *Metis's own agents and commands* write to.
 
 ## File-by-file write permissions
 
 ### `scratch/CURRENT.md`
 
-- **Writes**: the main (parent) session only.
-- **Subagents**: never. A subagent has no visibility into the full session and can corrupt continuity if it writes here.
+- **Writes**: the main (parent) session.
+- **Subagents**: never. A subagent has no visibility into the full session and can corrupt continuity.
 - **When**: updated at session end by `/metis:session-end`. Small in-session updates are fine but should be infrequent.
 
 ### `scratch/plans/<id>.md`
 
 - **Writes**: the `task-planner` subagent only. Gitignored.
-- **Lifecycle**: written by `/metis:plan-task`; consumed by `/metis:implement-task`; typically left alone after the task merges. Nothing depends on these files after implementation.
+- **Lifecycle**: written by `/metis:plan-task`; consumed by `/metis:implement-task`; ignored after merge.
 
 ### `scratch/questions.md`
 
@@ -25,24 +29,25 @@ File *structure* is covered in `task-format.md`, `epic-format.md`, `decision-for
 ### Task files (`tasks/*.md` or `epics/*/tasks/*.md`)
 
 - **Writes**:
-  - Task-generation commands (`/metis:generate-tasks`, `/metis:feature`) — at task creation.
+  - Task-generation commands (`/metis:generate-tasks`, `/metis:feature`) at creation.
   - The `task-implementer` subagent — only the task file it was assigned, updating `status` and appending to Notes.
   - The `task-reviewer` subagent — only the task file it was reviewing, appending review findings to Notes.
-  - `/metis:sync` — updates fields on `pending` and `in-review` tasks when upstream specs change; requires user approval and an accompanying decision entry. `in-progress` tasks require explicit confirmation. `done` tasks are never edited — drift becomes a new task or a superseding decision.
+  - `/metis:sync` — updates fields when upstream specs change. Requires user approval and a decision entry. `in-progress` tasks require explicit confirmation. `done` tasks are never edited — drift becomes a new task or a superseding decision.
   - `/metis:log-work` — updates fields to reflect code written outside the workflow; verifies against `git diff`.
-- **Never**: any subagent other than the one assigned to this task. The implementer does not modify other task files, even if "obviously related."
-- **Immutability**: `id` and `title` do not change after creation (see `frontmatter-schema.md`). All other fields change freely, subject to the rules above.
+  - The user — directly, any time. Metis reads from disk and trusts what it finds.
+- **Subagents besides the assigned one**: never. The implementer does not touch other task files, even if "obviously related."
+- **Stability vs. immutability**: `id` and `title` are stable by default (other artifacts refer to them) but not locked — see `frontmatter-schema.md`.
 
 ### `EPIC.md`
 
-- **Writes**: `/metis:epic-breakdown`, `/metis:promote-to-epics`, `/metis:sync`. Status transitions (`pending` / `in-progress` / `done`) are manual main-session edits. `/metis:epic-retro` writes the sibling `retro.md` file, not `EPIC.md`.
-- **Never**: the three task-level subagents (planner, implementer, reviewer).
+- **Writes**: `/metis:epic-breakdown`, `/metis:promote-to-epics`, `/metis:sync`. Status transitions are manual edits. `/metis:epic-retro` writes the sibling `retro.md` file, not `EPIC.md`.
+- **Subagents**: never. (The three task-level subagents *read* the parent `EPIC.md` in epic mode but do not write to it.)
 
 ### `BUILD.md`
 
 - **Writes**: `/metis:build-spec` (initial creation), `/metis:sync` (propagating upstream doc changes), direct user edits.
-- **Subagents**: never. This is enforced as an explicit tool restriction on `task-implementer`.
-- **Rule**: any change to `BUILD.md` outside its initial `/metis:build-spec` creation requires an accompanying `decisions/` entry explaining why.
+- **Subagents**: never. Enforced as an explicit tool restriction on `task-implementer`.
+- **Rule**: any change to `BUILD.md` outside its initial creation requires an accompanying `decisions/` entry explaining why.
 
 ### `BOARD.md`
 
@@ -52,9 +57,9 @@ File *structure* is covered in `task-format.md`, `epic-format.md`, `decision-for
 ### `decisions/*.md`
 
 - **Writes**: append-only. New files only. Existing files are never edited.
-- **Who creates**: any command that records a decision — `/metis:walk-open-items`, `/metis:sync`, `/metis:log-work`, and the main session when a doc change propagates into `BUILD.md`.
-- **Subagents**: never. The three task subagents do not write decisions.
-- **Superseding**: a new decision file names the superseded file in its Context section. The old decision is not modified (see `decision-format.md`).
+- **Who creates**: `/metis:walk-open-items`, `/metis:sync`, `/metis:log-work`, and the main session when a doc or `BUILD.md` change warrants a standing record. See `decision-format.md`.
+- **Subagents**: never. Task-level subagents record observations in the task's Notes; if something warrants a decision, the parent session writes it.
+- **Superseding**: a new decision names the superseded file in its Context. The old decision is not modified.
 
 ### `docs/` (source docs and reconcile outputs)
 
@@ -63,7 +68,7 @@ File *structure* is covered in `task-format.md`, `epic-format.md`, `decision-for
   - `/metis:walk-open-items` updates the source doc for each resolved item and moves the item from `CONTRADICTIONS.md` / `QUESTIONS.md` to `RESOLVED.md`.
   - Users edit source docs directly at any time.
 - **Subagents**: do not write to `docs/` by default. Exception: a subagent dispatched by `/metis:reconcile` as a scalpel for compressing a single dense doc may write to the one file it was assigned.
-- **`RESOLVED.md`**: minimal-pointer archive only. Never loaded during a walk unless explicitly requested. Keep it thin.
+- **`RESOLVED.md`**: minimal-pointer archive only. Never loaded during a walk unless explicitly requested.
 
 ### `CLAUDE.md`
 
@@ -71,7 +76,7 @@ File *structure* is covered in `task-format.md`, `epic-format.md`, `decision-for
 
 ### `.metis/` and `.claude/`
 
-- **Writes**: only Metis's own scaffolding commands (`/metis:init`, future upgrade commands). Users may edit their own `.metis/config.yaml`.
+- **Writes**: only Metis's own scaffolding commands. Users may edit their own `.metis/config.yaml`.
 - **Subagents**: never.
 
 ## Doc-change propagation
@@ -79,12 +84,10 @@ File *structure* is covered in `task-format.md`, `epic-format.md`, `decision-for
 When a file in `docs/` changes:
 
 1. The doc change is the source of truth for intent.
-2. If `BUILD.md` is affected, it is updated via `/metis:sync` with an accompanying decision entry.
+2. If `BUILD.md` is affected, it is updated via `/metis:sync` with a decision entry.
 3. If downstream epics or tasks are affected, `/metis:sync` walks the cascade (batching cosmetic edits, walking substantive ones one at a time).
 4. `done` tasks are never edited in place; drift becomes a new task or a superseding decision.
-5. `in-progress` tasks require explicit confirmation before editing, because a human is actively working on them.
-
----
+5. `in-progress` tasks require explicit confirmation before editing.
 
 ## Command-prompts convention
 
@@ -101,16 +104,14 @@ tenacity, follow that pattern"
 
 Three discipline rules apply to any command or subagent that accepts such a prompt:
 
-1. **Augment, do not replace.** The prompt adds to the task file or command context; it does not override it. If the prompt genuinely contradicts the task file or spec, flag the conflict and ask rather than silently choosing a side.
+1. **Augment, do not replace.** The prompt adds to the task file or command context; it does not override it. If it genuinely contradicts the task file, flag the conflict and ask rather than silently choosing a side.
 2. **Flag scope expansion.** If the prompt widens scope beyond the task file, note the expansion in the return instead of quietly doing it.
 3. **Acknowledge use explicitly.** The return states how the prompt was used, so the influence is traceable after the fact. Example: *"Per your note about tenacity, I followed the retry pattern in `billing/client.py` rather than adding a new dependency."*
 
 The prompt is **ephemeral**. It is never persisted to disk, never added to frontmatter, never copied into a task Notes section except as a natural part of the subagent's return commentary.
 
-Whether this convention extends to purely mechanical commands — `/metis:pick-task`, `/metis:session-start`, `/metis:scratch-cleanup` — is deferred. For now, those commands may silently accept and ignore a trailing prompt. All other commands must follow the three discipline rules above.
-
----
+Purely mechanical commands (`/metis:pick-task`, `/metis:session-start`, `/metis:scratch-cleanup`) may silently accept and ignore a trailing prompt. All other commands follow the three rules above.
 
 ## When in doubt
 
-If a rule here conflicts with the behavior a command or subagent seems to want, the correct response is **stop and flag the conflict**, not silently work around the rule. Write rules encode the properties that make Metis trustworthy; bending them silently is how "state on disk" becomes "state that used to be on disk."
+If a rule here conflicts with the behavior a command or subagent seems to want, the correct response is **stop and flag the conflict**, not silently work around the rule. These rules encode the properties that make Metis trustworthy.
