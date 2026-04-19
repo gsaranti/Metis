@@ -32,18 +32,21 @@ Read this document top to bottom. Every section matters. By the end, you should 
 
 ## What Metis is
 
-Metis is an agentic development framework for Claude Code, targeting **large, doc-heavy projects** where context management across many sessions is the hard problem.
+Metis is an agentic development toolset for Claude Code, targeting **large, doc-heavy projects** where context management across many sessions is the hard problem.
+
+The core value proposition is simple: at any moment, a fresh agent session can read Metis's on-disk state and know where the project stands — what's planned, what's in progress, what's done, what was decided, and why. How the code actually got written between sessions is orthogonal. The user can code alone, pair with an agent without invoking any Metis commands, use Metis's plan/implement/review loop, or mix all three. Metis's job is to make the next session's context accurate regardless.
 
 It provides:
 
-- A structured workflow for going from a `docs/` directory of UX, design, and technical specs to a working product
-- A filesystem layout (`BUILD.md`, `epics/` or `tasks/`, `decisions/`, `scratch/`, `.metis/`) that makes project state explicit
-- Slash commands (`/metis:*`) that encode each step of the workflow
-- Skills that capture reusable know-how
-- Subagents with scoped tool permissions for task-level execution
+- A filesystem layout (`BUILD.md`, `epics/` or `tasks/`, `decisions/`, `docs/` reconcile artifacts, `scratch/`, `.metis/`) that makes project state explicit on disk
+- Slash commands (`/metis:*`) — some produce those artifacts, some reconcile them against changes the user made outside Metis
+- Skills that capture reusable know-how for the agent
+- Subagents with scoped tool permissions for task-level execution, when the user wants that structure
 - Conventions that standardize file formats
 
-The core insight driving the design: **coding agents mostly fail not because they can't write code, but because they jump into coding without planning, skip tests, fabricate verification, and lose track of intent across long sessions.** Metis counters those failure modes with structure — reconciled specs, task-scoped context, fresh subagents, and explicit state on disk.
+The engineering-loop commands (`/metis:plan-task`, `/metis:implement-task`, `/metis:review-task`) are an option Metis offers, not the spine of Metis. The spine is the artifacts themselves and the reconciliation mechanisms (`/metis:sync`, `/metis:log-work`, hand-editing plus a resync) that keep the artifacts honest when the user bypasses the loop.
+
+The core insight driving the design: **coding agents mostly fail not because they can't write code, but because they lose track of intent across long sessions and silently drift from specs.** Metis counters that failure mode with structure on disk — reconciled specs, task-scoped artifacts, explicit state — and with reconciliation commands that absorb user edits rather than fight them.
 
 The name: Metis is the Greek goddess of wisdom and deep thought, mother of Athena. Tagline candidate: *"Wisdom before code."*
 
@@ -134,17 +137,21 @@ If the project is under a week of work, or there's no documentation, or the user
 
 ### The load-bearing opinions
 
-These five are Metis's spine. Everything else is convention that can flex:
+These are Metis's spine. Everything else is convention that can flex:
 
-1. **Structure the project, not the agent.** Metis provides artifacts and workflow. The agent decides how to solve each task. No TDD enforcement, no persona role-play, no prescribed reasoning steps.
+1. **Structure the project, not the agent.** Metis provides artifacts, conventions, and reconciliation mechanisms. The agent decides how to solve each task. No TDD enforcement, no persona role-play, no prescribed reasoning steps.
 
-2. **Docs before code, always.** Phase 0 reconciliation is non-optional on large doc-heavy projects. The agent reads `docs/`, produces a synthesis + contradictions list, and the user walks through contradictions to populate a decisions log — *before any code is written*.
+2. **Metis is optional at every step; it reconciles, it does not enforce.** Every artifact Metis produces can be hand-edited by the user at any time. The engineering-loop commands (plan/implement/review) are a convenience, not a requirement. The user can code alone, pair with an agent without invoking Metis, or drive work through Metis — and mix freely. Metis's reconciliation commands (`/metis:sync`, `/metis:log-work`, hand-editing followed by a resync) exist to absorb user edits, not to prevent them.
 
-3. **Context is task-scoped, not project-scoped.** Every task file is self-sufficient. Subagents work from task files without parent context. State lives on disk, not in session transcripts.
+3. **Docs before code, when docs exist.** On a large doc-heavy project, Phase 0 reconciliation pays for itself. The agent reads `docs/`, produces synthesis + contradictions + open questions, and the user walks through them to populate a decisions log before building. This is Metis's strongest recommendation — but a recommendation, not a gate.
 
-4. **Fresh instances at phase boundaries.** Resumption is for continuity within a phase, not across them. Phase 0 → close → Phase 1 new instance → close → Phase 2 new instance. State survives via committed files.
+4. **Context is task-scoped, not project-scoped.** Every task file is self-sufficient. Subagents work from a task file plus `CLAUDE.md`, the referenced docs, and the parent epic (in epic mode) — never from other task files or `BUILD.md`. State lives on disk, not in session transcripts.
 
-5. **Decisions are append-only and span the project.** Not buried in task files or docs. `decisions/` is the project's memory across epics and sessions.
+5. **Fresh instances at phase boundaries.** Resumption is for continuity within a phase, not across them. Starting Phase 1 in a fresh instance drops context that would otherwise compound into drift. Metis's artifacts are built to rehydrate a fresh agent quickly.
+
+6. **Decisions are append-only and span the project.** Not buried in task files or docs. `decisions/` is the project's memory across epics and sessions. Superseding happens by writing a new decision, not by editing the old one.
+
+7. **Context efficiency is load-bearing.** Every skill, subagent, and command is authored under a token budget. A Metis-structured session should cost less context than the disorder it prevents. "Works but bloated" is a bug, not a tradeoff; each layer loads only the slice of the conventions it actually needs.
 
 ### Tagline candidate
 
@@ -173,7 +180,9 @@ Ties to Metis the goddess (wisdom, deep thought) and to the Phase 0 ethos (recon
 
 ## The workflow Metis encodes
 
-The workflow has four phases for a greenfield large project. Each phase has hard session boundaries — start a fresh Claude Code instance for each phase.
+Metis encodes a canonical four-phase flow for a greenfield doc-heavy project. It is the intended path — the one Metis's artifacts and commands are shaped for — but it is not a gate system. The user can skip phases, reorder them, or bypass the commands entirely and hand-edit artifacts, then run a reconciliation command (`/metis:sync`, `/metis:log-work`) to bring Metis's view back in line. The phases describe *what good looks like*, not what Metis forces.
+
+Phase boundaries are still worth respecting when they're used: each is best started in a fresh Claude Code instance to drop accumulated context that would otherwise compound into drift.
 
 ### Phase 0 — Reconcile
 
@@ -208,13 +217,16 @@ Ship the thinnest end-to-end slice: one route, one screen, one DB write, one pas
 
 ### Phase 3 — Feature loop
 
-Per task:
+The canonical per-task loop, when the user wants Metis's engineering structure:
+
 1. `/metis:pick-task` → choose an unblocked task
 2. `/metis:plan-task <id>` → planner subagent produces a plan, user reviews
 3. `/metis:implement-task <id>` → implementer subagent implements, tests, returns with real test output
 4. `/metis:review-task <id>` → reviewer subagent judges against acceptance criteria (two-stage review)
 5. `/metis:scope-check` → agent enumerates what it skipped
 6. Merge
+
+This loop is optional. Any task can be coded by the user alone, paired with an agent outside Metis, or partially driven through Metis (e.g., plan by hand, implement with the subagent) and still end up reconciled. `/metis:log-work` absorbs code written outside the loop by diffing the working tree against the task file and updating status, notes, and frontmatter accordingly. Hand-edits to task files are equally legitimate; Metis reads from disk and trusts what it finds there.
 
 Session begins with `/metis:session-start` (loading dose), ends with `/metis:session-end` (update `CURRENT.md`).
 
@@ -552,7 +564,7 @@ Helpful errors with the likely-correct alternative. Not "wrong mode, goodbye."
 
 ## Conventions
 
-Five files at `.metis/conventions/`. Static reference. Read by skills and agents on demand, not every session.
+Five files at `.metis/conventions/`. They define the canonical on-disk formats Metis relies on. Conventions are a **human- and design-time reference**: they encode the shape of files so both the user and Metis's agents agree on what those files mean. At runtime, skills, subagents, and commands each carry only the slice of the conventions they need — the conventions files are not bulk-loaded into every session.
 
 ### `task-format.md`
 
@@ -561,6 +573,9 @@ Specifies task file structure:
 - Section order: Goal, Context (excerpted), Scope boundaries, Acceptance criteria, Expected file changes, Notes
 - Sizing: 50–150 lines. Longer means split.
 - Excerpting rule: quote doc sections directly, don't just link
+- In epic mode, the parent `EPIC.md` is part of every task's implicit context (subagents load it alongside the task file)
+
+Task files are stable by default, not immutable: the user may edit any field by hand. The `id` and `title` are expected to stay fixed once a task is underway because other artifacts refer to them, but changing them is a supported workflow — reconcile via `/metis:log-work` or a direct resync, not by forbidding the edit.
 
 ### `epic-format.md`
 
@@ -568,6 +583,7 @@ Specifies `EPIC.md` structure:
 - Frontmatter: name, goal, status, exit criterion, dependencies
 - Sections: Goal, Scope, Out-of-scope, Exit criterion, Notes
 - Sizing: ~1 page
+- No strict task-count range. Epics cluster around a single testable exit criterion; task volume follows from the work, not from a quota.
 
 ### `decision-format.md`
 
@@ -575,6 +591,9 @@ ADR template for `decisions/` entries:
 - Filename: `YYYY-MM-DD-kebab-case-title.md`
 - Sections: Date, Context, Decision, Consequences, Evidence (optional)
 - One paragraph per section, sometimes more
+- Append-only — superseding is done by writing a new decision whose Context names the old one
+
+Decisions are written by `/metis:walk-open-items`, `/metis:sync`, `/metis:log-work`, and by the main session whenever a change to `BUILD.md` or a source doc warrants a standing record. Subagents do not write decisions.
 
 ### `frontmatter-schema.md`
 
@@ -582,12 +601,12 @@ Canonical YAML frontmatter fields:
 
 ```yaml
 ---
-id: 0007                      # zero-padded, 4 digits
+id: "0007"                    # zero-padded 4-digit STRING (quoted — YAML parses 0007 as int 7)
 epic: 002-billing             # epic mode only
 title: Stripe webhook handler
 status: pending | in-progress | in-review | done | blocked
 priority: 1-5
-depends_on: [0003, 0005]      # list of task IDs
+depends_on: ["0003", "0005"]  # list of task ID strings (quoted)
 estimate: small | medium | large
 touches: [src/billing/, src/api/webhooks.ts]
 docs_refs:
@@ -604,25 +623,18 @@ Specifies what's required vs optional, what values are valid, and why each field
 
 ### `write-rules.md`
 
-The who-writes-where rules, encoded for agents:
+A design-time reference for who writes what. Captures the rules as a whole so the design stays legible; the actual enforcement lives in the individual skill and subagent prompts, which each carry the one or two rules they need. Highlights:
 
 - Only the parent/main session writes to `scratch/CURRENT.md`
 - Subagents write only to their assigned task file and their return value
-- Decisions go in `decisions/`, never in scratch
+- Decisions go in `decisions/`, never in scratch; they are append-only
 - `BUILD.md` changes only with an accompanying decision entry
 - `BOARD.md` is generated; don't edit by hand
-- Task file IDs and titles are immutable once assigned; status and notes update freely
+- Task files are stable by default but the user can hand-edit any field; Metis reconciles edits via `/metis:log-work` or a resync rather than forbidding them
 - When a doc in `docs/` changes, update `BUILD.md` if relevant and log a decision entry
 - Resolved items from `CONTRADICTIONS.md` / `QUESTIONS.md` move to `docs/RESOLVED.md` as minimal pointers; `RESOLVED.md` is never loaded during a walk unless explicitly requested
 
-It also encodes the **command-prompts convention**: every substantive Metis command accepts an optional trailing free-text prompt that augments its default behavior. Rules for how agents and subagents handle that prompt:
-
-- The prompt is ephemeral — not persisted, not written to disk
-- The prompt *augments* the task file (or command context); it does not replace it. If the prompt genuinely contradicts the task file or spec, flag the conflict and ask rather than silently choosing
-- If the prompt asks for something that expands scope, note it in the return; do not quietly expand
-- The return must explicitly acknowledge how the prompt was used ("per your note to use tenacity, I followed the pattern in `billing/client.py`")
-
-Agents load this when write rules are relevant — primarily session start and when modifying shared files.
+It also defines the **command-prompts convention** (an optional trailing free-text argument to most substantive commands) and three discipline rules for it: augment-not-replace, flag-scope-expansion, and acknowledge-use-explicitly. The prompt is ephemeral — never persisted to disk. Individual commands and subagents pick up this convention on their own; the convention file is the single source that documents it.
 
 ---
 
@@ -665,7 +677,7 @@ Twelve skills at `.claude/skills/metis/<name>/SKILL.md`. Each is focused know-ho
 
 **Purpose**: Sizing and structuring epics.
 
-**Covers**: 10–30 tasks per epic, single testable exit criterion, capability-not-category framing ("Users can sign up and log in" not "Auth"), dependency identification, 8–15 epics total, when to split vs merge.
+**Covers**: single testable exit criterion (the load-bearing constraint), capability-not-category framing ("Users can sign up and log in" not "Auth"), dependency identification, rough targets (~8–15 epics total, enough tasks per epic to justify the directory but no quota), "does this want to split?" heuristics, when to merge.
 
 **Used by**: `/metis:epic-breakdown`, `/metis:promote-to-epics`.
 
@@ -766,8 +778,8 @@ Three subagents at `.claude/agents/metis/<name>.md`. Each has tool restrictions 
 
 **System prompt covers**:
 - Who they are (fresh context, no parent memory)
-- What to load (CLAUDE.md, the specified task file, only the docs in `docs_refs`)
-- What NOT to read (other task files, BUILD.md, other epics)
+- What to load (CLAUDE.md, the specified task file, the parent `EPIC.md` in epic mode, only the docs in `docs_refs`)
+- What NOT to read (other task files, `BUILD.md`, other epics)
 - What to produce (plan at `scratch/plans/<id>.md`)
 - What to return (plan summary + flagged ambiguities)
 
@@ -783,7 +795,7 @@ Three subagents at `.claude/agents/metis/<name>.md`. Each has tool restrictions 
 
 **System prompt covers**:
 - Fresh context
-- What to load (CLAUDE.md, task file, approved plan, only referenced docs)
+- What to load (CLAUDE.md, task file, parent `EPIC.md` in epic mode, approved plan, only referenced docs)
 - Rules: follow the plan, deviate only with explanation; tests when they fit; real test output in return
 - Updates: task file status → in-review, appended Notes section
 - Hard restrictions: do NOT write to BUILD.md/BOARD.md/CURRENT.md/other tasks/decisions
@@ -801,7 +813,7 @@ Three subagents at `.claude/agents/metis/<name>.md`. Each has tool restrictions 
 
 **System prompt covers**:
 - Fresh context — the reviewer didn't write the code, has no ego
-- What to load (CLAUDE.md, task file including acceptance criteria, git diff, implementer's return notes)
+- What to load (CLAUDE.md, task file including acceptance criteria, parent `EPIC.md` in epic mode, git diff, implementer's return notes)
 - What NOT to load (the plan — we want judgment against the task file, not compliance with the plan)
 - Evaluation per acceptance criterion: pass/fail + evidence (file/line citations)
 - Separate code quality from spec compliance
@@ -910,9 +922,12 @@ These were worked through in conversation and shouldn't be re-opened unless new 
 
 ### On framework positioning
 
+- **Metis is a toolset, not a workflow.** Its value is context maintenance across sessions — a fresh agent can read on-disk state and know where the project stands. The engineering-loop commands (plan/implement/review) are optional.
 - **Targeting engineers with large doc-heavy projects.** Explicit audience.
 - **"Structure the project, not the agent"** is the load-bearing principle.
-- **Five opinions are the spine**: structure-project-not-agent, docs-before-code, task-scoped-context, fresh-instances-at-boundaries, append-only-decisions.
+- **Seven opinions are the spine**: structure-project-not-agent; Metis-is-optional; docs-before-code when docs exist; task-scoped-context (including parent `EPIC.md` in epic mode); fresh-instances-at-boundaries; append-only-decisions; context-efficiency.
+- **The user retains full control.** Every artifact Metis produces can be hand-edited. Reconciliation (`/metis:sync`, `/metis:log-work`) absorbs user edits rather than fighting them.
+- **Context efficiency is a design constraint, not a polish task.** Skills, subagents, commands, and conventions are each authored under a token budget. Each layer loads only the slice of the conventions it actually needs.
 - **Not building cross-harness support in v0.1.** Claude Code only.
 - **Not building lite/heavy modes.** Metis is the heavy-structure option; people who want lighter should use something else.
 
@@ -953,7 +968,7 @@ These were worked through in conversation and shouldn't be re-opened unless new 
 - **Three subagents in v0.1**: `task-planner`, `task-implementer`, `task-reviewer`.
 - **Tool restrictions enforce workflow properties.** Planner can't edit code. Reviewer is read-only. Implementer can't write to `BUILD.md`/`BOARD.md`/etc.
 - **Two-stage review** (implementer + reviewer, both fresh contexts) is standard for non-trivial tasks.
-- **Subagent briefs are self-sufficient.** Task file + CLAUDE.md + referenced docs is enough context. If it's not, the task file is underspecified.
+- **Subagent briefs are self-sufficient.** Task file + CLAUDE.md + referenced docs + parent `EPIC.md` (in epic mode) is enough context. If it's not, the task file is underspecified.
 
 ### On skills vs conventions
 
@@ -1299,6 +1314,20 @@ The prompt is **ephemeral** — never persisted to disk.
 
 Open question (#14 above): does this convention apply to *every* command, or only substantive ones? Leaning "every command where the agent does real thinking" — excludes purely mechanical ones like `/metis:pick-task`, `/metis:session-start`, `/metis:scratch-cleanup`.
 
+### Refinement 8 — Reframing Metis as a context-maintenance toolset
+
+The design to this point was described in workflow language — "the workflow Metis encodes," phases, a per-task feature loop — which made Metis sound like a pipeline the user has to route through. A later review reframed this. The point of Metis is not that the user runs `/metis:plan-task` → `/metis:implement-task` → `/metis:review-task` in order. The point is that at any moment, a fresh agent session can read on-disk state and know the project's intent, status, and history. How code actually got written between sessions is orthogonal.
+
+Concretely:
+
+- **The engineering-loop commands are optional.** The user can code alone, pair with an agent outside Metis, or drive work through Metis — and mix freely. Metis doesn't gate any of this.
+- **Every artifact is user-editable.** Task files, epics, `BUILD.md`, `CURRENT.md`, and `docs/` are all fair game for hand editing. Metis's reconciliation commands (`/metis:sync`, `/metis:log-work`) absorb external edits rather than forbidding them.
+- **Immutability claims were too strong.** Earlier drafts said task `id` and `title` were immutable; softened to "stable by default — if they change, reconcile via `/metis:log-work` or a resync." Same logic for the "10–30 tasks per epic" rule, which was dropped.
+- **The conventions layer is a human/design-time reference.** At runtime, each skill / subagent / command carries only the slice it needs. Conventions files are not bulk-loaded into sessions.
+- **Context efficiency is promoted to a load-bearing principle.** Metis should cost less context than the disorder it prevents. "Works but bloated" is a bug.
+
+No manifest changes. The shift is in *framing and discipline*, which is carried through the principles in §4, the workflow section, the conventions descriptions, and the subagent load lists (parent `EPIC.md` added in epic mode).
+
 ### Manifest impact of all refinements
 
 | Layer | Before refinements | After refinements |
@@ -1306,7 +1335,7 @@ Open question (#14 above): does this convention apply to *every* command, or onl
 | Commands | 20 | 22 (+`/metis:sync`, +`/metis:log-work`; renamed walk-contradictions → walk-open-items) |
 | Skills | 10 | 12 (+`propagating-spec-changes`, +`logging-external-work`; expanded `reconciling-docs`) |
 | Conventions | 5 | 5 (no new files; `frontmatter-schema` adds `doc_hashes` + `spec_version`; `write-rules` adds command-prompts convention) |
-| Subagents | 3 | 3 (no new subagents; existing ones gain invocation-prompt discipline) |
+| Subagents | 3 | 3 (no new subagents; existing ones gain invocation-prompt discipline and load parent `EPIC.md` in epic mode) |
 
 ---
 
