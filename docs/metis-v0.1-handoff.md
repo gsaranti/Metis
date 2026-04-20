@@ -703,7 +703,7 @@ Twelve skills at `.claude/skills/metis/<name>/SKILL.md`. Each is focused know-ho
 
 **Covers**: Context → decision → consequences structure, when evidence is needed, keeping it one paragraph per section, making decisions findable (filenames, cross-references), when a decision supersedes another.
 
-**Used by**: `/metis:walk-open-items`, `/metis:sync`, `/metis:log-work`, implicitly everywhere decisions get written.
+**Used by**: `/metis:walk-open-items`, `/metis:sync`, `/metis:log-work`, and the main session when a doc or `BUILD.md` change warrants a standing record.
 
 **References**: `.metis/conventions/decision-format.md`.
 
@@ -760,7 +760,9 @@ Each skill is a directory:
     bad-task-vague.md   # counter-example: task without concrete criteria
 ```
 
-Examples are critical. Skills without examples are hand-wavy.
+Examples earn their keep when prose alone would leave the reader writing a noticeably worse artifact — usually zero or one per skill, occasionally two when they demonstrate materially different structural patterns. Counter-examples live in the SKILL.md prose as one-line failure descriptions, not as files; the full-file version of a failure mode rarely teaches something the one-liner doesn't, and it pays storage and maintenance cost for content nobody should be loading at runtime.
+
+Each skill sets `disable-model-invocation: true` in its frontmatter. Metis skills are a library dispatched by commands (or by explicit user invocation like `/metis:writing-decisions` or an inline reference in the prompt), not ambient helpers that auto-trigger on conversation cues. Two corollaries for skill content: descriptions are a one-line summary of *what the skill teaches*, not an enumeration of who calls it or when to invoke it; and SKILL.md files do not carry a "Used by" section — by the time a reader is inside the file, they are using it, and the callers are already documented in the command prompts and in `write-rules.md`. This keeps the always-on context small, keeps control flow explicit, and keeps SKILL.md content focused on the teaching rather than on routing metadata.
 
 ---
 
