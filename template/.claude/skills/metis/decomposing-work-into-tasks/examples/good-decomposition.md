@@ -22,6 +22,8 @@
 
 **Deferred (noted as out of scope).** Per-endpoint overrides (e.g., stricter limits on `/auth/login`). Not in the source spec; mentioned here so task 1's `### Out of scope` can name it with a one-line pointer rather than leaving the reader to guess.
 
+**Structural ambiguity surfaced (not decomposed here).** The spec does not say where rate-limit bucket state lives — per-process memory (simpler, breaks as soon as the app runs on more than one instance) or a shared store like Redis (correct in a fleet, adds a dependency). Writing task 1 forces that choice, and it cascades into task 3's bypass path and anything else that has to read or invalidate bucket state. The decomposition step stops and files the question as an open item for `/metis:walk-open-items`, rather than picking a persistence strategy and encoding it into the task files; a guess here would produce a chain of task files that all get redone once the question is actually decided.
+
 **Batch-level checks.**
 
 - *Coverage.* Every piece of the input spec maps to exactly one unit, is absorbed, or is explicitly deferred. The "admin bypass" sentence maps to task 3; the response-header sentence to task 2; the 429 / `Retry-After` sentence to task 1; the config file to task 1's file changes; per-endpoint overrides are deferred with reason.

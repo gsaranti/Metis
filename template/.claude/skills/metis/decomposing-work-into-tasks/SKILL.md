@@ -16,6 +16,10 @@ Two failure modes pull against each other: cutting too fine, so sibling tasks sh
 
 Load `.metis/conventions/epic-format.md` on demand when the body of work being decomposed lives inside an epic — the epic's scope and exit criterion bound what belongs in this batch and what belongs elsewhere.
 
+## Where to cut
+
+When unsure where to slice, look for seams the work already exposes: a module or service, a route or screen, an integration boundary, a single entity's lifecycle, an observable user capability. Cuts along existing seams tend to produce units with naturally disjoint file sets and independent acceptance criteria; cuts made against the grain tend to produce siblings that share so much context they wanted to be one task.
+
 ## Is this task-shaped?
 
 Before adding a unit to the decomposition, check that it belongs in a task file at all. The failure mode on either side is real: fragmenting work that belongs inline, or promoting a question into a task that cannot be implemented.
@@ -39,7 +43,7 @@ Signals two units want to merge:
 - One unit's acceptance criterion is a prerequisite state of the other and has no observable effect on its own.
 - Both would land in the same commit anyway.
 
-Use `depends_on` in the eventual frontmatter to express ordering between tasks that should stay separate — not as a way to avoid merging. A chain of three units that all depend on each other in strict order often wants to be one task with three acceptance criteria.
+Use `depends_on` in the eventual frontmatter to express ordering between tasks that should stay separate — not as a way to avoid merging. A strict dependency chain wants to collapse into one task only when the intermediate states have no standalone reviewable or user-visible value; when each step would be a real milestone on its own, keep them separate and let `depends_on` carry the order.
 
 ## Flagging structural ambiguity
 

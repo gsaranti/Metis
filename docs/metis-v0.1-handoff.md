@@ -1137,6 +1137,10 @@ If you're a new Claude conversation reading this to continue the work:
 
 If something in this document seems wrong as you build, that's fine — the design isn't sacred. But document the change explicitly (update this doc, or write a `decisions/` entry in the Metis project itself). Silent drift from the design is the failure mode.
 
+**How to handle external-model reviews**:
+
+External-model reviews (ChatGPT, Gemini, etc.) have been useful signal during build — they catch wording gaps and missing cases our own flow glossed over. Two calibration points from experience: accept precision gains cheaply (tighter wording, testable conditions, cases the skill didn't cover); decline scope creep. External models lean toward adding sections, sequencing lenses, and product-management overlays that sound senior but cross Metis's layer boundaries — commands own orchestration, skills own artifact-shaping, conventions own format. If a suggestion would move a concern across those layers or push a skill past its cap, it's wrong even when well-argued in isolation. Keep the signal, keep the layering.
+
 **The final principle worth internalizing**:
 
 Metis is an opinionated tool for a specific audience. Its value comes from its opinions. Don't make it generic. If a design choice feels like it's trying to please everyone, it's probably wrong.
