@@ -6,14 +6,22 @@ disable-model-invocation: true
 
 # Writing a task file
 
-This skill fires when you have one decomposed unit of work and the source docs it references, and need to turn that into a file. The decomposition call — what belongs in this task vs. a sibling, what the right number of tasks is — has already been made by the time this skill runs.
+A task file is the self-sufficient brief a subagent works from. The job of this skill is to take one decomposed unit of work and render it into that file. The decomposition call — what belongs in this task vs. a sibling, what the right number of tasks is — has already been made by the time this skill runs.
 
 ## Read first
 
 - `.metis/conventions/task-format.md` — the structural spec (section order, excerpting rule, sizing). Not restated here.
 - `.metis/templates/task.md` — the skeleton.
 
-Load `.metis/conventions/frontmatter-schema.md` on demand when populating frontmatter or resolving a field question. It is a lookup, not a reader.
+Load `.metis/conventions/frontmatter-schema.md` on demand when populating frontmatter or resolving a field question. Use it as a lookup, not required reading.
+
+## Frontmatter quality
+
+`depends_on` and `touches` are the fields that most commonly inflate. `depends_on` names real blocking prerequisites — another task must finish before this one can start — not a wishlist of related work. `touches` names the primary surfaces a planner needs to reason about; listing every file the implementer might incidentally open makes the field noise rather than signal. Inflated frontmatter degrades `/metis:pick-task` and `/metis:sync` more than missing values do.
+
+## Describe outcomes, not implementation
+
+Across every section, stay with outcomes and constraints. "Profile reads return in under 200ms" is a task concern; "use Redis for the cache" is an implementation concern and belongs in the task file only if a source doc or decision has already fixed the approach. Otherwise the implementer becomes a stenographer and the reviewer has nothing independent to check.
 
 ## Writing each section well
 
@@ -23,7 +31,7 @@ The convention file has the shape. The judgment each section needs:
 - **Context.** Quote the *minimum relevant passage* — a task that pastes 500 words of source material has almost certainly buried the 50 that are load-bearing. When the relevant passage is long, summarize in your own words and keep one or two load-bearing quotes verbatim.
 - **Scope boundaries.** `### Out of scope` is the higher-value half. It pre-empts the natural scope creep of both implementer and reviewer. "No SSO; no password reset; no session revocation beyond the happy path" is worth more than six in-scope bullets restating what is obvious. Always populate it, even briefly.
 - **Acceptance criteria.** If a criterion cannot be evaluated without forming an opinion about the code, rewrite to something a reviewer can check with a command or by reading a specific output — "returns 400 when the body is missing the `signature` header," "the migration adds a `deleted_at` column to `users`."
-- **Expected file changes.** Be exhaustive. A file that appears in the diff but not in this list is the tell a reviewer uses to spot unstated scope after the fact.
+- **Expected file changes.** Name the intentional changes — the files the task means to create or modify, with a short intent. The list's job is to make unexpected new surfaces stand out in the diff, not to predict every incidental helper file the implementer opens.
 - **Notes.** Leave empty at creation. The temptation is to pre-load design context here; resist it — Notes is the implementer's and reviewer's append-only log.
 
 ## Sizing as feedback
@@ -32,7 +40,7 @@ If a draft lands past the `task-format.md` sizing target and trimming excerpts d
 
 ## Flagging ambiguity in the source
 
-If the source docs do not resolve a point this task needs, do not guess. For a small, local ambiguity — a specific field's type, a specific error code — write the task with a `TODO:` line in Context naming the gap, and surface the same question in `scratch/questions.md` for the main session. The task can ship with the flag; the implementer will see it and defer the guess upward. A task file with a hidden guess is worse than a missing task file; the hidden guess will be discovered only after the implementer has acted on it.
+If the source docs do not resolve a point this task needs, do not guess. For a small, local ambiguity — a specific field's type, a specific error code — write the task with a `TODO:` line in Context naming the gap, and surface the same question in `scratch/questions.md` for the main session. The task can proceed with the flag; the implementer will see it and defer the guess upward. A task file with a hidden guess is worse than a missing task file; the hidden guess will be discovered only after the implementer has acted on it.
 
 Structural ambiguity — which of two architectural paths this feature takes — is upstream of this skill. If you find one, stop writing; it belongs in decomposition or decision work, not inside the task file.
 
