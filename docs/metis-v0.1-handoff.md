@@ -381,12 +381,12 @@ scratch/                   # ephemeral, mostly gitignored
       task-reviewer.md
   skills/
     metis/
-      writing-task-files/
+      writing-a-task-file/
         SKILL.md
         examples/
       reconciling-docs/
         SKILL.md
-      ... (12 skills)
+      ... (14 skills)
 ```
 
 ### Flat mode variation
@@ -521,9 +521,9 @@ Twenty-two commands total. All namespaced as `/metis:<name>` to avoid collisions
 | `/metis:reconcile` | `reconciling-docs` | — |
 | `/metis:walk-open-items` | `reconciling-docs`, `writing-decisions` | — |
 | `/metis:build-spec` | `writing-build-spec` | — |
-| `/metis:epic-breakdown` | `breaking-down-epics` | — |
-| `/metis:generate-tasks` | `writing-task-files` | — |
-| `/metis:feature` | `writing-task-files`, `breaking-down-epics` | — |
+| `/metis:epic-breakdown` | `decomposing-build-into-epics`, `writing-an-epic-file` | — |
+| `/metis:generate-tasks` | `decomposing-work-into-tasks`, `writing-a-task-file` | — |
+| `/metis:feature` | `decomposing-work-into-tasks`, `writing-a-task-file`, `decomposing-build-into-epics`, `writing-an-epic-file` | — |
 | `/metis:skeleton-plan` | — | — |
 | `/metis:pick-task` | — | — |
 | `/metis:plan-task` | — | `task-planner` |
@@ -538,7 +538,7 @@ Twenty-two commands total. All namespaced as `/metis:<name>` to avoid collisions
 | `/metis:log-work` | `logging-external-work`, `writing-decisions` | — |
 | `/metis:epic-retro` | `writing-retros` | — |
 | `/metis:scratch-cleanup` | — | — |
-| `/metis:promote-to-epics` | `breaking-down-epics` | — |
+| `/metis:promote-to-epics` | `decomposing-build-into-epics`, `writing-an-epic-file` | — |
 
 Commands are thin wrappers. Skills carry the substance. Subagents provide clean context + tool restrictions for task-level execution.
 
@@ -639,13 +639,25 @@ It also defines the **command-prompts convention** (an optional trailing free-te
 
 ## Skills
 
-Twelve skills at `.claude/skills/metis/<name>/SKILL.md`. Each is focused know-how that embeds judgment, not just rules.
+Fourteen skills at `.claude/skills/metis/<name>/SKILL.md`. Each is focused know-how that embeds judgment, not just rules.
 
-### `writing-task-files`
+The task-authoring and epic-authoring responsibilities are each split across two skills: one for **decomposition** (how to cut a body of work into the right number of right-sized units) and one for **writing a single artifact** (given one unit, produce the file). The split lets callers load only the half they need — a command that decomposes a BUILD.md and writes twenty task files loads both; a manual user prompt to add a single task loads only the write-half — and keeps each skill's register tight around one kind of judgment.
 
-**Purpose**: How to write a good task file.
+### `decomposing-work-into-tasks`
 
-**Covers**: Sizing (split if >150 lines), excerpting rule (quote relevant doc sections directly, don't link), scope-boundary articulation (explicitly list what's out), acceptance criteria as testable conditions, when to use `depends_on`, how to flag ambiguity.
+**Purpose**: Cut a body of work into the right number of task-shaped units.
+
+**Covers**: Task-shape judgment (task vs. checklist-item / spike / decision / epic), split and merge signals, `depends_on` discipline, flagging structural ambiguity before it bakes into files, batch-level coverage and independence checks.
+
+**Used by**: `/metis:generate-tasks`, `/metis:feature`.
+
+**References**: `.metis/conventions/task-format.md`, `.metis/conventions/epic-format.md`.
+
+### `writing-a-task-file`
+
+**Purpose**: Given one decomposed unit of work, produce a well-formed task file.
+
+**Covers**: Outcome-framed goals, excerpting from source docs (quote rather than link), scope-boundary articulation (explicitly listing what's out), testable acceptance criteria, sizing (50–150 lines), id assignment, epic-mode parent-duplication discipline, flagging local ambiguity.
 
 **Used by**: `/metis:generate-tasks`, `/metis:feature`.
 
@@ -672,13 +684,23 @@ Twelve skills at `.claude/skills/metis/<name>/SKILL.md`. Each is focused know-ho
 
 **Used by**: `/metis:build-spec`.
 
-### `breaking-down-epics`
+### `decomposing-build-into-epics`
 
-**Purpose**: Sizing and structuring epics.
+**Purpose**: Cut `BUILD.md` (or a set of flat-mode tasks being promoted) into the right number of capability-sized epics.
 
-**Covers**: single testable exit criterion (the load-bearing constraint), capability-not-category framing ("Users can sign up and log in" not "Auth"), dependency identification, rough targets (~8–15 epics total, enough tasks per epic to justify the directory but no quota), "does this want to split?" heuristics, when to merge.
+**Covers**: Capability-not-category framing ("Users can sign up and log in" not "Auth"), rough targets (~8–15 epics total, enough tasks per epic to justify the directory but no quota), dependency identification, "does this want to split?" heuristics, when to merge, flagging structural ambiguity.
 
-**Used by**: `/metis:epic-breakdown`, `/metis:promote-to-epics`.
+**Used by**: `/metis:epic-breakdown`, `/metis:feature`, `/metis:promote-to-epics`.
+
+**References**: `.metis/conventions/epic-format.md`.
+
+### `writing-an-epic-file`
+
+**Purpose**: Given one decomposed capability, produce a well-formed `EPIC.md`.
+
+**Covers**: Single testable exit criterion (the load-bearing constraint), one-page sizing (~40–80 lines), scope vs. out-of-scope articulation, outcome-framed goals, epic naming and directory layout, what belongs in the epic file vs. in a decision vs. in task files.
+
+**Used by**: `/metis:epic-breakdown`, `/metis:feature`, `/metis:promote-to-epics`.
 
 ### `planning-a-task`
 
@@ -751,7 +773,7 @@ Twelve skills at `.claude/skills/metis/<name>/SKILL.md`. Each is focused know-ho
 Each skill is a directory:
 
 ```
-.claude/skills/metis/writing-task-files/
+.claude/skills/metis/writing-a-task-file/
   SKILL.md              # the skill itself
   examples/
     good-task.md        # example of a well-formed task file
@@ -1004,7 +1026,7 @@ Build from the deepest layer outward. Each layer depends only on what's below it
 
 1. **Conventions** (5 files). Everything else depends on these: `task-format.md`, `epic-format.md`, `decision-format.md`, `frontmatter-schema.md`, `write-rules.md`.
 2. **Templates** (3 files). Directly instantiate the conventions — `task.md`, `epic.md`, `decision.md` — and serve as canonical starting points for each artifact type. Built immediately after conventions because writing the templates solidifies the convention spec by making it concrete.
-3. **Skills** (12 skills). The substance of agent behavior. Each skill is a directory with `SKILL.md` plus an `examples/` folder. Examples are critical — skills without examples are hand-wavy.
+3. **Skills** (14 skills). The substance of agent behavior. Each skill is a directory with `SKILL.md` plus an `examples/` folder. Examples are critical — skills without examples are hand-wavy.
 4. **Subagents** (3 subagents). Containers that compose skills + tool restrictions: `task-planner`, `task-implementer`, `task-reviewer`.
 5. **Commands** (22 commands). Thin wrappers that dispatch subagents or invoke skills. **Within this step, `/metis:init` is built last** because it scaffolds everything else; knowing what "everything else" looks like helps.
 
@@ -1013,10 +1035,10 @@ Build from the deepest layer outward. Each layer depends only on what's below it
 An earlier draft of this section recommended building the smallest vertical slice first (one convention + one skill + one command) to validate the convention → skill → command relationship before investing in 22 commands. That approach was considered and rejected in favor of the layer-by-layer order above. The reasons:
 
 - Per-layer focus is cleaner and less context-switchy than bouncing between convention, skill, and command authoring.
-- Writing each layer as a coherent set produces stronger internal consistency (the 5 conventions naturally feel like a family when written together; same for the 12 skills).
+- Writing each layer as a coherent set produces stronger internal consistency (the 5 conventions naturally feel like a family when written together; same for the 14 skills).
 - The conventions and templates layers are essentially zero-risk because they're pure spec — build them in full and cash in the cohesion benefit immediately.
 
-The tradeoff being accepted: if the convention → skill → command relationship has a structural flaw, it surfaces after writing 5 conventions + 3 templates + 12 skills + 3 subagents rather than after one of each. Mitigations: most of these files are short and well-specified by this document, the structural risk is real but bounded, and refactoring skills when the first command lands is a tolerable cost.
+The tradeoff being accepted: if the convention → skill → command relationship has a structural flaw, it surfaces after writing 5 conventions + 3 templates + 14 skills + 3 subagents rather than after one of each. Mitigations: most of these files are short and well-specified by this document, the structural risk is real but bounded, and refactoring skills when the first command lands is a tolerable cost.
 
 If the first command lands and reveals a shape change, expect to revisit some skills. Treat that as expected, not as a failure.
 
@@ -1026,7 +1048,7 @@ Inside each layer, dependency order still matters for a few specific items:
 
 - **Conventions**: `frontmatter-schema.md` before `task-format.md` and `epic-format.md` (they reference it). `write-rules.md` last (it encodes cross-file rules that depend on understanding the other formats).
 - **Templates**: Any order; they're peers.
-- **Skills**: `writing-decisions` early (other skills reference it). `reconciling-docs` is the heaviest skill; budget accordingly.
+- **Skills**: `reconciling-docs` is the heaviest skill; budget accordingly. The decomposing/writing pairs (`decomposing-work-into-tasks` + `writing-a-task-file`; `decomposing-build-into-epics` + `writing-an-epic-file`) are independent siblings — either order within a pair is fine, and the two halves are loaded separately by callers that only need one.
 - **Subagents**: Any order; they're peers once the skills they reference exist.
 - **Commands**: `/metis:init` last (scaffolds everything). Otherwise any order, though grouping by workflow phase (setup → planning → feature loop → sessions → change management → epic boundaries → maintenance) is a sensible default.
 
@@ -1087,7 +1109,7 @@ Things not fully decided. Worth addressing when building.
 
 If you're a new Claude conversation reading this to continue the work:
 
-**Where to start**: Layer by layer, per §14. Build all 5 conventions first, then all 3 templates, then all 12 skills (with examples), then all 3 subagents, then all 22 commands (with `/metis:init` last). Propose a concrete plan for the current layer before writing, and surface any ambiguity against the doc as you go.
+**Where to start**: Layer by layer, per §14. Build all 5 conventions first, then all 3 templates, then all 14 skills (with examples), then all 3 subagents, then all 22 commands (with `/metis:init` last). Propose a concrete plan for the current layer before writing, and surface any ambiguity against the doc as you go.
 
 **What to reference**:
 
