@@ -72,7 +72,7 @@ passages in `docs/` that supported the decision.
 
 ## Sizing
 
-Target: **one paragraph per section**, occasionally two. The whole file is rarely more than ~60 lines. If it runs long, the decision is probably two decisions; split.
+Target: **one paragraph per section**, occasionally two. The whole file is rarely more than ~400 words. If it runs long, the decision is probably two decisions; split.
 
 ## Superseding
 

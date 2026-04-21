@@ -30,12 +30,14 @@ No other top-level sections. If content does not fit one of these, it goes in No
 
 ## Sizing
 
-Target: **50–150 lines** including frontmatter.
+Target: **~400–1200 words** including frontmatter.
 
-- Under 50 lines: the task is probably under-excerpted. Pull more context in.
-- Over 150 lines: the task is probably two tasks. Split it.
+- Under 400 words: the task is probably under-excerpted. Pull more context in.
+- Over 1200 words: the task is probably two tasks. Split it.
 
-The range is an indicator, not a hard rule. A 160-line task is fine if every line earns its place. A 40-line task is fine if the work really is that tightly scoped.
+The range is an indicator, not a hard rule. A 1400-word task is fine if every word earns its place. A 350-word task is fine if the work really is that tightly scoped.
+
+Words are a token proxy: `wc -w × 1.3` for prose, higher for code- or schema-heavy content. When a task embeds a lot of code, bias toward the lower end of the range to leave token headroom.
 
 ## Excerpting rule
 
@@ -62,7 +64,7 @@ From `docs/security.md#webhook-verification`:
 
 Why: subagents work in fresh context. If the task file only links to docs, the subagent must load the whole doc to see a single paragraph. Excerpting keeps the subagent's context tight and keeps the task file a stable record of what was intended, even if the source doc later changes.
 
-When an excerpt would run beyond ~30 lines, summarize in the task's own words and retain one or two key quotes. Do not paste whole sections wholesale.
+When an excerpt would run beyond ~250 words, summarize in the task's own words and retain one or two key quotes. Do not paste whole sections wholesale.
 
 ## Editing
 

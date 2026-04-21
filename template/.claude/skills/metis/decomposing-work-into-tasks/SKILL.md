@@ -12,7 +12,7 @@ Two failure modes pull against each other: cutting too fine, so sibling tasks sh
 
 ## Read first
 
-- `.metis/conventions/task-format.md` — what "task-shaped" means structurally: single testable outcome, 50–150 line target per file, excerpted source context. The sizing target is the constraint decomposition has to respect.
+- `.metis/conventions/task-format.md` — what "task-shaped" means structurally: single testable outcome, ~400–1200 word target per file, excerpted source context. The sizing target is the constraint decomposition has to respect.
 
 Load `.metis/conventions/epic-format.md` on demand when the body of work being decomposed lives inside an epic — the epic's scope and exit criterion bound what belongs in this batch and what belongs elsewhere.
 
@@ -31,7 +31,7 @@ Signals a unit wants to split:
 
 - Two acceptance criteria that could genuinely be evaluated independently — one could pass while the other fails without it being a bug.
 - Two disjoint sets of files with no overlap and no shared code paths.
-- A sizing pass on the eventual file would push it past ~150 lines and trimming excerpts would not recover it.
+- A sizing pass on the eventual file would push it past ~1200 words and trimming excerpts would not recover it.
 
 Signals two units want to merge:
 

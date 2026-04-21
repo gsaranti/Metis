@@ -20,7 +20,7 @@ Load `.metis/conventions/frontmatter-schema.md` on demand when populating frontm
 The convention file has the shape. The judgment each section needs:
 
 - **Goal.** Outcome-framed, not activity-framed. "A signed-in user can see their profile" beats "Implement the profile endpoint." The test: can a reviewer tell from the Goal alone whether the outcome was achieved, without reading the implementation?
-- **Context.** Quote the *minimum relevant passage* — a task that pastes a whole 60-line section has almost certainly buried the load-bearing 8 lines. When the relevant passage is long, summarize in your own words and keep one or two load-bearing quotes verbatim.
+- **Context.** Quote the *minimum relevant passage* — a task that pastes 500 words of source material has almost certainly buried the 50 that are load-bearing. When the relevant passage is long, summarize in your own words and keep one or two load-bearing quotes verbatim.
 - **Scope boundaries.** `### Out of scope` is the higher-value half. It pre-empts the natural scope creep of both implementer and reviewer. "No SSO; no password reset; no session revocation beyond the happy path" is worth more than six in-scope bullets restating what is obvious. Always populate it, even briefly.
 - **Acceptance criteria.** If a criterion cannot be evaluated without forming an opinion about the code, rewrite to something a reviewer can check with a command or by reading a specific output — "returns 400 when the body is missing the `signature` header," "the migration adds a `deleted_at` column to `users`."
 - **Expected file changes.** Be exhaustive. A file that appears in the diff but not in this list is the tell a reviewer uses to spot unstated scope after the fact.

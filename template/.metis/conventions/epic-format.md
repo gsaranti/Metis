@@ -43,7 +43,7 @@ Fields:
 
 ## Sizing
 
-Target: **one page** — roughly 40–80 lines including frontmatter. Epics describe; tasks detail. If an `EPIC.md` runs past ~100 lines, content has leaked in that belongs in task files.
+Target: **one page** — roughly 300–600 words including frontmatter. Epics describe; tasks detail. If an `EPIC.md` runs past ~800 words, content has leaked in that belongs in task files.
 
 ## Exit-criterion discipline
 

@@ -570,7 +570,7 @@ Five files at `.metis/conventions/`. They define the canonical on-disk formats M
 Specifies task file structure:
 - Frontmatter fields (see `frontmatter-schema.md`)
 - Section order: Goal, Context (excerpted), Scope boundaries, Acceptance criteria, Expected file changes, Notes
-- Sizing: 50–150 lines. Longer means split.
+- Sizing: ~400–1200 words. Longer means split.
 - Excerpting rule: quote doc sections directly, don't just link
 - In epic mode, the parent `EPIC.md` is part of every task's implicit context (subagents load it alongside the task file)
 
@@ -657,7 +657,7 @@ The task-authoring and epic-authoring responsibilities are each split across two
 
 **Purpose**: Given one decomposed unit of work, produce a well-formed task file.
 
-**Covers**: Outcome-framed goals, excerpting from source docs (quote rather than link), scope-boundary articulation (explicitly listing what's out), testable acceptance criteria, sizing (50–150 lines), id assignment, epic-mode parent-duplication discipline, flagging local ambiguity.
+**Covers**: Outcome-framed goals, excerpting from source docs (quote rather than link), scope-boundary articulation (explicitly listing what's out), testable acceptance criteria, sizing (~400–1200 words), id assignment, epic-mode parent-duplication discipline, flagging local ambiguity.
 
 **Used by**: `/metis:generate-tasks`, `/metis:feature`.
 
@@ -698,7 +698,7 @@ The task-authoring and epic-authoring responsibilities are each split across two
 
 **Purpose**: Given one decomposed capability, produce a well-formed `EPIC.md`.
 
-**Covers**: Single testable exit criterion (the load-bearing constraint), one-page sizing (~40–80 lines), scope vs. out-of-scope articulation, outcome-framed goals, epic naming and directory layout, what belongs in the epic file vs. in a decision vs. in task files.
+**Covers**: Single testable exit criterion (the load-bearing constraint), one-page sizing (~300–600 words), scope vs. out-of-scope articulation, outcome-framed goals, epic naming and directory layout, what belongs in the epic file vs. in a decision vs. in task files.
 
 **Used by**: `/metis:epic-breakdown`, `/metis:feature`, `/metis:promote-to-epics`.
 
@@ -971,7 +971,7 @@ These were worked through in conversation and shouldn't be re-opened unless new 
 - **`/metis:init` is non-destructive.** Uses delimited sections in `CLAUDE.md` and `.gitignore`. Preserves existing content.
 - **`/metis:generate-tasks` takes an arg in epic mode, no arg in flat mode.** Errors on mismatch.
 - **`/metis:init` is run last in build order** because it scaffolds everything else; knowing what "everything else" looks like helps.
-- **Commands are thin wrappers over skills and subagents.** ~30–80 lines each. Heavy lifting in skills and conventions.
+- **Commands are thin wrappers over skills and subagents.** ~300–800 words each. Heavy lifting in skills and conventions.
 
 ### On directory layout
 
@@ -1131,7 +1131,7 @@ If you're a new Claude conversation reading this to continue the work:
 - Completing the current layer cleanly before starting the next.
 - Dogfooding Metis on one real project after v0.1 is built. This is the only real validation.
 - Writing out examples in each skill directory. Examples make skills concrete.
-- Keeping command files thin. If a command is >100 lines, its skill isn't pulling its weight.
+- Keeping command files thin. If a command is >1000 words, its skill isn't pulling its weight.
 
 **How to handle disagreement**:
 

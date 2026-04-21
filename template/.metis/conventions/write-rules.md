@@ -169,13 +169,13 @@ Metis's other load-bearing property is that a fresh session can get oriented wit
 
 - **Always-on** (the `metis:start` / `metis:end` section of `CLAUDE.md`): ≤2k tokens. This is the only content every session pays for unconditionally. Keep it a pointer to the workflow, not a primer on it.
 - **Per-command starter** (a command's prompt + the one skill it triggers + any convention that skill references): ≤5k tokens. Under this budget a command is cheap to invoke; over it, every downstream read is taxed.
-- **Any single `SKILL.md`**: ≤200 lines / ~3k tokens. A longer skill is almost always two skills, or is restating rules that belong in a convention.
+- **Any single `SKILL.md`**: ≤~2500 words / ~3k tokens. A longer skill is almost always two skills, or is restating rules that belong in a convention.
 
 ### Skill and command reading diet
 
 - A `SKILL.md` names at most two "read first" files. Anything else is described (with a pointer) and loaded only if the agent decides it needs to.
 - Skills cite conventions, not other skills. Cross-skill knowledge duplication is preferred to cross-skill loading — it keeps each skill's cost predictable.
-- Convention files over ~100 lines (this file, `frontmatter-schema.md`) are **never bulk-loaded at runtime**. Skills that need a rule from them quote the specific rule inline. This file in particular is design-time reading; if a runtime skill wants to load it in full, the skill is underspecified.
+- Convention files that run long (this file, `frontmatter-schema.md`) are **never bulk-loaded at runtime**. Skills that need a rule from them quote the specific rule inline. This file in particular is design-time reading; if a runtime skill wants to load it in full, the skill is underspecified.
 - Counter-examples in `examples/` directories are *described* in the parent `SKILL.md`, not prescribed as reads. The one-liner about *what's wrong* carries the educational value; loading the bad file just spends context.
 
 ### Corpus access patterns
@@ -183,7 +183,7 @@ Metis's other load-bearing property is that a fresh session can get oriented wit
 - **`decisions/`** is a grep-only corpus. Never listed, never bulk-read. A mature project accumulates dozens to hundreds of decisions; enumeration is a token bomb. Find by slug or by content match.
 - **`docs/RESOLVED.md`** is archive-only, as noted above. Not loaded during a walk unless explicitly requested.
 - **`BOARD.md`** is the designed-in index for task state. The main session prefers it over listing `tasks/` (or `epics/*/tasks/`) and reading task files piecemeal.
-- **Task-file excerpts** (per `writing-task-files`) quote the *minimum relevant passage* of a source doc, not the whole section. A task file that grows past ~150 lines usually has oversized quotes or is doing too much.
+- **Task-file excerpts** (per `writing-a-task-file`) quote the *minimum relevant passage* of a source doc, not the whole section. A task file that grows past ~1200 words usually has oversized quotes or is doing too much.
 
 ### Subagents as context firewalls
 
