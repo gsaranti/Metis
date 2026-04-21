@@ -1,6 +1,6 @@
 ---
 name: writing-decisions
-description: Reference for writing well-formed decision files in `decisions/`. Covers judging whether a decision is warranted vs. a note or question, phrasing Context / Decision / Consequences, slug naming, the one-paragraph-per-section discipline, and the append-only supersede mechanic.
+description: Reference for writing well-formed decision files — judging whether a decision is warranted vs. a note or question, phrasing Context / Decision / Consequences, slug naming, and the one-paragraph-per-section discipline.
 disable-model-invocation: true
 ---
 
@@ -13,9 +13,11 @@ A decision file is a standing record of a choice that spans epics and sessions. 
 - `.metis/conventions/decision-format.md` — the structural spec (filename, section order, sizing). The format is not restated here; read it.
 - `.metis/templates/decision.md` — the skeleton to start from.
 
-## Preview before writing
+## Permanence and preview
 
-Before writing to `decisions/`, show the drafted file to the user and get explicit approval. Decisions are append-only; a silently bad framing lives in the log forever or requires a superseder to correct. Upstream approval of the substance — a walk-open-items resolution, a sync confirmation, a log-work description — does not cover the framing you produce: the Context narrative, the Consequences named, the slug picked. Show the draft, take the correction, then write.
+Decisions are append-only. A silently bad framing lives in the log forever or requires a superseder to correct — and upstream approval of the substance (a walk-open-items resolution, a sync confirmation, a log-work description) does not cover the framing produced here: the Context narrative, the Consequences named, the slug picked. This is the artifact where the preview step owned by the calling command most needs to run; skipping it is what turns a wrong phrasing into a permanent one.
+
+If prior art on the topic is suspected but cannot be confirmed, surface that uncertainty during preview rather than hoping a filename or content search will catch it — the user is the backstop for duplicates, since semantically equivalent topics routinely take slightly different slugs (`auth-session-duration` vs `auth-session-lifetime` vs `refresh-token-policy`) and prose keywords are brittle across synonyms.
 
 ## When a decision is actually warranted
 
@@ -49,15 +51,9 @@ Why the slug convention is a noun phrase about *what the decision concerns* rath
 
 The date is the date the decision was *made*, not the date a related task was completed or the underlying conversation began.
 
-## Sizing and splitting
+## Sizing as feedback
 
 When the file is running long, it is almost always two decisions — split it. A common failure pattern is bundling a primary choice (e.g., session duration) with an adjacent choice (e.g., refresh-token storage mechanism) because they came up in the same conversation. The right move is two files, each with its own Context focused on one choice, cross-referenced in Evidence.
-
-## Superseding, not editing
-
-Decisions are append-only. When a decision is overturned or revised, write a new decision whose Context names the superseded file explicitly by path. Do not edit the old decision to add a back-pointer. The old decision stays in place as historical record; it is never deleted.
-
-If you suspect prior art on this topic but cannot confirm it, raise the uncertainty during Preview rather than hoping a filename or content search will catch it — the user is the backstop for duplicates, since semantically equivalent topics routinely take slightly different slugs (`auth-session-duration` vs `auth-session-lifetime` vs `refresh-token-policy`) and prose keywords are brittle across synonyms.
 
 ## Cross-referencing
 
