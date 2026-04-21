@@ -13,6 +13,10 @@ A decision file is a standing record of a choice that spans epics and sessions. 
 - `.metis/conventions/decision-format.md` — the structural spec (filename, section order, sizing). The format is not restated here; read it.
 - `.metis/templates/decision.md` — the skeleton to start from.
 
+## Preview before writing
+
+Before writing to `decisions/`, show the drafted file to the user and get explicit approval. Decisions are append-only; a silently bad framing lives in the log forever or requires a superseder to correct. Upstream approval of the substance — a walk-open-items resolution, a sync confirmation, a log-work description — does not cover the framing you produce: the Context narrative, the Consequences named, the slug picked. Show the draft, take the correction, then write.
+
 ## When a decision is actually warranted
 
 Write a decision when a choice is architecturally consequential and will need to be remembered later, outside the code and the task log. Good triggers:
@@ -41,21 +45,19 @@ The convention file has the sizes and the structure. The judgment each section n
 
 ## Picking a slug
 
-The slug is a noun phrase about *what the decision concerns*, not *what was decided*. `auth-session-duration`, not `use-30-day-refresh-tokens`. This is deliberate: if the decision is later superseded, the slug of the superseder ("auth-session-shortened-to-seven-days" or similar) reads sensibly next to the original, and grepping for the topic surfaces both.
+Why the slug convention is a noun phrase about *what the decision concerns* rather than *what was decided*: when a decision is later superseded, the superseder's slug ("auth-session-shortened-to-seven-days" or similar) reads sensibly next to the original, and grepping for the topic surfaces both.
 
-The date is the date the decision was *made*, not the date a related task was completed or the underlying conversation began. Same-day decisions disambiguate by slug alone — no numeric suffix is needed.
+The date is the date the decision was *made*, not the date a related task was completed or the underlying conversation began.
 
 ## Sizing and splitting
 
-Target one paragraph per section. The whole file is rarely more than ~60 lines. If it is running long, it is almost always two decisions — split it. A common failure pattern is bundling a primary choice (e.g., session duration) with an adjacent choice (e.g., refresh-token storage mechanism) because they came up in the same conversation. The right move is two files, each with its own Context focused on one choice, cross-referenced in Evidence.
+When the file is running long, it is almost always two decisions — split it. A common failure pattern is bundling a primary choice (e.g., session duration) with an adjacent choice (e.g., refresh-token storage mechanism) because they came up in the same conversation. The right move is two files, each with its own Context focused on one choice, cross-referenced in Evidence.
 
 ## Superseding, not editing
 
-Decisions are append-only. When a decision is overturned or revised, write a new decision whose Context names the superseded file explicitly by path:
+Decisions are append-only. When a decision is overturned or revised, write a new decision whose Context names the superseded file explicitly by path. Do not edit the old decision to add a back-pointer. The old decision stays in place as historical record; it is never deleted.
 
-> Supersedes `decisions/2026-04-18-auth-session-duration.md`. The 30-day refresh token policy proved too long for our compliance posture. We are tightening to 7 days.
-
-Do not edit the old decision to add a back-pointer. To find superseders, grep `decisions/` for the old filename — the slug-based naming makes this precise. The old decision stays in place as historical record; it is never deleted.
+If you suspect prior art on this topic but cannot confirm it, raise the uncertainty during Preview rather than hoping a filename or content search will catch it — the user is the backstop for duplicates, since semantically equivalent topics routinely take slightly different slugs (`auth-session-duration` vs `auth-session-lifetime` vs `refresh-token-policy`) and prose keywords are brittle across synonyms.
 
 ## Cross-referencing
 

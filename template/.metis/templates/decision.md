@@ -1,6 +1,6 @@
 # <Title>
 
-One-line summary, stated as the outcome of the decision.
+<!-- One-line summary stated as the outcome. -->
 
 ## Date
 
@@ -8,16 +8,16 @@ YYYY-MM-DD
 
 ## Context
 
-One paragraph. The state of the world that made this decision necessary and the options considered. No history a reader can get elsewhere.
+<!-- One paragraph: what was being chosen between and why the choice was forced now. -->
 
 ## Decision
 
-One paragraph. The chosen option stated plainly and imperatively — not "we considered X and Y and chose Y."
+<!-- One paragraph, imperative: the chosen option stated plainly. -->
 
 ## Consequences
 
-One paragraph, or a short bullet list when the consequences are genuinely list-shaped. What this enables, what it costs, what it forecloses.
+<!-- One paragraph (or short bullets if genuinely list-shaped): what this enables, costs, forecloses. -->
 
 ## Evidence
 
-<!-- Optional. Pointers (paths, URLs, commit SHAs) to material that backed the decision. Quote sparingly; the value is in the pointer. Remove this section if empty. -->
+<!-- Optional. Pointers (paths, URLs, commit SHAs) that backed the decision. Remove this section if empty. -->

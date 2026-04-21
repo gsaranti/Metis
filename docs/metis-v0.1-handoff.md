@@ -32,7 +32,7 @@ Read this document top to bottom. Every section matters. By the end, you should 
 
 ## What Metis is
 
-Metis is an agentic development toolset for Claude Code, targeting **large, doc-heavy projects** where context management across many sessions is the hard problem.
+Metis is an agentic development toolset for Claude Code, oriented around **context management across sessions** as the hard problem. It works on projects of any size and doc-maturity — flat task mode for smaller work, epic mode for larger builds, with or without an existing docs corpus. It structures the project, not the agent — giving Claude direction, order, and context rather than trying to reshape how Claude thinks or writes.
 
 The core value proposition is simple: at any moment, a fresh agent session can read Metis's on-disk state and know where the project stands — what's planned, what's in progress, what's done, what was decided, and why. How the code actually got written between sessions is orthogonal. The user can code alone, pair with an agent without invoking any Metis commands, use Metis's plan/implement/review loop, or mix all three. Metis's job is to make the next session's context accurate regardless.
 
@@ -131,9 +131,9 @@ Different category entirely. These are for building agents, not for structuring 
 
 ### Audience
 
-**Engineers building large projects from substantial existing documentation.**
+**Engineers using Claude Code on projects where state needs to survive across sessions.**
 
-If the project is under a week of work, or there's no documentation, or the user is prototyping — **Metis is the wrong tool**. Explicitly. The README should say so. Tools that know their limits get trusted more.
+If the work is a throwaway prototype, a single-session script, or something you won't return to — **Metis is the wrong tool**. The overhead pays off when multiple sessions will touch the same project and you want each one to rehydrate cleanly; without that, the structure is cost without benefit. Tools that know their limits get trusted more.
 
 ### The load-bearing opinions
 
@@ -163,7 +163,6 @@ Ties to Metis the goddess (wisdom, deep thought) and to the Phase 0 ethos (recon
 
 - Not a general-purpose agent framework (not ADK, not LangChain)
 - Not a prototyping tool (use raw prompting)
-- Not a small-project tool (overhead doesn't pay off under a week)
 - Not a replacement for Claude Code (Metis runs *on* Claude Code, leveraging native capabilities like `/init`, plan mode, agentic search)
 - Not cross-harness yet (v0.1 targets Claude Code; other harnesses deferred)
 
@@ -763,6 +762,8 @@ Each skill is a directory:
 Examples earn their keep when prose alone would leave the reader writing a noticeably worse artifact — usually zero or one per skill, occasionally two when they demonstrate materially different structural patterns. Counter-examples live in the SKILL.md prose as one-line failure descriptions, not as files; the full-file version of a failure mode rarely teaches something the one-liner doesn't, and it pays storage and maintenance cost for content nobody should be loading at runtime.
 
 Each skill sets `disable-model-invocation: true` in its frontmatter. Metis skills are a library dispatched by commands (or by explicit user invocation like `/metis:writing-decisions` or an inline reference in the prompt), not ambient helpers that auto-trigger on conversation cues. Two corollaries for skill content: descriptions are a one-line summary of *what the skill teaches*, not an enumeration of who calls it or when to invoke it; and SKILL.md files do not carry a "Used by" section — by the time a reader is inside the file, they are using it, and the callers are already documented in the command prompts and in `write-rules.md`. This keeps the always-on context small, keeps control flow explicit, and keeps SKILL.md content focused on the teaching rather than on routing metadata.
+
+Skills teach what makes the artifact work, not how Claude should behave. Structural advice about the artifact belongs in skills ("a Decision that hedges is a question in disguise — readers can't tell what was decided"); character-shaping advice about Claude does not ("be more committal"). The two can sound adjacent but do different work. This does not rule out judgment content — what makes a good Context section, when to split a file, when something isn't decision-shaped are all load-bearing calls a skill should make — but the judgment is anchored to the artifact's function, not to Claude's voice. If a prospective skill cannot find a structural hook and its content only makes sense as advice about Claude's approach, that content belongs in a command prompt (which is allowed to be directive about a specific turn) or is not skill-shaped. The underlying bet: good user taste plus Claude's default behavior plus Metis structure produces better outputs than a framework that tries to rewrite Claude's character. Metis gives direction, order, and context; it does not adjust personality.
 
 ---
 
