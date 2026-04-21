@@ -27,8 +27,6 @@ Before adding a unit to the decomposition, check that it belongs in a task file 
 
 ## Splitting and merging
 
-The core judgment call is how finely to cut. Each task wants enough context to stand on its own; no task wants to carry a second task's work.
-
 Signals a unit wants to split:
 
 - Two acceptance criteria that could genuinely be evaluated independently — one could pass while the other fails without it being a bug.
