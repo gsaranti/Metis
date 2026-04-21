@@ -8,6 +8,20 @@ File *structure* is covered in `task-format.md`, `epic-format.md`, `decision-for
 
 Metis's value is that a fresh agent can read on-disk state and know where the project stands. That only works if the state on disk is a reliable record. These rules exist to keep that property honest — they do not exist to prevent the user from editing their own files. The user can edit anything. The rules govern who *Metis's own agents and commands* write to.
 
+## Layer responsibilities
+
+Metis is built in three conceptual layers — skills, commands, and conventions — with a strict one-way dependency: **command → skill → convention**. Subagents are a variant of the command layer. Each layer has a distinct kind of content; keeping them separate is what lets the framework scale without drift.
+
+**Skills own the artifact.** A skill is artifact-shaped teaching — what makes a good X, when to split, how sections should read, which conventions to consult. The register is descriptive. A skill names the *kinds* of inputs the artifact requires ("a body of work plus the source docs it references") but does not prescribe specific files, loading sequence, or session orchestration. Skills reference conventions; skills do not reference other skills; skills do not carry routing metadata.
+
+**Commands own the turn.** A command is invocation-shaped orchestration — argument and mode parsing, error messages on mismatch, the specific load list for this invocation, subagent dispatch if any, invocation-prompt handling, write scope and confirmation/preview flows, and the output format back to the user. The register is directive. Commands invoke skills by reference rather than inlining their content.
+
+**Subagents are scoped commands.** A subagent's system prompt is a command that runs in a fresh context window with restricted tools. Same layer, same rules: invoke skills by reference; name specific inputs and flow; do not teach artifact shape.
+
+**Conventions own the on-disk format.** Section order, filename rules, frontmatter schema, cross-file write rules (this file). Conventions are static reference; they do not reach upward into skill or command behavior.
+
+The one-way rule is what keeps the split honest: a skill that starts naming specific files is drifting into command territory; a command that starts teaching section structure is drifting into skill territory. When content fits none of the layers cleanly, it usually belongs in a command prompt — which is allowed to be directive about a specific turn.
+
 ## File-by-file write permissions
 
 The rules below describe who among Metis's own agents and commands writes to each file. **The user may hand-edit any file at any time**; that is not called out in every entry because it is true everywhere. What each entry adds is the specific property (append-only, generated, delimited, etc.) that the user should know they are opting out of if they edit by hand.
