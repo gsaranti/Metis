@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 An open item is a captured entry in `docs/CONTRADICTIONS.md` or `docs/QUESTIONS.md` — a contradiction or gray area surfaced during reconcile and waiting for a position. The job of this skill is to walk one open item to resolution: judging whether the corpus implies an answer, offering 1–2 genuine alternatives, or calling for the user's input; updating the relevant source doc with the chosen answer; and moving the item's lifecycle state so the on-disk files are the next session's resume point.
 
-Two failure modes pull against each other: resolving too eagerly, so the agent picks a side the docs do not actually commit to; and punting every item back to the user with no real thinking, so Phase 0 reverts to the user explaining every call from scratch.
+Two failure modes pull against each other: resolving too eagerly, so the agent picks a side the docs do not actually commit to; and punting every item back to the user with no real thinking, so the walk reverts to the user explaining every call from scratch.
 
 ## Read first
 
@@ -60,7 +60,7 @@ Resolved: 2026-04-19
 Summary: 30-day refresh + 15-min access token.
 ```
 
-The resolution's substance lives in the updated source doc, not the pointer. The docs themselves are the architectural record going into development; the pointer is only a thin archive trail — "what did Phase 0 resolve?" — not a second copy of the answer.
+The resolution's substance lives in the updated source doc, not the pointer. The docs themselves are the architectural record going into development; the pointer is only a thin archive trail — what has been resolved — not a second copy of the answer.
 
 ## Follow-ups from a walk
 

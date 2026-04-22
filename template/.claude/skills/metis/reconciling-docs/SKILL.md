@@ -70,7 +70,7 @@ Patterns that earn an item:
 - Implicit assumptions — a doc building on an external service, an auth model, or a tenancy shape no doc names.
 - Silences where a reader would have to guess — a flow that stops short of naming the failure mode, a data model without a specified cardinality.
 
-An item that would not change any downstream artifact is noise. A term used loosely but consistently, a passage the codebase already answers unambiguously, a wording choice with no implementation consequence — none of these earn a walk. Attention is the scarce resource of Phase 0; the capture bar is "would a different resolution produce different downstream work?"
+An item that would not change any downstream artifact is noise. A term used loosely but consistently, a passage the codebase already answers unambiguously, a wording choice with no implementation consequence — none of these earn a walk. Attention is the scarce resource of reconciliation; the capture bar is "would a different resolution produce different downstream work?"
 
 ## Framing without resolving
 
