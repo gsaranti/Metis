@@ -386,7 +386,7 @@ scratch/                   # ephemeral, mostly gitignored
         examples/
       reconciling-docs/
         SKILL.md
-      ... (14 skills)
+      ... (15 skills)
 ```
 
 ### Flat mode variation
@@ -639,7 +639,7 @@ It also defines the **command-prompts convention** (an optional trailing free-te
 
 ## Skills
 
-Fourteen skills at `.claude/skills/metis/<name>/SKILL.md`. Each is focused know-how that embeds judgment, not just rules.
+Fifteen skills at `.claude/skills/metis/<name>/SKILL.md`. Each is focused know-how that embeds judgment, not just rules.
 
 The task-authoring and epic-authoring responsibilities are each split across two skills: one for **decomposition** (how to cut a body of work into the right number of right-sized units) and one for **writing a single artifact** (given one unit, produce the file). The split lets callers load only the half they need — a command that decomposes a BUILD.md and writes twenty task files loads both; a manual user prompt to add a single task loads only the write-half — and keeps each skill's register tight around one kind of judgment.
 
@@ -665,16 +665,27 @@ The task-authoring and epic-authoring responsibilities are each split across two
 
 ### `reconciling-docs`
 
-**Purpose**: How to spot contradictions and gray areas across documents, and how to walk a user through resolving them.
+**Purpose**: How to spot contradictions and gray areas across documents and surface them for later resolution.
 
-**Covers**: 
+**Covers**:
 - *Detection*: cross-doc pattern matching (same term used differently), implicit assumption detection, terminology drift, "what the docs don't say" (gaps). Distinguishes contradictions (two specified things disagreeing) from gray areas (one thing underspecified).
-- *Surfacing*: how to populate `CONTRADICTIONS.md` and `QUESTIONS.md` without resolving; citing both sides for contradictions; articulating what's unclear for questions.
-- *Walking*: per-item lifecycle format with status header (`open` / `resolved` / `deferred` / `stale`); how to offer 1–2 *genuine* alternatives (not straw men) per item, and the discipline to say "I don't have a good read here, need your input" when alternatives would be invented.
-- *Archiving*: on resolution, move the item from its active file to `docs/RESOLVED.md` as a minimal pointer (decision link + one-line summary). Do not load `RESOLVED.md` during a walk unless asked.
-- *Stale handling*: detect when a referenced doc has changed since the item was captured (via `doc_hash`); flag the item for re-consideration.
+- *Surfacing*: how to populate `docs/CONTRADICTIONS.md` and `docs/QUESTIONS.md` without resolving; citing both sides for contradictions; articulating what's unclear for questions.
+- *Stale detection on re-reconcile*: detect when a captured item's referenced doc has drifted since capture (via `doc_hash`); flag for re-consideration rather than silent drop.
 
-**Used by**: `/metis:reconcile`, `/metis:walk-open-items`.
+**Used by**: `/metis:reconcile`.
+
+### `walking-open-items`
+
+**Purpose**: How to walk one captured contradiction or question through to resolution.
+
+**Covers**:
+- *Registers*: three ways to respond — two genuine alternatives, one recommendation, or an honest ask when the docs don't imply an answer. A straw-man second option is worse than an honest "I don't have a good read here."
+- *User-in-loop threshold*: architectural resolutions (BUILD.md-shaping, epic-spanning) need the user; local details (error codes, log field names) can be landed by the agent with the doc update and pointer making the choice legible.
+- *Source-doc update*: the resolution's substance lives in the updated source doc, not in the pointer.
+- *Pointer shape*: minimal `docs/RESOLVED.md` entry (title, date resolved, one-line summary of the answer written into the doc). `docs/RESOLVED.md` is not read during a walk unless explicitly requested.
+- *Status lifecycle*: `open` / `deferred` / `resolved` / `stale`. Not interchangeable — `deferred` stays open; `stale` means the cite has drifted since capture.
+
+**Used by**: `/metis:walk-open-items`.
 
 ### `writing-build-spec`
 
@@ -1026,7 +1037,7 @@ Build from the deepest layer outward. Each layer depends only on what's below it
 
 1. **Conventions** (5 files). Everything else depends on these: `task-format.md`, `epic-format.md`, `decision-format.md`, `frontmatter-schema.md`, `write-rules.md`.
 2. **Templates** (3 files). Directly instantiate the conventions — `task.md`, `epic.md`, `decision.md` — and serve as canonical starting points for each artifact type. Built immediately after conventions because writing the templates solidifies the convention spec by making it concrete.
-3. **Skills** (14 skills). The substance of agent behavior. Each skill is a directory with `SKILL.md` plus an `examples/` folder. Examples are critical — skills without examples are hand-wavy.
+3. **Skills** (15 skills). The substance of agent behavior. Each skill is a directory with `SKILL.md` plus an `examples/` folder. Examples are critical — skills without examples are hand-wavy.
 4. **Subagents** (3 subagents). Containers that compose skills + tool restrictions: `task-planner`, `task-implementer`, `task-reviewer`.
 5. **Commands** (22 commands). Thin wrappers that dispatch subagents or invoke skills. **Within this step, `/metis:init` is built last** because it scaffolds everything else; knowing what "everything else" looks like helps.
 
@@ -1035,10 +1046,10 @@ Build from the deepest layer outward. Each layer depends only on what's below it
 An earlier draft of this section recommended building the smallest vertical slice first (one convention + one skill + one command) to validate the convention → skill → command relationship before investing in 22 commands. That approach was considered and rejected in favor of the layer-by-layer order above. The reasons:
 
 - Per-layer focus is cleaner and less context-switchy than bouncing between convention, skill, and command authoring.
-- Writing each layer as a coherent set produces stronger internal consistency (the 5 conventions naturally feel like a family when written together; same for the 14 skills).
+- Writing each layer as a coherent set produces stronger internal consistency (the 5 conventions naturally feel like a family when written together; same for the 15 skills).
 - The conventions and templates layers are essentially zero-risk because they're pure spec — build them in full and cash in the cohesion benefit immediately.
 
-The tradeoff being accepted: if the convention → skill → command relationship has a structural flaw, it surfaces after writing 5 conventions + 3 templates + 14 skills + 3 subagents rather than after one of each. Mitigations: most of these files are short and well-specified by this document, the structural risk is real but bounded, and refactoring skills when the first command lands is a tolerable cost.
+The tradeoff being accepted: if the convention → skill → command relationship has a structural flaw, it surfaces after writing 5 conventions + 3 templates + 15 skills + 3 subagents rather than after one of each. Mitigations: most of these files are short and well-specified by this document, the structural risk is real but bounded, and refactoring skills when the first command lands is a tolerable cost.
 
 If the first command lands and reveals a shape change, expect to revisit some skills. Treat that as expected, not as a failure.
 
@@ -1109,7 +1120,7 @@ Things not fully decided. Worth addressing when building.
 
 If you're a new Claude conversation reading this to continue the work:
 
-**Where to start**: Layer by layer, per §14. Build all 5 conventions first, then all 3 templates, then all 14 skills (with examples), then all 3 subagents, then all 22 commands (with `/metis:init` last). Propose a concrete plan for the current layer before writing, and surface any ambiguity against the doc as you go.
+**Where to start**: Layer by layer, per §14. Build all 5 conventions first, then all 3 templates, then all 15 skills (with examples), then all 3 subagents, then all 22 commands (with `/metis:init` last). Propose a concrete plan for the current layer before writing, and surface any ambiguity against the doc as you go.
 
 **What to reference**:
 
@@ -1151,7 +1162,7 @@ Metis is an opinionated tool for a specific audience. Its value comes from its o
 
 The sections above describe the v0.1 design as it stood at the close of the original design conversation (20 commands / 10 skills / 5 conventions / 3 subagents). A subsequent design pass surfaced two structural gaps and three behavioral refinements. Those changes have been folded into the canonical sections above; this section preserves the rationale so future readers can understand *why* — not just *what*.
 
-The net manifest impact of all refinements: **+2 commands, +2 skills, no new conventions, no new subagents.** Final manifest: 22 / 12 / 5 / 3.
+The net manifest impact of refinements and subsequent drafting: **+2 commands, +5 skills, no new conventions, no new subagents.** Current manifest: 22 / 15 / 5 / 3.
 
 ### Refinement 1 — Change management as a first-class concern
 
@@ -1357,12 +1368,22 @@ Concretely:
 
 No manifest changes. The shift is in *framing and discipline*, which is carried through the principles in §4, the workflow section, the conventions descriptions, and the subagent load lists (parent `EPIC.md` added in epic mode).
 
+### Refinement 9 — `reconciling-docs` split; Phase 0 does not write decisions
+
+The original `reconciling-docs` skill covered both halves of the Phase 0 reconcile loop — detecting contradictions and gray areas, and walking one captured item through to resolution. As the loop hardened, the two halves pulled apart in scope and in caller: detection is batch work dispatched by `/metis:reconcile`, walking is one-at-a-time work dispatched by `/metis:walk-open-items`, and combining them in one skill meant each caller loaded content it didn't need.
+
+Resolution: split the skill. `reconciling-docs` narrows to detection, surfacing, and stale detection during re-reconcile. A new `walking-open-items` skill owns per-item judgment (two genuine alternatives / one recommendation / an honest ask), the user-in-loop threshold for architectural vs. local resolutions, source-doc update, minimal `docs/RESOLVED.md` pointer shape, and status-lifecycle discipline (`open` / `deferred` / `resolved` / `stale`).
+
+This refinement also committed to a sharper line between doc-finalization and decision-tracking: **Phase 0 walks do not write decisions.** The docs being finalized are the project's architectural baseline going into development; decisions begin at Phase 1, where changes against that locked baseline need their own record. Decision-writing authorship was tightened in `writing-decisions/SKILL.md` and `decision-format.md` to exclude `/metis:walk-open-items`. The single artifact a Phase 0 walk produces is a doc edit plus a minimal `docs/RESOLVED.md` pointer.
+
+Net manifest impact: +1 skill.
+
 ### Manifest impact of all refinements
 
 | Layer | Before refinements | After refinements |
 |---|---|---|
 | Commands | 20 | 22 (+`/metis:sync`, +`/metis:log-work`; renamed walk-contradictions → walk-open-items) |
-| Skills | 10 | 12 (+`propagating-spec-changes`, +`logging-external-work`; expanded `reconciling-docs`) |
+| Skills | 10 | 15 (Refinements 1–2 added `propagating-spec-changes` and `logging-external-work`; Refinement 9 split `reconciling-docs` into `reconciling-docs` + `walking-open-items`; `session-handoff`, `writing-retros`, and `honest-scope-reporting` accreted during drafting without dedicated refinement entries) |
 | Conventions | 5 | 5 (no new files; `frontmatter-schema` adds `doc_hashes` + `spec_version`; `write-rules` adds command-prompts convention) |
 | Subagents | 3 | 3 (no new subagents; existing ones gain invocation-prompt discipline and load parent `EPIC.md` in epic mode) |
 

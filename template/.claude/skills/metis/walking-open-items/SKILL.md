@@ -34,7 +34,7 @@ The test for which register fits: how much does each candidate answer lean on wh
 
 ## Asking the user vs. deciding
 
-Even with a strong recommendation, some resolutions must be confirmed by the user rather than landed by the agent. The threshold is downstream reach: a resolution that shapes `BUILD.md`, spans epics, or forecloses future options is the user's to make. A resolution that specifies a local detail with no architectural spread — a specific error code, a log field name — can be landed by the agent, with the doc update and the RESOLVED.md pointer making the choice legible for later review. The tiebreaker: a reader six months later wants the user's name on architectural resolutions; if the doc would read oddly without that fingerprint, ask.
+Even with a strong recommendation, some resolutions must be confirmed by the user rather than landed by the agent. The threshold is downstream reach: a resolution that shapes `BUILD.md`, spans epics, or forecloses future options is the user's to make. A resolution that specifies a local detail with no architectural spread — a specific error code, a log field name — can be landed by the agent, with the doc update and the `docs/RESOLVED.md` pointer making the choice legible for later review. The tiebreaker: a reader six months later wants the user's name on architectural resolutions; if the doc would read oddly without that fingerprint, ask.
 
 ## Deferred, resolved, and stale
 
@@ -48,7 +48,7 @@ The three are not interchangeable. Flipping `open` straight to `resolved` withou
 
 ## Shape of the resolved pointer
 
-The `RESOLVED.md` entry is minimal — title, date resolved, and a one-line summary of the answer that was written into the doc:
+The `docs/RESOLVED.md` entry is minimal — title, date resolved, and a one-line summary of the answer that was written into the doc:
 
 ```markdown
 ## Q3: Session duration
@@ -60,4 +60,4 @@ The resolution's substance lives in the updated source doc, not the pointer. The
 
 ## Examples
 
-- `examples/walked-item.md` — one walked `C` entry and one walked `Q` entry, showing the doc update each walk wrote, the `RESOLVED.md` pointer it appended, and the alternatives-or-ask the walk actually offered. **Read this before your first walk in a session.**
+- `examples/walked-item.md` — one walked `C` entry and one walked `Q` entry, showing the doc update each walk wrote, the `docs/RESOLVED.md` pointer it appended, and the alternatives-or-ask the walk actually offered. **Read this before your first walk in a session.**
