@@ -15,7 +15,7 @@ Two failure modes pull against each other. A brief that transcribes the docs —
 - `docs/SYNTHESIS.md` and `docs/INDEX.md` if they exist — orientation artifacts over the reconciled corpus. Used to choose which source docs to re-open, not as the brief's content.
 - The source docs under `docs/` at the passages the brief will synthesize from. Open them at the cited sections rather than working off the orientation's paraphrase.
 
-`decisions/` is grep-only — if prior decisions exist, find them by slug or content match rather than listing. For an existing-codebase project, the relevant code is read the same way: as input to the synthesis, not as material for a tour.
+For an existing-codebase project, the relevant code is read as input to the synthesis, not as material for a tour.
 
 ## Risk-first framing
 
