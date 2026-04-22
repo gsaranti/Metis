@@ -1,6 +1,6 @@
 ---
 name: writing-build-spec
-description: Reference for writing BUILD.md — a forward-looking, risk-first architecture brief in the agent's own words that synthesises the reconciled corpus and names the first vertical slice.
+description: Reference for writing BUILD.md — a forward-looking, risk-first architecture brief in the agent's own words that synthesizes the reconciled corpus and names the first vertical slice.
 disable-model-invocation: true
 ---
 
@@ -52,5 +52,3 @@ The slice earns its own section because it is the architecture's first real test
 The 3–8 page band fits most projects, but it is guidance, not a ceiling or a floor. A simple build honestly lands under 3 pages; a very large one honestly lands over 8. Padding a thin draft to hit the range, or cutting a necessary one, produces a worse brief, not a better-shaped one.
 
 The band earns its keep as a diagnostic. If a draft runs long without the scope to justify it, transcription is usually doing work synthesis should be doing — trimming excerpts and pushing detail back into the source docs recovers the range. If a draft runs short on a non-trivial project, the risk lead or the first slice has usually been skipped, leaving the reader unable to tell what has been committed to.
-
-Any change to `BUILD.md` after initial creation is written through `/metis:sync` and accompanied by a new entry in `decisions/` — `.metis/conventions/write-rules.md` treats `BUILD.md` edits as spec-shaping by default. The implication: initial creation is where the architectural judgment is captured cleanly, before the decisions log starts carrying the why.
