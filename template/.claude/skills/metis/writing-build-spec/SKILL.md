@@ -27,6 +27,8 @@ Risk comes from the corpus, not from invention. The right risk to lead on is the
 
 Restate the corpus's commitments in the brief's own synthesis. If a paragraph of `BUILD.md` could be replaced by a quote from `docs/`, it should be a link, not a copy — the value the brief adds is what the docs mean when held together, not what they said section-by-section. The test: with the source docs open next to the brief, can a reader tell what judgment the brief is making across them? If each paragraph just mirrors one doc section, no judgment is being made.
 
+Where the corpus doesn't settle a call the brief has to make, name the assumption rather than writing through the gap. A reader should be able to tell what the brief inherited from the docs and what it decided on its own.
+
 ## Excerpt vs. summarize
 
 Summarize by default. Quote verbatim only when the exact words are load-bearing — a specific contractual constraint, a named exit condition, a clause the implementer must treat as literal. Every quote carries its source path inline (`` `docs/auth.md §Sessions` ``) so a reader can always drop back into the original. A paraphrase of a contractual commitment is a silent weakening; if the exact words matter downstream, quote them.
@@ -45,7 +47,7 @@ If the corpus covers an area and the brief is silent on it, either include it or
 
 A named section in `BUILD.md`. This is what the first implementation session builds: the thinnest end-to-end pass through the system that actually runs — one route, one screen, one database write, one passing test, all in one deployable shape. The slice is specified concretely, not categorically: the specific endpoint, the specific entity written, the specific check that proves it end-to-end. A categorical slice ("a read path and a write path") reads like an architecture sketch; a concrete slice reads like a task worth picking up.
 
-The slice earns its own section because it is the architecture's first real test. If it cannot be named, the architecture has not committed enough to be built against yet.
+The slice earns its own section because it is the architecture's first real test. Where it can, the slice exercises the risk the brief led with — the first runnable pass then doubles as the first check on the architecture's load-bearing bet. If it cannot be named, the architecture has not committed enough to be built against yet.
 
 ## Sizing as feedback
 
