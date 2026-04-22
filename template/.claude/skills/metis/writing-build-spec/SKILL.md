@@ -49,10 +49,8 @@ The slice earns its own section because it is the architecture's first real test
 
 ## Sizing as feedback
 
-The 3–8 page band is a shape, not a rule. Drafts that run past 8 pages almost always fail the own-words discipline — trimming excerpts and pushing detail back into the source docs usually recovers the range. Drafts under 3 pages usually skip the risk lead or the first slice, and a reader cannot tell what has been committed to.
+The 3–8 page band fits most projects, but it is guidance, not a ceiling or a floor. A simple build honestly lands under 3 pages; a very large one honestly lands over 8. Padding a thin draft to hit the range, or cutting a necessary one, produces a worse brief, not a better-shaped one.
+
+The band earns its keep as a diagnostic. If a draft runs long without the scope to justify it, transcription is usually doing work synthesis should be doing — trimming excerpts and pushing detail back into the source docs recovers the range. If a draft runs short on a non-trivial project, the risk lead or the first slice has usually been skipped, leaving the reader unable to tell what has been committed to.
 
 Any change to `BUILD.md` after initial creation is written through `/metis:sync` and accompanied by a new entry in `decisions/` — `.metis/conventions/write-rules.md` treats `BUILD.md` edits as spec-shaping by default. The implication: initial creation is where the architectural judgment is captured cleanly, before the decisions log starts carrying the why.
-
-## Examples
-
-- `examples/good-build.md` — a mid-scope build spec landing in the 3–4 page band: a risk-first opening, a synthesis-not-transcription read of the corpus, a concretely named first vertical slice. **Read this before writing your first build spec in a session.**
