@@ -24,6 +24,15 @@ The test: can the candidate be stated as one sentence a human could run in a sho
 
 When unsure where to slice, look for seams the product exposes: a user-visible capability that can be demo'd on its own, an integration boundary whose internals are self-contained, a lifecycle for one entity that begins and ends inside the candidate. Cuts along these seams tend to produce epics whose exit criteria write themselves and whose task sets have naturally disjoint surfaces. Cuts along technical-layer seams — an "API epic," a "database epic" — produce candidates that cannot be demo'd without another epic, which is the tell that a category, not a capability, was doing the cutting.
 
+## Is this epic-shaped?
+
+Before adding a candidate, check that it belongs in an epic at all. The capability-and-exit-criterion test does most of the work, but four failure modes slip past it:
+
+- **Epic vs. task cluster.** A candidate whose parts are sequential implementation steps for one narrow behavior — add the table, write the migration, wire the endpoint, tests — is one task or a small task set, not an epic. Epics cluster tasks serving a capability; they are not implementation checklists stretched upward.
+- **Epic vs. foundation.** An epic that exists only to prepare for later epics ("Core Infrastructure," "Shared Platform") becomes a sinkhole with no observable exit. Move the enabling work into the downstream epics that actually need it; a genuinely shared piece can live as a task inside the first epic that uses it.
+- **Epic vs. release window.** Names like "MVP" or "Polish" are time-ordering, not capabilities. A release-window label hides whatever capabilities actually live inside it; decompose those instead.
+- **Epic vs. decision or spike.** Work whose outcome is "we have decided X" or "we have learned whether Y is feasible" is not a capability. A decision belongs in `decisions/`, a spike in `scratch/exploration/` — neither is epic-shaped.
+
 ## Splitting signals
 
 Signals a candidate wants to split:
@@ -32,7 +41,7 @@ Signals a candidate wants to split:
 - Two disjoint task clusters with no shared surfaces, where each cluster would ship and be useful without the other.
 - The candidate spans multiple user-facing capabilities that would be announced to a user separately, even though they share an underlying subsystem.
 
-The exit-criterion test is the load-bearing check here. A candidate whose exit criterion has to say "signup works AND login works AND password reset works" has three epics asking to come out.
+A candidate whose exit criterion has to say "signup works AND login works AND password reset works" has three epics asking to come out.
 
 ## Merging signals
 
