@@ -18,7 +18,7 @@ Two failure modes pull against each other: resolving too eagerly, so the agent p
 
 ## Reading the item before proposing anything
 
-An open item arrives pre-framed by the reconcile pass: quoted passages, a neutral sentence naming the disagreement or gap. Trust that framing, but verify the cite is still live. When the quoted text has been rewritten, renamed, or dropped since capture, the item is **stale** — the walk cannot honestly resolve a framing the docs no longer make. Mark the status, note what changed, and leave re-capture to the next reconcile.
+An open item arrives pre-framed by the reconcile pass: quoted passages, a neutral sentence naming the disagreement or gap. Start from the captured framing, but verify the cited passages still say what the item claims. When the quoted text has been rewritten, renamed, or dropped since capture, the item is **stale** — the walk cannot honestly resolve a framing the docs no longer make. Mark the status, note what changed, and leave re-capture to the next reconcile.
 
 ## Alternatives, recommendation, or ask
 
@@ -35,6 +35,10 @@ The test for which register fits: how much does each candidate answer lean on wh
 ## Asking the user vs. deciding
 
 Even with a strong recommendation, some resolutions must be confirmed by the user rather than landed by the agent. The threshold is downstream reach: a resolution that shapes `BUILD.md`, spans epics, or forecloses future options is the user's to make. A resolution that specifies a local detail with no architectural spread — a specific error code, a log field name — can be landed by the agent, with the doc update and the `docs/RESOLVED.md` pointer making the choice legible for later review. The tiebreaker: a reader six months later wants the user's name on architectural resolutions; if the doc would read oddly without that fingerprint, ask.
+
+## The source-doc update
+
+Whether the agent lands the edit or the user confirms it, prefer the smallest change that removes the ambiguity the item named. A walk is license to close the specific gap captured, not to rewrite surrounding prose the item didn't force.
 
 ## Deferred, resolved, and stale
 
@@ -57,6 +61,10 @@ Summary: 30-day refresh + 15-min access token.
 ```
 
 The resolution's substance lives in the updated source doc, not the pointer. The docs themselves are the architectural record going into development; the pointer is only a thin archive trail — "what did Phase 0 resolve?" — not a second copy of the answer.
+
+## Follow-ups from a walk
+
+A walk can produce new captures, not just close old ones. When a resolution answers the item at hand but exposes a downstream uncertainty — a new term introduced, a consequence that wasn't specified, a sibling question the chosen answer raises — append a fresh item to `docs/QUESTIONS.md` or `docs/CONTRADICTIONS.md` for a later pass. Closing one item by quietly hiding the follow-up it spawned is a form of over-resolving.
 
 ## Examples
 
