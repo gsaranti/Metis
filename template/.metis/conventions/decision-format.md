@@ -6,7 +6,6 @@ Decisions (ADRs) live in `decisions/` as an append-only log that spans epics and
 
 Decisions are created by:
 
-- **`/metis:walk-open-items`** — one decision per resolved item (contradiction or question) during doc reconciliation.
 - **`/metis:sync`** — one decision per accepted cascading change when a source doc or `BUILD.md` edit propagates through epics and tasks.
 - **`/metis:log-work`** — one decision when code written outside the workflow touches architecture-level concerns.
 - **The main session** — when a change to `BUILD.md`, a doc, or an epic warrants a standing record, the user and main agent can write a decision directly.

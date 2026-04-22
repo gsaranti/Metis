@@ -191,7 +191,7 @@ Before writing a line of code, the agent reads `docs/` and produces:
 - `docs/CONTRADICTIONS.md` — direct conflicts between docs (doc A says X, doc B says Y)
 - `docs/QUESTIONS.md` — gray areas: silences, ambiguities, implicit assumptions, terms used loosely (one thing underspecified vs. two things disagreeing)
 
-Then the user walks through both files with the agent via `/metis:walk-open-items`, one item at a time. For each, the agent offers 1–2 suggested resolutions plus a free-form input option. Each resolution updates the relevant doc and appends a one-paragraph entry to `decisions/` (date, context, decision, consequences). Resolved items are moved immediately to `docs/RESOLVED.md` (a minimal-pointer archive that links to the decision entry); active files only contain `open` and `deferred` items, so resume is cheap.
+Then the user walks through both files with the agent via `/metis:walk-open-items`, one item at a time. For each, the agent offers 1–2 suggested resolutions plus a free-form input option. Each resolution updates the relevant source doc with the chosen answer and moves the item to `docs/RESOLVED.md` as a minimal pointer (title, date, one-line summary of the answer written into the doc). Active files only contain `open` and `deferred` items, so resume is cheap. No `decisions/` entries are written during Phase 0 — the docs being finalized are themselves the project's architectural baseline; decisions start at Phase 1, where changes against that locked baseline need their own record.
 
 Per-item status: `open` (default), `resolved` (moved to RESOLVED.md), `deferred` (still in active file but explicitly skipped for now), `stale` (referenced doc has changed since item was captured — needs re-consideration). The walk supports stop/resume across sessions and non-sequential navigation.
 
@@ -326,7 +326,7 @@ docs/                      # source material
   INDEX.md                 # from /metis:reconcile
   CONTRADICTIONS.md        # from /metis:reconcile (open + deferred items only)
   QUESTIONS.md             # from /metis:reconcile (open + deferred items only)
-  RESOLVED.md              # archive of resolved items (pointers to decisions/)
+  RESOLVED.md              # archive of Phase 0 resolutions (one-line summary pointers)
   ... (user's existing docs)
 
 decisions/                 # append-only ADRs, span epics
@@ -474,7 +474,7 @@ Twenty-two commands total. All namespaced as `/metis:<name>` to avoid collisions
 
 - **`/metis:init`** — scaffold the Metis directory structure. Asks flat vs epic mode. Non-destructive; preserves existing files via delimited sections.
 - **`/metis:reconcile [prompt]`** — read `docs/`, produce `docs/SYNTHESIS.md`, `docs/INDEX.md`, `docs/CONTRADICTIONS.md`, and `docs/QUESTIONS.md`. Surfaces both contradictions (direct conflicts) and gray areas (silences, ambiguity, underspecification). Requires `docs/` to exist.
-- **`/metis:walk-open-items [prompt]`** — walk through open items from both `docs/CONTRADICTIONS.md` and `docs/QUESTIONS.md` one at a time. For each item, agent offers 1–2 suggested resolutions plus a free-form user-input option. Supports stop/resume across sessions via per-item status (`open` / `resolved` / `deferred` / `stale`); resolved items are moved to `docs/RESOLVED.md` immediately so the active files stay lean. Each resolution updates the relevant doc and appends to `decisions/`.
+- **`/metis:walk-open-items [prompt]`** — walk through open items from both `docs/CONTRADICTIONS.md` and `docs/QUESTIONS.md` one at a time. For each item, agent offers 1–2 suggested resolutions plus a free-form user-input option. Supports stop/resume across sessions via per-item status (`open` / `resolved` / `deferred` / `stale`); resolved items are moved to `docs/RESOLVED.md` immediately so the active files stay lean. Each resolution updates the relevant source doc and appends a minimal pointer to `RESOLVED.md`. No `decisions/` entries are written — Phase 0 finalizes the baseline the docs speak for; decisions start at Phase 1.
 - **`/metis:build-spec [prompt]`** — produce `BUILD.md`. Reads `docs/` + `decisions/` if they exist; accepts optional prompt as alternative or supplement.
 
 ### Planning (4)
@@ -519,7 +519,7 @@ Twenty-two commands total. All namespaced as `/metis:<name>` to avoid collisions
 |---|---|---|
 | `/metis:init` | — | — |
 | `/metis:reconcile` | `reconciling-docs` | — |
-| `/metis:walk-open-items` | `reconciling-docs`, `writing-decisions` | — |
+| `/metis:walk-open-items` | `walking-open-items` | — |
 | `/metis:build-spec` | `writing-build-spec` | — |
 | `/metis:epic-breakdown` | `decomposing-build-into-epics`, `writing-an-epic-file` | — |
 | `/metis:generate-tasks` | `decomposing-work-into-tasks`, `writing-a-task-file` | — |
@@ -592,7 +592,7 @@ ADR template for `decisions/` entries:
 - One paragraph per section, sometimes more
 - Append-only — superseding is done by writing a new decision whose Context names the old one
 
-Decisions are written by `/metis:walk-open-items`, `/metis:sync`, `/metis:log-work`, and by the main session whenever a change to `BUILD.md` or a source doc warrants a standing record. Subagents do not write decisions.
+Decisions are written by `/metis:sync`, `/metis:log-work`, and by the main session whenever a change to `BUILD.md` or a source doc warrants a standing record. Phase 0 walks (`/metis:walk-open-items`) do not write decisions — they finalize the docs that are themselves the architectural baseline, so there are no changes-against-baseline yet to record. Subagents do not write decisions.
 
 ### `frontmatter-schema.md`
 
@@ -724,7 +724,7 @@ The task-authoring and epic-authoring responsibilities are each split across two
 
 **Covers**: Context → decision → consequences structure, when evidence is needed, keeping it one paragraph per section, making decisions findable (filenames, cross-references), when a decision supersedes another.
 
-**Used by**: `/metis:walk-open-items`, `/metis:sync`, `/metis:log-work`, and the main session when a doc or `BUILD.md` change warrants a standing record.
+**Used by**: `/metis:sync`, `/metis:log-work`, and the main session when a doc or `BUILD.md` change warrants a standing record. (Phase 0 walks do not write decisions — see Refinement 4.)
 
 **References**: `.metis/conventions/decision-format.md`.
 
@@ -881,7 +881,7 @@ The canonical Metis flow.
 
 1. `/metis:init` → choose epic mode
 2. `/metis:reconcile` → synthesis + contradictions
-3. `/metis:walk-open-items` → resolve each contradiction and open question, populate `decisions/`
+3. `/metis:walk-open-items` → resolve each contradiction and open question, finalize the docs
 4. `/metis:build-spec` → `BUILD.md`
 5. `/metis:epic-breakdown` → propose epics, user edits, commit
 6. `/metis:generate-tasks 001-<name>` → task files for first epic only
@@ -1256,7 +1256,7 @@ Two discipline points the `reconciling-docs` skill must teach:
 - The agent's suggestions need to be **genuine alternatives** (not one real option and a straw man).
 - For genuinely unclear items, the agent must be allowed to say "I don't have a good read here, need your input" rather than inventing options.
 
-Every resolution writes the chosen answer into the relevant doc *and* appends a decision entry with the reasoning. Skipped items stay in `QUESTIONS.md` / `CONTRADICTIONS.md` for a later pass — they don't disappear.
+Every resolution writes the chosen answer into the relevant source doc and appends a minimal pointer to `RESOLVED.md`. Phase 0 does not produce `decisions/` entries — the docs being finalized are themselves the project's architectural baseline, and decisions begin when changes against that locked baseline (via `/metis:sync` or `/metis:log-work`) need their own record. Skipped items stay in `QUESTIONS.md` / `CONTRADICTIONS.md` for a later pass — they don't disappear.
 
 ### Refinement 5 — Walk-open-items resume behavior
 
@@ -1304,11 +1304,10 @@ When the walk resolves an item, the entry is removed from the active file and ap
 ```markdown
 ## Q3: Session duration
 Resolved: 2026-04-19
-Decision: decisions/2026-04-19-session-duration.md
 Summary: 30-day refresh + 15-min access token.
 ```
 
-The full reasoning lives in the decision entry, not duplicated in `RESOLVED.md`. This keeps the archive as a lightweight trail — useful if someone wants to scan "what did we resolve during Phase 0?" without grepping all of `decisions/`, but with almost no bytes to load.
+The resolution's substance lives in the updated source doc — the doc itself is what downstream work reads as the architectural baseline, and the pointer is just a thin archive trail ("what did Phase 0 resolve?") at almost no bytes of load. No `decisions/` file is written for a Phase 0 resolution; decisions are reserved for changes against the baseline once development has started.
 
 **Active files (read during walk):** `CONTRADICTIONS.md` and `QUESTIONS.md` — open and deferred items only.
 

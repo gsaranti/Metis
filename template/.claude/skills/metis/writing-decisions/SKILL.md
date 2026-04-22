@@ -15,7 +15,7 @@ A decision file is a standing record of a choice that spans epics and sessions. 
 
 ## Permanence and preview
 
-Decisions are append-only. A silently bad framing lives in the log forever or requires a superseder to correct — and upstream approval of the substance (a walk-open-items resolution, a sync confirmation, a log-work description) does not cover the framing produced here: the Context narrative, the Consequences named, the slug picked. This is the artifact where the preview step owned by the calling command most needs to run; skipping it is what turns a wrong phrasing into a permanent one.
+Decisions are append-only. A silently bad framing lives in the log forever or requires a superseder to correct — and upstream approval of the substance (a sync confirmation, a log-work description) does not cover the framing produced here: the Context narrative, the Consequences named, the slug picked. This is the artifact where the preview step owned by the calling command most needs to run; skipping it is what turns a wrong phrasing into a permanent one.
 
 If prior art on the topic is suspected but cannot be confirmed, surface that uncertainty during preview rather than hoping a filename or content search will catch it — the user is the backstop for duplicates, since semantically equivalent topics routinely take slightly different slugs (`auth-session-duration` vs `auth-session-lifetime` vs `refresh-token-policy`) and prose keywords are brittle across synonyms.
 
@@ -24,7 +24,6 @@ If prior art on the topic is suspected but cannot be confirmed, surface that unc
 Write a decision when a choice is architecturally consequential and will need to be remembered later, outside the code and the task log. Good triggers:
 
 - A `BUILD.md` edit changes a structural commitment (stack choice, system boundary, major API shape).
-- Walking an open item resolves a contradiction or question with a concrete position.
 - A sync propagates a substantive spec change that other work will have to follow.
 - Logging external work reveals architecture-level intent that the task Notes cannot hold.
 
@@ -40,7 +39,7 @@ The test: would a reader six months from now benefit from finding this on its ow
 
 The convention file has the sizes and the structure. The judgment each section needs:
 
-- **Context** states *what was being chosen between and why the choice was forced now*. It is not a history recap (the reader can get that elsewhere) and it is not the decision itself. If Context can be removed without losing what alternatives existed or why the choice was forced now, Context is doing its job wrong — either redundant with the Decision or missing the options. For retroactive decisions (choices already reflected in code, typically logged via `/metis:log-work` or walked out of an open item), Context should describe the architecture now in place and how it came to exist — not confabulate a prospective deliberation that never happened.
+- **Context** states *what was being chosen between and why the choice was forced now*. It is not a history recap (the reader can get that elsewhere) and it is not the decision itself. If Context can be removed without losing what alternatives existed or why the choice was forced now, Context is doing its job wrong — either redundant with the Decision or missing the options. For retroactive decisions (choices already reflected in code, typically logged via `/metis:log-work`), Context should describe the architecture now in place and how it came to exist — not confabulate a prospective deliberation that never happened.
 - **Decision** is imperative, in the present tense: "Refresh tokens last 30 days; access tokens last 15 minutes." Not "we considered X and Y and chose Y" — the comparison belongs in Context. A Decision that hedges ("we'll probably go with X for now") is a question masquerading as a decision; stop and file it as a question instead.
 - **Consequences** is concrete — what this enables, what it costs, what it forecloses. Not aspirational ("we'll see how it goes"), not a reassurance ("this should be fine"). If you cannot name at least one concrete downstream effect, the decision is not ready to commit yet.
 - **Evidence** is a pointer, not a recap. Link to the discussion, the prototype, the commit, the doc passage. Quote sparingly — the value is in where to look. If the section would be empty, delete it per the template.
