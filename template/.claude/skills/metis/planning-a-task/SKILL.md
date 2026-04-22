@@ -51,11 +51,11 @@ If no single command can prove the work, name the minimum set and state what eac
 
 An **assumption** is a guess the plan needed to make and can name. Because it is named, the implementer and reviewer can check whether it held; the plan is still honest. "Assumes the existing `WebhookError` type carries the right fields for the new code path — fall back to a dedicated type if not" is an assumption worth keeping moving on.
 
-A **flag** is a gap the plan could not settle without guessing in a way that would not be checkable. Local flags — a field type, a specific error code — go in the plan's flags section and the implementer is told to defer them upward. Structural flags — acceptance criteria that turn on behavior the source docs do not pin down — do not belong in a flags section. They go back as the plan's return, because the task file itself is underspecified.
+A **flag** is a gap the plan could not settle without guessing in a way that would not be checkable. Local flags — a field type, a specific error code — go in the plan's flags section and the implementer is told to defer them upward. Structural flags — acceptance criteria that turn on behavior the source docs do not pin down — do not belong in a flags section. They belong upstream — the finding is that the task file itself is underspecified, not that the plan needs more words.
 
 ## Pushing back on the task file
 
-This is the one upstream-facing register the plan carries. When acceptance criteria cannot be made testable without an extra call, when two honest plans could be written depending on a scope detail the task did not fix, or when `depends_on` is missing a real blocking prerequisite, the plan's job is to say so and return — not to widen itself until the ambiguity is hidden inside the steps. A plan that silently resolves a task-file ambiguity is where silent drift starts.
+This is the one upstream-facing register the plan carries. When acceptance criteria cannot be made testable without an extra call, when two honest plans could be written depending on a scope detail the task did not fix, or when `depends_on` is missing a real blocking prerequisite, the plan's job is to surface the gap upstream — not to widen itself until the ambiguity is hidden inside the steps. A plan that silently resolves a task-file ambiguity is where silent drift starts.
 
 ## Sizing as feedback
 
