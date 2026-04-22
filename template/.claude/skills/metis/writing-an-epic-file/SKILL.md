@@ -30,16 +30,16 @@ Across every section, stay at the capability grain. "Team members see task chang
 The convention file has the shape. The judgment each section needs:
 
 - **Goal.** One paragraph expanding the frontmatter goal. States why the epic exists and who benefits; does not preview the exit criterion. A Goal that ends by paraphrasing the exit criterion has nothing left to say.
-- **Scope.** Capability-level bullets, not a task list. Three to six bullets is typical; a dozen is usually two capabilities masquerading as one, which is a decomposition call upstream of this file.
+- **Scope.** Capability-level bullets that cohere around one finish line, not a task list. Three to six bullets is typical; a dozen — or five that share a domain label without sharing an outcome — is usually two capabilities masquerading as one, and belongs back in decomposition.
 - **Out of scope.** Pre-empts the scope creep the in-scope list cannot cover on its own. "No SSO — deferred to 008-sso" is worth more than a sixth in-scope bullet restating what a reader would have assumed. Deferred capabilities carry a pointer to where they eventually live.
 - **Exit criterion.** One paragraph, one check. The paragraph may expand the frontmatter criterion with the setup a reader needs to actually run it, but the check itself stays a single condition. If the expansion starts introducing more conditions, the epic wanted to split; stop writing and surface the split upstream.
-- **Notes.** Empty at creation. Notes is the epic's append-only log — scope-shaping decisions, retro reminders, and epic-level questions caught during the epic's life land here. Pre-loading design context duplicates content that belongs in `decisions/` or in the individual task files.
+- **Notes.** Empty at creation. Notes is the epic's append-only log — scope-shaping decisions, retro reminders, and epic-level questions caught during the epic's life land here. Pre-loading design context duplicates content that belongs in `decisions/` or in the individual task files; implementation logs and task-level chatter stay in the task files for the same reason.
 
 ## Exit-criterion judgment
 
 The convention has the rule — one testable condition, observable behavior, runnable by a human in a short sitting. Two judgment calls show up in practice:
 
-- A criterion that reads plausibly as one sentence but bundles two conditions with a hidden comma — "a user signs up, and the team admin sees them in the roster" — is two checks. Either pick the one the epic actually closes on, or recognize that the decomposition missed a seam and surface the split.
+- A criterion that looks singular but hides two checks behind a conjunction or a sequence — "a user signs up, and the team admin sees them in the roster" — is still two checks. Either pick the one the epic actually closes on, or recognize that the decomposition missed a seam and surface the split.
 - A criterion that depends on a reviewer forming an opinion — "the billing flow feels coherent" — cannot be run. Rewrite to behavior a reviewer can see without judgment: "the admin, starting from the console, adds a card, returns to the dashboard, and sees the plan labeled as active."
 
 ## Sizing as feedback
@@ -53,6 +53,8 @@ If the corpus does not resolve a point the epic needs, do not guess. A small, lo
 ## IDs and numbering
 
 Epic IDs are a zero-padded three-digit prefix on the directory (e.g., `002-team-management`). Take the next unused project-wide epic id. Gaps are expected — an abandoned or superseded epic leaves its id retired — and are not filled by reuse.
+
+The kebab-case slug after the prefix becomes navigational memory across the project. Prefer durable capability names over temporary labels or team shorthand: `002-team-management` wears well; `002-billing-v2` ages poorly; `002-billing` hides what it actually covers.
 
 ## Examples
 
