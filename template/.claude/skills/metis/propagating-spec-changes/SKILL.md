@@ -36,7 +36,7 @@ Cosmetic edits across the candidate set propagate as a single bulk-approval prom
 Each task's `status` determines the rule the cascade applies to it:
 
 - `pending` / `in-review` — edit in place with approval. No code has committed to the prior framing that the edit invalidates; an accepted substantive edit against `in-review` usually reopens the review, which the proposed diff should call out.
-- `in-progress` — explicit confirmation before editing. Someone is actively working against the current framing, and a silent edit reframes their work mid-flight; surface the proposed change and let the user decide whether to land it now, defer until the task returns, or redirect the in-flight work.
+- `in-progress` — explicit confirmation before editing. Someone is actively working against the current framing, and a silent edit reframes their work mid-flight; surface the proposed change and let the user decide whether to land it now, defer until the task exits `in-progress`, or redirect the in-flight work.
 - `done` — never edited in place. The task is the historical record of what was built against the prior spec; drift against it becomes a new task or a superseding decision, not a rewrite of the archive.
 - `blocked` — treat as `pending`. The block is orthogonal to the cascade and does not license silent edits.
 

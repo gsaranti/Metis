@@ -64,7 +64,7 @@ This is both a retraction (the "rely on permanent dedup" assumption is no longer
 
 ## The decision file
 
-`decisions/2026-04-22-idempotency-window-48h.md`:
+`decisions/2026-04-16-idempotency-window-48h.md`:
 
 ```markdown
 # Idempotency window bounded to 48 hours
@@ -73,7 +73,7 @@ Webhook dedup is bounded to a 48-hour rolling window; redeliveries beyond the wi
 
 ## Date
 
-2026-04-22
+2026-04-16
 
 ## Context
 
@@ -91,5 +91,5 @@ The nightly GC job is now on the epic's critical path and is scoped under `0020`
 
 - `docs/billing.md §Idempotency` — the edited passage.
 - `decisions/2026-04-12-webhook-dedup-granularity.md` — prior decision on dedup granularity (event-id vs. event-type); unchanged by this cascade.
-- Ops review note: `scratch/research/webhook-events-table-growth-2026-04-21.md`.
+- Ops review note: `scratch/research/webhook-events-table-growth-2026-04-15.md`.
 ```
