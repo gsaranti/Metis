@@ -13,15 +13,15 @@ Two failure modes pull against each other. Trusting the description and skipping
 ## Read first
 
 - The user's description, verbatim. It is the intent record and is not paraphrased before it informs the updates.
-- The `git diff` for the relevant range. The mechanical ground truth; everything else is claim.
+- The `git diff` for the relevant range. The record of what changed in code; everything else is claim.
 
 Load `.metis/conventions/task-format.md` on demand when shaping a Notes append or a retroactive task, `.metis/conventions/frontmatter-schema.md` on demand for `status` transitions, and `.metis/conventions/decision-format.md` on demand only when the diff triggers a decision.
 
 ## Reading the description and the diff
 
-The diff gives files changed, surfaces touched, net line direction, and — read against a task's `touches` and `docs_refs` — a rough attribution hint. It does not give why the change was made or which task the user meant it to close. The description gives the attribution and the claim frame ("0022 is done," "I split 0024 into two," "I also refactored the event bus while I was in there"). It does not give whether the code supports the claim.
+The diff gives files changed, surfaces touched, net line direction, and — read against a task's `touches` and `docs_refs` — a rough attribution hint. Renames and deletions register distinctly from line churn and should be named in the description or surfaced as daylight. It does not give why the change was made or which task the user meant it to close. The description gives the attribution and the claim frame ("0022 is done," "I split 0024 into two," "I also refactored the event bus while I was in there"). It does not give whether the code supports the claim.
 
-Daylight is the set of mismatches: a file in the diff that no named task touches; a "done" claim against a task whose acceptance criteria the diff does not evidence; a split the description names but only one half of which is present in the diff; a surface the description did not mention but that the diff clearly expanded. Daylight is listed explicitly in the proposal back to the user, not smoothed into a synthesized summary. Papering over it is the shape of the first failure mode.
+Daylight is the set of mismatches: a file in the diff that no named task touches; a "done" claim against a task whose acceptance criteria the diff does not evidence; a split the description names but only one half of which is present in the diff; a surface the description did not mention but that the diff clearly expanded. Daylight is listed explicitly in the proposal back to the user, not smoothed into a synthesized summary. Papering over it is the shape of the first failure mode. Two shape-extremes register as daylight too: unrelated clusters in the diff the description does not name — propose splitting the log into separate reconciliations rather than forcing the extras under the nearest task — and a claim against a diff silent on the named surfaces, which is daylight at its strongest.
 
 ## Per-task updates by claim
 
@@ -35,9 +35,9 @@ Notes appends carry two parts — the user's description (verbatim or near-verba
 
 ## Verifying "done" against the diff
 
-A done-claim check is a lightweight pass, not a full review. For each acceptance criterion, judge whether the diff evidences it. A criterion phrased as *"returns 400 when the `signature` header is missing"* is evidenced when the diff adds the check and a test that exercises it. One phrased as *"profile reads return under 200ms"* is not mechanically verifiable from a diff and is surfaced as unverified. One whose surface the diff does not touch at all is a likely gap.
+A done-claim check is a lightweight pass, not a full review. For each acceptance criterion, judge whether the diff evidences it. A criterion phrased as *"returns 400 when the `signature` header is missing"* is evidenced when the diff adds the check and a test that exercises it. A check that lands without a test, or a failure branch handled but not exercised, is partially evidenced — enough signal to mention, not enough to silently mark `done`. One phrased as *"profile reads return under 200ms"* is not mechanically verifiable from a diff and is surfaced as unverified. One whose surface the diff does not touch at all is a likely gap.
 
-When the check finds daylight, the proposal names each criterion's state — evidenced, unverified, or gap — and the three honest next moves: mark `done` with a Notes entry naming the unverified criteria; leave `in-review` and surface the gap as a follow-up task; or hold at `in-progress` because the claim is premature. The judgment is the user's; naming the three cleanly is the skill's.
+When the check finds daylight, the proposal names each criterion's state — evidenced, partially evidenced, unverified, or gap — and the three honest next moves: mark `done` with a Notes entry naming the unverified criteria; leave `in-review` and surface the gap as a follow-up task; or hold at `in-progress` because the claim is premature. The judgment is the user's; naming the three cleanly is the skill's.
 
 ## Task CRUD from the description
 
