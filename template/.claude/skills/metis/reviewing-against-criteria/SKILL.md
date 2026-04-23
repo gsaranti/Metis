@@ -12,8 +12,7 @@ Two failure modes pull against each other. Under-rejecting approves a diff that 
 
 ## Read first
 
-- The task file being reviewed, and the source-doc passages behind its `docs_refs`. Re-open the cited sections when a criterion turns on a passage the task abbreviated.
-- The diff under review, and the command output the implementer cited for tests or verification.
+- The task file being reviewed and the diff under review, along with the source-doc passages behind the task's `docs_refs` and the command output the implementer cited for tests or verification. Re-open the cited doc sections when a criterion turns on a passage the task abbreviated.
 - In epic mode, the parent `EPIC.md`.
 
 The plan at `scratch/plans/<id>.md` is deliberately not on the read list — see "Reviewing without the plan" below.
@@ -37,7 +36,7 @@ A criterion that cannot be evaluated without forming an opinion about the code i
 
 ## Scope reduction is a finding, not a concession
 
-When the implementer's return says a criterion was "handled differently" — a stubbed path, a deferred case, a feature toggled off — the reviewer's job is to name that as reduction against the task's scope, not to absorb it into the verdict. The anchor is the task file's Acceptance criteria and `### Out of scope` as written when the work started; changes to either belong upstream, not in a review that quietly accepts them.
+When the implementer's return says a criterion was "handled differently" — a stubbed path, a deferred case, a feature toggled off — the reviewer's job is to name that as reduction against the task's scope, not to absorb it into the verdict. The anchor is the task file's acceptance criteria and its out-of-scope list as written when the work started; changes to either belong upstream, not in a review that quietly accepts them.
 
 The test for whether a "handled differently" is reduction or equivalence: can a reader hold the original criterion and the shipped behavior next to each other and see them as the same promise? If no, it is reduction, and the review says so.
 
