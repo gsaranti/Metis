@@ -15,13 +15,15 @@ Two failure modes pull against each other. Under-reporting absorbs reductions in
 - The task file or other specification the work is being reported against, so each reduction can be named relative to a criterion a reader can see.
 - The diff or change-set the report is summarizing, so entries cite the actual shape that shipped rather than the intent the reporter remembers.
 
+An entry is any place where what shipped diverges from what was asked; the four categories below sort by the kind of divergence.
+
 ## Artifact shape
 
 There is no convention file for a scope report. The shape — one block, usually appended to a task file's Notes — sits here:
 
 - **Skipped** — criteria or scope items that were not addressed and are not planned. One line per entry, naming the criterion.
 - **Deferred** — criteria or scope items that were not addressed but are explicitly pending later work. One line per entry, naming the criterion and the follow-up that will carry it.
-- **Stubbed** — placeholders that will not behave correctly under real conditions: a function that returns a constant, an error path that raises `NotImplementedError`, a fixture hard-coded where logic was specified. One line per entry, naming the placeholder and where it lives.
+- **Stubbed** — placeholders that will not behave correctly under real conditions: a function that returns a constant, an error path that raises `NotImplementedError`, a fixture hard-coded where logic was specified, or logic that handles only the sample payload it was built against. One line per entry, naming the placeholder and where it lives.
 - **Handled differently** — criteria met by a shape materially different from what the specification named. One line per entry, with the delta spelled out (see below).
 
 An empty report is the common case when the work met its criteria cleanly. Say so in one line; do not manufacture entries to fill the block. A report that invents reductions to look thorough is the mirror image of one that hides them.
@@ -31,7 +33,7 @@ An empty report is the common case when the work met its criteria cleanly. Say s
 The four categories do different triage work, and collapsing them costs the parent the ability to route. The tests:
 
 - **Skipped** — not done, not planned. The parent decides whether the scope item is dropped, re-opened, or escalated.
-- **Deferred** — not done, planned. A follow-up exists and is named in the entry; the parent decides whether that follow-up is acceptable or needs to be promoted.
+- **Deferred** — not done, planned. A follow-up is named concretely in the entry — a task id, a ticket, an explicit pending item; if none can be named, the right category is `Skipped`, not `Deferred`. The parent decides whether that follow-up is acceptable or needs to be promoted.
 - **Stubbed** — present in code, not behaving. The parent decides whether the stub ships, gets wrapped in a feature flag, or blocks the merge.
 - **Handled differently** — done, but not as written. The parent decides whether the delta is equivalence, tolerable reduction, or a re-open.
 
