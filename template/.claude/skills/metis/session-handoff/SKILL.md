@@ -21,7 +21,7 @@ There is no convention file for `CURRENT.md`. Four blocks, each with its own jud
 
 - **What happened.** One paragraph, past tense. Load-bearing changes only — the shape that shifted, the surface that landed, the call that got made. The test is whether the next session needs the line to act, not whether the work was interesting to do. If every file touched in the session makes it into this paragraph, the paragraph is doing the wrong job.
 - **Current state.** In-progress, blocked, and queued, as three short lists keyed to task ids with a one-line pointer each. The triage view, not prose. `BOARD.md` and the task files carry the detail; duplicating it here taxes every rehydration for content that is already on disk and already current.
-- **Open questions.** One line per question, with enough context that the reader can engage without opening another file. This is the live cut of `scratch/questions.md` after the session-end prune — questions that are truly resolved get removed from `questions.md`, and the remainder appear here.
+- **Open questions.** One line per question, with enough context that the reader can engage without opening another file. This is the cut of `scratch/questions.md` still open at session end.
 - **Where to start.** One to three directive sentences naming the first action the next session should take. The most load-bearing lines in the file — a reader who only has time for one section should be able to pick up work from this one.
 
 ## Pruning `scratch/questions.md` at session end
