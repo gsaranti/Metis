@@ -48,7 +48,7 @@ Two axes. A clean diff does not buy a criterion miss; a code smell does not sink
 
 - **approve** — every criterion passes, no scope reduction, no nits worth recording. The shortest verdict, and the most common when the task file was well-formed.
 - **approve-with-nits** — every criterion passes, no scope reduction, but code-quality notes are worth leaving behind. The nits are recorded with enough specificity that a follow-up can act on them, and the caller is not blocked.
-- **reject-with-reasons** — at least one criterion fails, or scope was reduced, or verification could not be run. Reasons are specific: the failing criterion verbatim, the evidence that shows it failed, and what would have to change for a re-review to pass. A reject that reads as "doesn't feel right" is a review that needs to be rewritten before it is posted.
+- **reject-with-reasons** — at least one criterion fails or cannot be evaluated, or scope was reduced. Reasons are specific: the criterion verbatim, the evidence (or its absence) that forced the verdict, and what would have to change for a re-review to pass. A reject that reads as "doesn't feel right" is a review that needs to be rewritten before it is posted.
 
 A verdict that approves while listing reasons that sound like rejects is a reject that flinched. Commit to the verdict the evidence supports.
 
