@@ -33,9 +33,13 @@ An empty block is fine. Manufacturing entries to fill each one is the mirror ima
 
 The estimation block names each task individually. "Most tasks landed close to estimate" tells the next epic nothing — the signal is which tasks slipped, by how much, and what shape they shared. Per-task entries let the next breakdown notice patterns that only emerge across tasks: that all the schema tasks undershot by a third, that the integration tasks consistently missed on test-harness setup, that the one unusually small task actually needed its own epic. A gestalt line reads as reassurance and asks the reader to take the writer's feel on faith; the per-task list shows the shape at a glance.
 
+Tasks that tracked as planned and share a clear shape can share a line (e.g., *"0011, 0012, 0014 — small copy tasks, all tracked as planned"*) — grouping compresses filler without hiding signal. Slips never group; the shape of a miss is what the next breakdown needs.
+
 ## Replans are signal, not apology
 
 Each replan entry names three things: the task id, what shifted, and what would have surfaced the shift at task-write time if the writer had seen it. The third is the one the entry earns its keep on. "0007 was harder than expected" records that a replan happened; "0007 split into 0007+0014 when the session-cookie logic turned out to share a signing primitive with CSRF; reading `docs/security.md §Cross-cutting` at decomposition would have caught it" gives the next breakdown something to do differently. The first shape is narration; the second is signal.
+
+The signal must have been readable at task-write time, not only after the work exposed it. Inventing a "we should have known" in hindsight is self-flagellation in another form — the next breakdown cannot act on a signal that was never there.
 
 ## Assumption failures vs. implementation slips
 
