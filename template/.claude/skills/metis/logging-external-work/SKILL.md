@@ -43,7 +43,7 @@ When the check finds daylight, the proposal names each criterion's state — evi
 
 Split, merge, and add are description-driven, but each is checked against the diff before it lands.
 
-- **Split.** The user names the split ("0024 I split into 0024 and 0027 — the HTML template grew bigger than expected"). Confirm the diff's surfaces cluster into the claimed halves; if the second half has no diff signal, the split is a plan rather than a fact, and the new task is written at `pending`. The existing task is rescoped per `task-format.md`; its id stays.
+- **Split.** The user names the split ("0024 I split into 0024 and 0027 — the HTML template grew bigger than expected"). Confirm the diff's surfaces cluster into the claimed halves; if the second half has no diff signal, the split is a plan rather than a fact, and the new task is written at `pending`. The existing task is rescoped per `.metis/conventions/task-format.md`; its id stays.
 - **Merge.** Uncommon. Two tasks collapsing into one usually means one supersedes the other — write the superseder, preserve both ids in its Notes so the merged history is recoverable, and do not delete the originals.
 - **Add.** Work named in the description that has no existing task. Written per the retroactive-task shape below; `status` reflects whether the diff evidences completion.
 
@@ -51,7 +51,7 @@ A CRUD call the diff does not support is surfaced upstream rather than landed si
 
 ## Retroactive task when no existing task matches
 
-When the description attributes work to no existing task — either because the invocation named no tasks at all, or because the description mentions unplanned work alongside named tasks — the artifact is one new task, shaped per `task-format.md`. What the retroactive case adds on top of the convention is three honesty constraints:
+When the description attributes work to no existing task — either because the invocation named no tasks at all, or because the description mentions unplanned work alongside named tasks — the artifact is one new task, shaped per `.metis/conventions/task-format.md`. What the retroactive case adds on top of the convention is three honesty constraints:
 
 - **Context carries provenance.** The description sits in Context verbatim, prefaced with a one-line note that the work was logged after the fact. Without the preface, a later reader cannot tell a retroactive task from a pre-planned one.
 - **Do not invent what the description did not supply.** Goal restates the description's outcome framing rather than a prospective goal derived from the diff. Acceptance criteria use the description's testable conditions if named; otherwise one placeholder — *"the changes listed below are the intended changes"* — and `### Out of scope` restates the diff's surface boundary rather than inventing new constraints.
