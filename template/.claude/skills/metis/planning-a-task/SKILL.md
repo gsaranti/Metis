@@ -22,7 +22,7 @@ Load `.metis/conventions/task-format.md` on demand when a task-file field questi
 There is no convention file for a plan. The on-disk shape sits here:
 
 - **Ordered steps** — the sequence the implementer walks. Numbered.
-- **Expected file changes** — the files or modules each step touches, with a one-line intent.
+- **Expected file changes** — the files or modules each step will modify, with a one-line intent. A speculative touch list is noise, not insurance.
 - **Test approach** — which tests the plan writes or changes, when they run, and what they prove.
 - **Verification command** — one command (or a minimum set) that shows the work is done.
 - **Assumptions and flags** — what the plan had to guess, and what it could not settle and is returning upstream.
@@ -43,7 +43,7 @@ Pick the register per step, not per plan. A plan with one contract-shaped step a
 
 ## The verification command
 
-Name a specific command the plan promises will show the implementation works end-to-end — `pytest tests/billing/test_webhook.py::test_signature_failure`, not "run the tests." The specificity is what makes the plan checkable: the implementer runs the command, the reviewer reads its output, neither of them has to rediscover what "the tests" meant.
+Name a specific command the plan promises will show the implementation works end-to-end — `pytest tests/billing/test_webhook.py::test_signature_failure`, not "run the tests." Prefer the repo's native entry point (`make test`, `npm test -- <target>`, whatever the project already uses) over an invented shell recipe. The specificity is what makes the plan checkable: the implementer runs the command, the reviewer reads its output, neither of them has to rediscover what "the tests" meant.
 
 If no single command can prove the work, name the minimum set and state what each one covers. Two commands with clean purposes beats one vague one. A plan that cannot name a verification command at all has not committed to what "done" looks like.
 
@@ -55,7 +55,7 @@ A **flag** is a gap the plan could not settle without guessing in a way that wou
 
 ## Pushing back on the task file
 
-This is the one upstream-facing register the plan carries. When acceptance criteria cannot be made testable without an extra call, when two honest plans could be written depending on a scope detail the task did not fix, or when `depends_on` is missing a real blocking prerequisite, the plan's job is to surface the gap upstream — not to widen itself until the ambiguity is hidden inside the steps. A plan that silently resolves a task-file ambiguity is where silent drift starts.
+This is the one upstream-facing register the plan carries. When acceptance criteria cannot be made testable without an extra call, when two honest plans could be written depending on a scope detail the task did not fix, when `depends_on` is missing a real blocking prerequisite, when the task bundles two unrelated outcomes, or when making the plan honest would require changes outside the task's scope, the plan's job is to surface the gap upstream — not to widen itself until the ambiguity is hidden inside the steps. A plan that silently resolves a task-file ambiguity is where silent drift starts.
 
 ## Sizing as feedback
 
