@@ -17,7 +17,7 @@ Two failure modes pull against each other. Under-reporting absorbs reductions in
 
 ## Artifact shape
 
-There is no convention file for a scope report. The on-disk shape — one block, usually appended to the task file's Notes or surfaced inline in the calling session — sits here:
+There is no convention file for a scope report. The shape — one block, usually appended to a task file's Notes — sits here:
 
 - **Skipped** — criteria or scope items that were not addressed and are not planned. One line per entry, naming the criterion.
 - **Deferred** — criteria or scope items that were not addressed but are explicitly pending later work. One line per entry, naming the criterion and the follow-up that will carry it.
