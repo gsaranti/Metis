@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 External work is code the user wrote outside the Metis loop — a hotfix, a spike, a refactor, a feature they drove by hand. The job of this skill is to reconcile that work with the on-disk record: updates to the task files the user names, optionally a new task for unplanned work, and optionally a decision when the diff shifts something structural. The reconciliation rests on one asymmetry — the user's description is the source of truth for **intent**, the `git diff` is the source of truth for **what happened**, and the job is to surface the daylight between them rather than quietly pick a side.
 
-Two failure modes pull against each other. Trusting the description and skipping the diff lets "done" claims past that the code does not actually evidence — criteria unmet, scope leaked into an adjacent task, tests missing — and the on-disk ledger starts lying. Trusting the diff and inventing intent attributes unrelated file changes to whichever task sounds nearest, which poisons the task history with work the user never meant to log there.
+Two failure modes pull against each other. Trusting the description and skipping the diff lets "done" claims past that the code does not actually evidence — criteria unmet, scope leaked into an adjacent task, tests missing — and the on-disk ledger starts lying. Trusting the diff and skipping the description invents intent — unrelated file changes pinned to whichever task sounds nearest, and the task history poisoned with work the user never meant to log there.
 
 ## Read first
 
