@@ -19,9 +19,9 @@ Load `.metis/conventions/frontmatter-schema.md` on demand for `doc_hashes`, `spe
 
 ## What the change reaches
 
-Detection is a scan, not a walk. `docs_refs` on task and epic frontmatter names the candidate set — artifacts that reference the changed file at all. `doc_hashes` and `spec_version` narrow further: a task whose `doc_hashes` entry for the changed path no longer matches was baselined before the change and deserves a look; a task whose `spec_version` trails the project's and whose `docs_refs` overlap the `BUILD.md` sections that moved does too.
+Detection is a scan, not a walk. `docs_refs` on task and epic frontmatter names the candidate set — artifacts that cite the changed file. `doc_hashes` and `spec_version` narrow it: a task whose `doc_hashes` entry for the changed path no longer matches was baselined before the change and deserves a look; a task whose `spec_version` trails the project's and whose `docs_refs` overlap the moved `BUILD.md` sections does too.
 
-A candidate is not an edit. Read the change against each candidate's excerpted Context before deciding anything — a task whose excerpt still reads as true is a non-edit even with a mismatched hash.
+A candidate is not an edit. Read the change against each candidate's excerpted Context before deciding — a task whose excerpt still reads as true is a non-edit even with a mismatched hash.
 
 ## Cosmetic vs. substantive
 
@@ -29,7 +29,7 @@ Classification is the hinge of the cascade. Cosmetic changes are wording tighten
 
 The test: does the change alter what a reviewer would check, or what an implementer would build? If no, cosmetic. If yes, substantive.
 
-Cosmetic edits across the candidate set propagate as a single bulk-approval prompt — the changed passage, the artifacts that quote it, one line of rationale. Substantive edits get the walk register: one item, the diff the cascade proposes, user accepts or redirects. Bulk-approving a substantive edit is the failure mode this classification exists to prevent; when unsure, err substantive and walk.
+Cosmetic edits across the candidate set propagate as a single bulk-approval prompt — the changed passage, the artifacts that quote it, one line of rationale. If any candidate's acceptance criteria turn on the specific wording being rephrased, that candidate leaves the batch and gets reclassified substantive. Substantive edits get the walk register: one item, the diff the cascade proposes, user accepts or redirects. Bulk-approving a substantive edit is the failure mode this classification exists to prevent; when unsure, err substantive and walk.
 
 ## Cascade by task status
 
@@ -39,6 +39,14 @@ Each task's `status` determines the rule the cascade applies to it:
 - `in-progress` — explicit confirmation before editing. Someone is actively working against the current framing, and a silent edit reframes their work mid-flight; surface the proposed change and let the user decide whether to land it now, defer until the task exits `in-progress`, or redirect the in-flight work.
 - `done` — never edited in place. The task is the historical record of what was built against the prior spec; drift against it becomes a new task or a superseding decision, not a rewrite of the archive.
 - `blocked` — treat as `pending`. The block is orthogonal to the cascade and does not license silent edits.
+
+## Cascade by epic state
+
+Epic `status` is a three-state enum and the rules mirror the task treatment:
+
+- `pending` — edit in place with approval.
+- `in-progress` — explicit confirmation for scope or exit-criterion shifts; bundle any in-flight tasks the shift invalidates into the same cascade pass.
+- `done` — never rewritten; drift becomes a new epic, a task under a later epic, or a superseding decision, per the same logic as `done` tasks.
 
 ## `done` tasks: new task or superseding decision
 
@@ -52,9 +60,11 @@ When both are true, do both: the decision records the reframing, the new task ca
 
 ## Decision per accepted change
 
-One decision per accepted cascading change, not one per cascade. Context pins the upstream change to a specific path and passage, or to the `BUILD.md` section that shifted. Decision names the downstream edits the cascade landed — which task files were edited, which `done` tasks spawned superseders or follow-ups, which epic scopes narrowed — as a concrete list, not a summary. Consequences names what this commits the project to that the upstream change alone did not.
+One decision per accepted cascading change, not one per cascade. The unit is one coherent upstream commitment shift — a single doc edit, or one `BUILD.md` section rewrite — absorbed across its candidate set. An independent downstream policy question the cascade happens to uncover gets its own decision.
 
-The file's shape lives in `.metis/conventions/decision-format.md`. What this skill names is what the Context must make legible so a later reader can reconstruct the cascade without the session transcript: the upstream change, the candidate set, the classification call, and the specific downstream artifacts that absorbed it.
+Context pins the upstream change to a specific path and passage, or to the `BUILD.md` section that shifted. Decision names the downstream edits the cascade landed — which task files were edited, which `done` tasks spawned superseders or follow-ups, which epic scopes narrowed — as a concrete list, not a summary. Consequences names what this commits the project to that the upstream change alone did not.
+
+The file's shape lives in `.metis/conventions/decision-format.md`; what this skill names is what Context must make legible for a later reader — the upstream change, the candidate set, the classification call, and the specific downstream artifacts that absorbed it.
 
 ## Baseline after edits land
 
