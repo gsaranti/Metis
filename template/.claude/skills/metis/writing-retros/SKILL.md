@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Writing retros
 
-An epic retro is the record of what the next epic should do differently. It lives at `epics/<name>/retro.md`, is written by `/metis:epic-retro` once the exit criterion has passed, and is the one place where the work of a closed epic becomes feedback into the work of the next one. The job of this skill is to render that record as signal — per-task estimation, replans with the lesson named, assumption failures against the starting docs — rather than as a narrative of the epic's arc or an overall verdict on how it went.
+An epic retro is the record of what the next epic should do differently — written to `epics/<name>/retro.md` at epic close. The job of this skill is to render that record as signal — per-task estimation, replans with the lesson named, assumption failures against the starting docs — rather than as a narrative of the epic's arc or an overall verdict on how it went.
 
 Two failure modes pull against each other. Reassurance absorbs per-task misses into gestalt lines — "most tasks landed close to estimate" tells the next breakdown nothing because it hides which tasks slipped, by how much, and what shape they shared. Self-flagellation mirrors the same error from the opposite side — every surprise narrated as a miss, every replan phrased as an apology — and buries the handful of entries that would actually change the next epic under noise. Both leave the next retro's reader where they started.
 
@@ -21,11 +21,11 @@ Decisions made during the epic live in `decisions/` and are findable by slug; th
 
 There is no convention file for a retro. Five blocks, each with its own judgment:
 
-- **Estimation accuracy** — per task, not gestalt. One line per task, naming the actual-vs-planned shape (time, scope, or complexity) or "tracked as planned." The block carries every task in the epic; summarizing into "most landed close" is what this skill is guarding against.
+- **Estimation accuracy** — per task, not gestalt. One line for every task in the epic, naming the actual-vs-planned shape (time, scope, or complexity) or "tracked as planned."
 - **Replans** — tasks that were rewritten or split mid-flight, each with the task id, the shift, and the signal that would have surfaced it at task-write time. Absent when the breakdown held.
 - **Assumption failures** — Phase 1 positions (in `BUILD.md`, in the `EPIC.md`, in a starting decision) that the epic's work proved wrong. One line per, naming the assumption verbatim and the shape the code settled on.
 - **Task-breakdown lessons** — patterns across the epic's tasks: splits that were too large, splits that were too small, dependencies that did not land. Absent when no pattern emerged.
-- **Scratch promotions** — scratch files that became load-bearing mid-epic and should leave `scratch/` before the directory is cleaned. The retro flags; `/metis:scratch-cleanup` moves. Absent when no promotions are due.
+- **Scratch promotions** — scratch files that became load-bearing mid-epic and should leave `scratch/` before the directory is cleaned. The retro flags; it does not move. Absent when no promotions are due.
 
 An empty block is fine. Manufacturing entries to fill each one is the mirror image of absorbing them into gestalt.
 
