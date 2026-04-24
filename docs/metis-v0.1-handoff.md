@@ -362,7 +362,6 @@ scratch/                   # ephemeral, mostly gitignored
     epic-format.md
     decision-format.md
     frontmatter-schema.md
-    write-rules.md
   templates/
     task.md
     epic.md
@@ -563,7 +562,9 @@ Helpful errors with the likely-correct alternative. Not "wrong mode, goodbye."
 
 ## Conventions
 
-Five files at `.metis/conventions/`. They define the canonical on-disk formats Metis relies on. Conventions are a **human- and design-time reference**: they encode the shape of files so both the user and Metis's agents agree on what those files mean. At runtime, skills, subagents, and commands each carry only the slice of the conventions they need — the conventions files are not bulk-loaded into every session.
+Four files at `.metis/conventions/`. They define the canonical on-disk formats Metis relies on. Conventions are a **human- and design-time reference**: they encode the shape of files so both the user and Metis's agents agree on what those files mean. At runtime, skills, subagents, and commands each carry only the slice of the conventions they need — the conventions files are not bulk-loaded into every session.
+
+(A fifth document, `write-rules.md`, originally lived alongside these but was moved to `docs/metis-write-rules.md`. It is a design-time narrative about who-writes-where and the framework's layer responsibilities, not a file-format spec; it is never referenced by a skill at runtime, so keeping it in the runtime conventions folder was misleading. See "Write rules (design-time reference)" below.)
 
 ### `task-format.md`
 
@@ -620,9 +621,9 @@ spec_version: 3               # bumps when BUILD.md sections this task reference
 
 Specifies what's required vs optional, what values are valid, and why each field exists. The `doc_hashes` and `spec_version` fields support drift detection — when a referenced doc or `BUILD.md` section changes, the task is flagged stale by `/metis:rebaseline` and offered for cascade by `/metis:sync`.
 
-### `write-rules.md`
+### Write rules (design-time reference, lives in `docs/metis-write-rules.md`)
 
-A design-time reference for who writes what. Captures the rules as a whole so the design stays legible; the actual enforcement lives in the individual skill and subagent prompts, which each carry the one or two rules they need. Highlights:
+A design-time reference for who writes what. Captures the rules as a whole so the design stays legible; the actual enforcement lives in the individual skill and subagent prompts, which each carry the one or two rules they need. Lives in `docs/` rather than `.metis/conventions/` because no skill loads it at runtime — it is framework-author reading, not a file-format spec a runtime artifact consults. Highlights:
 
 - Only the parent/main session writes to `scratch/CURRENT.md`
 - Subagents write only to their assigned task file and their return value
@@ -633,7 +634,7 @@ A design-time reference for who writes what. Captures the rules as a whole so th
 - When a doc in `docs/` changes, update `BUILD.md` if relevant and log a decision entry
 - Resolved items from `CONTRADICTIONS.md` / `QUESTIONS.md` move to `docs/RESOLVED.md` as minimal pointers; `RESOLVED.md` is never loaded during a walk unless explicitly requested
 
-It also defines the **command-prompts convention** (an optional trailing free-text argument to most substantive commands) and three discipline rules for it: augment-not-replace, flag-scope-expansion, and acknowledge-use-explicitly. The prompt is ephemeral — never persisted to disk. Individual commands and subagents pick up this convention on their own; the convention file is the single source that documents it.
+It also defines the **command-prompts convention** (an optional trailing free-text argument to most substantive commands) and three discipline rules for it: augment-not-replace, flag-scope-expansion, and acknowledge-use-explicitly. The prompt is ephemeral — never persisted to disk. Individual commands and subagents pick up this convention on their own; the file is the single source that documents it.
 
 ---
 
@@ -796,7 +797,7 @@ Examples earn their keep when prose alone would leave the reader writing a notic
 
 Examples are also the one place where register — terse, declarative, committal prose — transmits to Claude. That's legitimate because register is part of what makes the artifact work; it is not character dressing on top. The discipline: every register choice in an example should be traceable to a property the skill or convention names. A register choice that isn't artifact-justified is leaking character without warrant, and either the example should be revised or the skill should name the property the example was implicitly relying on.
 
-Each skill sets `disable-model-invocation: true` in its frontmatter. Metis skills are a library dispatched by commands (or by explicit user invocation like `/metis:writing-decisions` or an inline reference in the prompt), not ambient helpers that auto-trigger on conversation cues. Two corollaries for skill content: descriptions are a one-line summary of *what the skill teaches*, not an enumeration of who calls it or when to invoke it; and SKILL.md files do not carry a "Used by" section — by the time a reader is inside the file, they are using it, and the callers are already documented in the command prompts and in `write-rules.md`. This keeps the always-on context small, keeps control flow explicit, and keeps SKILL.md content focused on the teaching rather than on routing metadata.
+Each skill sets `disable-model-invocation: true` in its frontmatter. Metis skills are a library dispatched by commands (or by explicit user invocation like `/metis:writing-decisions` or an inline reference in the prompt), not ambient helpers that auto-trigger on conversation cues. Two corollaries for skill content: descriptions are a one-line summary of *what the skill teaches*, not an enumeration of who calls it or when to invoke it; and SKILL.md files do not carry a "Used by" section — by the time a reader is inside the file, they are using it, and the callers are already documented in the command prompts and in `docs/metis-write-rules.md`. This keeps the always-on context small, keeps control flow explicit, and keeps SKILL.md content focused on the teaching rather than on routing metadata.
 
 Skills teach what makes the artifact work, not how Claude should behave. Structural advice about the artifact belongs in skills ("a Decision that hedges is a question in disguise — readers can't tell what was decided"); character-shaping advice about Claude does not ("be more committal"). The two can sound adjacent but do different work. This does not rule out judgment content — what makes a good Context section, when to split a file, when something isn't decision-shaped are all load-bearing calls a skill should make — but the judgment is anchored to the artifact's function, not to Claude's voice. If a prospective skill cannot find a structural hook and its content only makes sense as advice about Claude's approach, that content belongs in a command prompt (which is allowed to be directive about a specific turn) or is not skill-shaped. The underlying bet: good user taste plus Claude's default behavior plus Metis structure produces better outputs than a framework that tries to rewrite Claude's character. Metis gives direction, order, and context; it does not adjust personality.
 
@@ -1035,7 +1036,7 @@ Build from the deepest layer outward. Each layer depends only on what's below it
 
 ### Order
 
-1. **Conventions** (5 files). Everything else depends on these: `task-format.md`, `epic-format.md`, `decision-format.md`, `frontmatter-schema.md`, `write-rules.md`.
+1. **Conventions** (4 files). Everything else depends on these: `task-format.md`, `epic-format.md`, `decision-format.md`, `frontmatter-schema.md`. (A separate design-time reference, `docs/metis-write-rules.md`, captures the framework's layer responsibilities and who-writes-where rules; it informs how the skills and commands are written but is not itself loaded at runtime.)
 2. **Templates** (3 files). Directly instantiate the conventions — `task.md`, `epic.md`, `decision.md` — and serve as canonical starting points for each artifact type. Built immediately after conventions because writing the templates solidifies the convention spec by making it concrete.
 3. **Skills** (15 skills). The substance of agent behavior. Each skill is a directory with `SKILL.md` plus an `examples/` folder. Examples are critical — skills without examples are hand-wavy.
 4. **Subagents** (3 subagents). Containers that compose skills + tool restrictions: `task-planner`, `task-implementer`, `task-reviewer`.
@@ -1057,7 +1058,7 @@ If the first command lands and reveals a shape change, expect to revisit some sk
 
 Inside each layer, dependency order still matters for a few specific items:
 
-- **Conventions**: `frontmatter-schema.md` before `task-format.md` and `epic-format.md` (they reference it). `write-rules.md` last (it encodes cross-file rules that depend on understanding the other formats).
+- **Conventions**: `frontmatter-schema.md` before `task-format.md` and `epic-format.md` (they reference it). The companion `docs/metis-write-rules.md` is written last (it encodes cross-file rules that depend on understanding the other formats and the layer split).
 - **Templates**: Any order; they're peers.
 - **Skills**: `reconciling-docs` is the heaviest skill; budget accordingly. The decomposing/writing pairs (`decomposing-work-into-tasks` + `writing-a-task-file`; `decomposing-build-into-epics` + `writing-an-epic-file`) are independent siblings — either order within a pair is fine, and the two halves are loaded separately by callers that only need one.
 - **Subagents**: Any order; they're peers once the skills they reference exist.
@@ -1344,7 +1345,7 @@ This was originally floated for `/metis:plan-task`, `/metis:implement-task`, `/m
 
 The reasoning ties to principle #1 ("structure the project, not the agent"). If Metis forbids the user from giving in-the-moment guidance, then Metis *is* the religion you're trying to avoid. The framework provides scaffolding and opinions; it should not dictate how every task is approached.
 
-Three discipline points (codified in `write-rules.md` and the subagent system prompts):
+Three discipline points (codified in `docs/metis-write-rules.md` and the subagent system prompts):
 
 1. **Augment, don't replace.** The prompt augments the task file (or command context); it does not override it. If the prompt genuinely contradicts the task file, flag the conflict and ask.
 2. **Flag scope expansion.** If the prompt expands scope, note it in the return rather than silently doing it.
@@ -1384,7 +1385,7 @@ Net manifest impact: +1 skill.
 |---|---|---|
 | Commands | 20 | 22 (+`/metis:sync`, +`/metis:log-work`; renamed walk-contradictions → walk-open-items) |
 | Skills | 10 | 15 (Refinements 1–2 added `propagating-spec-changes` and `logging-external-work`; Refinement 9 split `reconciling-docs` into `reconciling-docs` + `walking-open-items`; `session-handoff`, `writing-retros`, and `honest-scope-reporting` accreted during drafting without dedicated refinement entries) |
-| Conventions | 5 | 5 (no new files; `frontmatter-schema` adds `doc_hashes` + `spec_version`; `write-rules` adds command-prompts convention) |
+| Conventions | 5 | 4 (`frontmatter-schema` adds `doc_hashes` + `spec_version`; `write-rules` was relocated to `docs/metis-write-rules.md` as a design-time reference and gained the command-prompts convention) |
 | Subagents | 3 | 3 (no new subagents; existing ones gain invocation-prompt discipline and load parent `EPIC.md` in epic mode) |
 
 ---

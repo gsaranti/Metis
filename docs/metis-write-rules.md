@@ -2,7 +2,7 @@
 
 A design-time reference. This file exists so the full who-writes-where picture is readable in one place. **It is not bulk-loaded at runtime.** Individual skills and subagent system prompts carry only the one or two rules they actually need. If this file is growing such that it has to be read in full during a task, one of the skills is underspecified.
 
-File *structure* is covered in `task-format.md`, `epic-format.md`, `decision-format.md`, and `frontmatter-schema.md`. This file is about *behavior*.
+File *structure* is covered in `task-format.md`, `epic-format.md`, `decision-format.md`, and `frontmatter-schema.md` (under `template/.metis/conventions/`). This file is about *behavior*.
 
 ## The underlying property
 
@@ -18,7 +18,7 @@ Metis is built in three conceptual layers — skills, commands, and conventions 
 
 **Subagents are scoped commands.** A subagent's system prompt is a command that runs in a fresh context window with restricted tools. Same layer, same rules: invoke skills by reference; name specific inputs and flow; do not teach artifact shape.
 
-**Conventions own the on-disk format.** Section order, filename rules, frontmatter schema, cross-file write rules (this file). Conventions are static reference; they do not reach upward into skill or command behavior.
+**Conventions own the on-disk format.** Section order, filename rules, frontmatter schema. Conventions are static reference; they do not reach upward into skill or command behavior.
 
 The one-way rule is what keeps the split honest: a skill that starts naming specific files is drifting into command territory; a command that starts teaching section structure is drifting into skill territory. When content fits none of the layers cleanly, it usually belongs in a command prompt — which is allowed to be directive about a specific turn.
 
@@ -175,7 +175,7 @@ Metis's other load-bearing property is that a fresh session can get oriented wit
 
 - A `SKILL.md` names at most two "read first" files. Anything else is described (with a pointer) and loaded only if the agent decides it needs to.
 - Skills cite conventions, not other skills. Cross-skill knowledge duplication is preferred to cross-skill loading — it keeps each skill's cost predictable.
-- Convention files that run long (this file, `frontmatter-schema.md`) are **never bulk-loaded at runtime**. Skills that need a rule from them quote the specific rule inline. This file in particular is design-time reading; if a runtime skill wants to load it in full, the skill is underspecified.
+- Convention files that run long (`frontmatter-schema.md` in particular) are **never bulk-loaded at runtime**. Skills that need a rule from them quote the specific rule inline.
 - Counter-examples in `examples/` directories are *described* in the parent `SKILL.md`, not prescribed as reads. The one-liner about *what's wrong* carries the educational value; loading the bad file just spends context.
 
 ### Corpus access patterns
