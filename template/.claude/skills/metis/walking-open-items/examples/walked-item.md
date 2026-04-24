@@ -2,7 +2,7 @@
 
 Two items followed through resolution — one contradiction, one question. Walking an item produces two new bits of on-disk state: an inline edit to the source doc in `docs/` so it no longer reads as open, and a pointer appended to `docs/RESOLVED.md`. The item itself is removed from `docs/CONTRADICTIONS.md` or `docs/QUESTIONS.md`.
 
-This file shows the doc update and the `docs/RESOLVED.md` pointer for each example, and narrates the alternatives the walk offered — that narrative is context, not a persisted artifact. The items are the `C3` and `Q7` captures from `reconciling-docs/examples/good-open-items.md`, so the upstream framing and the downstream resolution read together.
+This file shows the doc update and the `docs/RESOLVED.md` pointer for each example, and narrates the alternatives the walk offered — that narrative is context, not a persisted artifact.
 
 ---
 

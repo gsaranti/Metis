@@ -64,7 +64,7 @@ The rules below describe who among Metis's own agents and commands writes to eac
 ### `decisions/*.md`
 
 - **Writes**: append-only. New files only. Metis never edits an existing decision.
-- **Who creates**: `/metis:walk-open-items`, `/metis:sync`, `/metis:log-work`, and the main session when a doc or `BUILD.md` change warrants a standing record. See `decision-format.md`.
+- **Who creates**: `/metis:sync`, `/metis:log-work`, and the main session when a doc or `BUILD.md` change warrants a standing record.
 - **Subagents**: never. Task-level subagents record observations in the task's Notes; if something warrants a decision, the parent session writes it.
 - **Superseding**: a new decision names the superseded file in its Context. The old decision is not modified.
 - **User edits**: allowed, but editing an existing decision breaks the "decisions are a stable historical record" property. The right move for a changed position is a new decision that supersedes the old one.
