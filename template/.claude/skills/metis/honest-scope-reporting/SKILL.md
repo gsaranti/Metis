@@ -26,7 +26,7 @@ There is no convention file for a scope report. The shape — one block, usually
 - **Stubbed** — placeholders that will not behave correctly under real conditions: a function that returns a constant, an error path that raises `NotImplementedError`, a fixture hard-coded where logic was specified, or logic that handles only the sample payload it was built against. One line per entry, naming the placeholder and where it lives.
 - **Handled differently** — criteria met by a shape materially different from what the specification named. One line per entry, with the delta spelled out (see below).
 
-An empty report is the common case when the work met its criteria cleanly. Say so in one line; do not manufacture entries to fill the block. A report that invents reductions to look thorough is the mirror image of one that hides them.
+An empty report is the common case when the work met its criteria cleanly. Say so in one line — manufacturing entries to fill the block is the mirror image of hiding them.
 
 ## Categories are not synonyms
 
