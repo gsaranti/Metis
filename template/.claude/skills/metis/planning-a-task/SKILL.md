@@ -55,7 +55,7 @@ A **flag** is a gap the plan could not settle without guessing in a way that wou
 
 ## The task may already be done
 
-Before sequencing the plan, a light check against the task's `touches` and acceptance criteria is worth the cost. Glob the expected paths, read the likely files, look for whether the commitments the task makes are already evidenced in the code. If they are, the right return is not a plan — it is a finding naming which files already exist and which criteria are visibly met. The caller decides from the finding what to do next.
+Before sequencing the plan, a light check against the task's `touches` and acceptance criteria is worth the cost. Look for whether the commitments the task makes are already evidenced in the code. If they are, the right return is not a plan — it is a finding naming which files already exist and which criteria are visibly met. The caller decides from the finding what to do next.
 
 The bar is *is there evidence the work is substantially done*, not *is every criterion verified*. A full verification would re-read files the plan should only glance at; it belongs downstream of the plan, not inside it. When evidence is ambiguous — some files present, some criteria partially evident — produce the plan but flag the overlap in its assumptions section so the caller can weigh the overlap against proceeding. A plan that proceeds as if the code were absent when it is obviously present is the same kind of silent drift this skill warns against in the other direction.
 
