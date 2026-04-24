@@ -1,6 +1,6 @@
 # Task file format
 
-A task file is a self-sufficient brief for one unit of implementation work. A subagent loading a task file — plus `CLAUDE.md`, the docs the task references, and the parent `EPIC.md` in epic mode — must have everything it needs to plan, implement, or review without reading any other task file.
+A task file is a self-sufficient brief for one unit of implementation work. A subagent loading a task file — plus `CLAUDE.md`, the docs the task references, and the parent `EPIC.md` when the task lives under one — must have everything it needs to plan, implement, or review without reading any other task file.
 
 If a subagent needs context beyond that to do its job, the task file is underspecified. Fix the task file; don't widen the context.
 
@@ -8,8 +8,12 @@ If a subagent needs context beyond that to do its job, the task file is underspe
 
 `NNNN-kebab-case-slug.md`, where `NNNN` is the zero-padded id (see `frontmatter-schema.md`) and the slug is derived from the title.
 
-- Flat mode: `tasks/0007-stripe-webhook-handler.md`
-- Epic mode: `epics/002-billing/tasks/0007-stripe-webhook-handler.md`
+The task file sits in one of two places, depending on whether the project uses epics:
+
+- Flat: `tasks/0007-stripe-webhook-handler.md`
+- Under an epic: `epics/002-billing/tasks/0007-stripe-webhook-handler.md`
+
+The two are not alternate configurations of a single project — a given project has one or the other. A project graduates from flat to epic via `/metis:promote-to-epics`.
 
 ## Frontmatter
 

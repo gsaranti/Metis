@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Decomposing a build into epics
 
-An epic is one capability held together by a single testable exit criterion. The job of this skill is to take a body of work — a `BUILD.md`, or a flat-mode task backlog being promoted — and decide how many epics it wants to be, which capability goes into each, and whether any candidate is not epic-shaped at all. The output is the list of capability units that will be handed to the file-writing step, not files themselves.
+An epic is one capability held together by a single testable exit criterion. The job of this skill is to take a body of work — a `BUILD.md`, or an existing flat `tasks/` backlog being promoted — and decide how many epics it wants to be, which capability goes into each, and whether any candidate is not epic-shaped at all. The output is the list of capability units that will be handed to the file-writing step, not files themselves.
 
 Two failure modes pull against each other: cutting too fine, so an epic's exit criterion is tiny and the directory-per-epic overhead outweighs the grouping benefit; and cutting too coarse, so one epic bundles two capabilities and the exit criterion has to say "and" to cover them — at which point the epic cannot be called done without hand-waving.
 

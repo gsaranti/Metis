@@ -13,7 +13,7 @@ Two failure modes pull against each other. Over-planning prescribes every keystr
 ## Read first
 
 - The task file being planned, and the source-doc passages behind its `docs_refs`. Re-open the cited sections when a step turns on a passage the task abbreviated.
-- In epic mode, the parent `EPIC.md`. The plan stays inside the epic's exit criterion; a plan that reaches past it has crossed a task boundary, not a step boundary.
+- When the task lives under an epic, the parent `EPIC.md`. The plan stays inside the epic's exit criterion; a plan that reaches past it has crossed a task boundary, not a step boundary.
 
 Load `.metis/conventions/task-format.md` on demand when a task-file field question arises. Use it as a lookup, not required reading.
 

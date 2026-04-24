@@ -13,7 +13,7 @@ Read this document top to bottom. Every section matters. By the end, you should 
 3. [The existing landscape](#the-existing-landscape)
 4. [Metis's positioning and principles](#metiss-positioning-and-principles)
 5. [The workflow Metis encodes](#the-workflow-metis-encodes)
-6. [Project modes: flat vs epic](#project-modes-flat-vs-epic)
+6. [Flat and epic layouts](#flat-and-epic-layouts)
 7. [Directory structure](#directory-structure)
 8. [The command list](#the-command-list)
 9. [Conventions](#conventions)
@@ -32,7 +32,7 @@ Read this document top to bottom. Every section matters. By the end, you should 
 
 ## What Metis is
 
-Metis is an agentic development toolset for Claude Code, oriented around **context management across sessions** as the hard problem. It works on projects of any size and doc-maturity — flat task mode for smaller work, epic mode for larger builds, with or without an existing docs corpus. It structures the project, not the agent — giving Claude direction, order, and context rather than trying to reshape how Claude thinks or writes.
+Metis is an agentic development toolset for Claude Code, oriented around **context management across sessions** as the hard problem. It works on projects of any size and doc-maturity — a flat `tasks/` directory for smaller work, an `epics/` layout for larger builds, with or without an existing docs corpus. It structures the project, not the agent — giving Claude direction, order, and context rather than trying to reshape how Claude thinks or writes.
 
 The core value proposition is simple: at any moment, a fresh agent session can read Metis's on-disk state and know where the project stands — what's planned, what's in progress, what's done, what was decided, and why. How the code actually got written between sessions is orthogonal. The user can code alone, pair with an agent without invoking any Metis commands, use Metis's plan/implement/review loop, or mix all three. Metis's job is to make the next session's context accurate regardless.
 
@@ -145,7 +145,7 @@ These are Metis's spine. Everything else is convention that can flex:
 
 3. **Docs before code, when docs exist.** On a large doc-heavy project, Phase 0 reconciliation pays for itself. The agent reads `docs/`, produces synthesis + contradictions + open questions, and the user walks through them to populate a decisions log before building. This is Metis's strongest recommendation — but a recommendation, not a gate.
 
-4. **Context is task-scoped, not project-scoped.** Every task file is self-sufficient. Subagents work from a task file plus `CLAUDE.md`, the referenced docs, and the parent epic (in epic mode) — never from other task files or `BUILD.md`. State lives on disk, not in session transcripts.
+4. **Context is task-scoped, not project-scoped.** Every task file is self-sufficient. Subagents work from a task file plus `CLAUDE.md`, the referenced docs, and the parent epic when the task lives under one — never from other task files or `BUILD.md`. State lives on disk, not in session transcripts.
 
 5. **Fresh instances at phase boundaries.** Resumption is for continuity within a phase, not across them. Starting Phase 1 in a fresh instance drops context that would otherwise compound into drift. Metis's artifacts are built to rehydrate a fresh agent quickly.
 
@@ -205,8 +205,8 @@ Token estimation: `wc -w docs/ × 1.3` for prose, × 1.5 for mixed, × 1.8 for s
 
 From the reconciled docs, produce:
 - `BUILD.md` — short (3–8 pages) architecture/build plan in the agent's own words. Data model, modules, integrations, testing approach, first vertical slice.
-- Epic breakdown (epic mode) or flat task backlog (flat mode)
-- Task files for the first epic only (epic mode) or the full backlog (flat mode, if small enough)
+- Epic breakdown (if the project is going to use epics) or a flat task backlog otherwise
+- Task files for the first epic only (if using epics) or the full backlog (flat layout, if small enough)
 
 User edits ruthlessly. The editing pass is the highest-leverage hour of the project.
 
@@ -229,7 +229,7 @@ This loop is optional. Any task can be coded by the user alone, paired with an a
 
 Session begins with `/metis:session-start` (loading dose), ends with `/metis:session-end` (update `CURRENT.md`).
 
-Epic boundaries (epic mode): `/metis:epic-retro` writes a retro, `/metis:scratch-cleanup` promotes useful scratch out, next epic's tasks get generated.
+Epic boundaries (when the project uses epics): `/metis:epic-retro` writes a retro, `/metis:scratch-cleanup` promotes useful scratch out, next epic's tasks get generated.
 
 ### Pair programming dynamics
 
@@ -241,11 +241,13 @@ Treat the agent as the junior, user as the navigator. Hard rules:
 
 ---
 
-## Project modes: flat vs epic
+## Flat and epic layouts
 
-Metis supports two structural modes, determined at `/metis:init` and stored in `.metis/config.yaml`.
+Metis projects take one of two structural shapes. The shape is not a configured mode — it is emergent from what exists on disk. A project that has run `/metis:generate-tasks` has a flat `tasks/` directory; a project that has run `/metis:epic-breakdown` has an `epics/` directory with `EPIC.md` files inside. Commands read the filesystem to know which shape they are dealing with.
 
-### Flat mode
+There is no `mode:` field in `.metis/config.yaml`, no init-time mode prompt, and no explicit state to keep in sync with the filesystem. The shape is whatever the directories say it is.
+
+### Flat layout
 
 For medium projects with roughly 10–40 tasks that don't need capability-level grouping.
 
@@ -258,7 +260,7 @@ tasks/
 
 No `epics/` directory. No `EPIC.md` files. Just a flat list.
 
-### Epic mode
+### Epic layout
 
 For large projects with 40+ tasks and work that clusters into capabilities.
 
@@ -280,24 +282,30 @@ Directory-per-epic. Tasks nested under their epic. Retro lives with the epic.
 
 ### Graduation
 
-`/metis:promote-to-epics` exists for projects that start flat and grow. Takes existing flat tasks, proposes epic grouping, moves files, rewrites paths.
+`/metis:promote-to-epics` exists for projects that start flat and grow. Takes existing flat tasks, proposes epic grouping, moves files, rewrites paths. The command's preconditions are filesystem-based: it requires a `tasks/` directory at the root and refuses if `epics/` already has content.
 
-### Mode-dependent command behavior
+### Layout-dependent command behavior
 
-Most commands work in both modes. A few are mode-specific:
-- `/metis:epic-breakdown` — epic mode only (errors in flat)
-- `/metis:epic-retro` — epic mode only
-- `/metis:promote-to-epics` — flat mode only (errors in epic)
-- `/metis:generate-tasks` — takes no arg in flat mode, takes an epic name in epic mode (errors if mismatched)
+Most commands work the same regardless of shape. A few check the filesystem and behave accordingly:
 
-When a command is invoked in the wrong mode, error messages should suggest the likely-correct alternative. Example:
+- `/metis:epic-breakdown` — requires no existing flat `tasks/` content, because its output is an `epics/` scaffold. If flat tasks already exist, errors and points at `/metis:promote-to-epics`.
+- `/metis:epic-retro` — requires an `epics/<name>/` directory matching the argument. Errors if the project has no `epics/`.
+- `/metis:promote-to-epics` — requires a flat `tasks/` with content and an empty or absent `epics/`. Errors otherwise.
+- `/metis:generate-tasks` — with no argument, writes into flat `tasks/` (creates it if absent, assuming no `epics/` is present). With an epic name, writes into `epics/<name>/tasks/`. Errors if the argument shape does not match the filesystem shape.
+
+When a command hits a mismatch, error messages name what's on disk and suggest the likely-correct alternative. Example:
+
 ```
-This command requires epic mode, but this project is configured 
-for flat mode (.metis/config.yaml).
+This command requires an epics/ directory, but this project has a 
+flat tasks/ directory at the root.
 
-If your project has outgrown flat mode, run:
+If your project has outgrown the flat layout, run:
   /metis:promote-to-epics
 ```
+
+### Ambiguous state
+
+If both `tasks/` and `epics/` exist at the project root, the layout is ambiguous and the invoked command refuses rather than picking a side. Resolution is user-driven: usually by moving the flat tasks under an epic (or treating them as a pending `/metis:promote-to-epics` run), occasionally by deleting one side if it was created in error.
 
 ### What never differs
 
@@ -305,7 +313,7 @@ If your project has outgrown flat mode, run:
 - Session commands (`/metis:session-start`, `/metis:session-end`)
 - Maintenance (`/metis:scratch-cleanup`, `/metis:rebaseline`, `/metis:pushback`)
 
-The feature loop is the spine of Metis and is identical in both modes.
+The feature loop is the spine of Metis and is identical regardless of whether the project uses epics.
 
 ---
 
@@ -313,7 +321,7 @@ The feature loop is the spine of Metis and is identical in both modes.
 
 Two sets of files: project-root artifacts (project's own truth) and `.metis/` (framework scaffolding). Plus `.claude/` for harness integration.
 
-### Full layout (epic mode example)
+### Full layout (epic-layout example)
 
 ```
 README.md                  # human onboarding
@@ -354,7 +362,7 @@ scratch/                   # ephemeral, mostly gitignored
   research/                # web fetches (gitignored)
 
 .metis/                    # framework scaffolding
-  config.yaml              # mode: flat|epic, project settings
+  config.yaml              # project settings (spec_version, etc.)
   version                  # Metis version that scaffolded this
   MANIFEST.md              # what Metis created (for uninstall clarity)
   conventions/
@@ -387,7 +395,7 @@ scratch/                   # ephemeral, mostly gitignored
       ... (15 skills)
 ```
 
-### Flat mode variation
+### Flat-layout variation
 
 Replace `epics/` with:
 
@@ -428,7 +436,7 @@ Test for placement: *would a user care about this if Metis didn't exist?* If yes
 
 This project uses Metis for structured agentic development.
 
-**Mode**: flat (or epic)
+**Layout**: flat (`tasks/`) or epic (`epics/<name>/tasks/`) — whichever exists on disk.
 
 **Key files**:
 - BUILD.md — what we're building
@@ -470,16 +478,16 @@ Twenty-two commands total. All namespaced as `/metis:<name>` to avoid collisions
 
 ### Setup (4)
 
-- **`/metis:init`** — scaffold the Metis directory structure. Asks flat vs epic mode. Non-destructive; preserves existing files via delimited sections.
+- **`/metis:init`** — scaffold the Metis directory structure (`.metis/`, `.claude/`, `scratch/`, the delimited section in `CLAUDE.md` and `.gitignore`). Does not ask whether the project will use epics — that emerges from whether the user later runs `/metis:generate-tasks` (flat) or `/metis:epic-breakdown` (epics). Non-destructive; preserves existing files via delimited sections.
 - **`/metis:reconcile [prompt]`** — read `docs/`, produce `docs/SYNTHESIS.md`, `docs/INDEX.md`, `docs/CONTRADICTIONS.md`, and `docs/QUESTIONS.md`. Surfaces both contradictions (direct conflicts) and gray areas (silences, ambiguity, underspecification). Requires `docs/` to exist.
 - **`/metis:walk-open-items [prompt]`** — walk through open items from both `docs/CONTRADICTIONS.md` and `docs/QUESTIONS.md` one at a time. For each item, agent offers 1–2 suggested resolutions plus a free-form user-input option. Supports stop/resume across sessions via per-item status (`open` / `resolved` / `deferred` / `stale`); resolved items are moved to `docs/RESOLVED.md` immediately so the active files stay lean. Each resolution updates the relevant source doc and appends a minimal pointer to `RESOLVED.md`. No `decisions/` entries are written — Phase 0 finalizes the baseline the docs speak for; decisions start at Phase 1.
 - **`/metis:build-spec [prompt]`** — produce `BUILD.md`. Reads `docs/` + `decisions/` if they exist; accepts optional prompt as alternative or supplement.
 
 ### Planning (4)
 
-- **`/metis:epic-breakdown`** — *epic mode only*. Propose 8–15 epics from `BUILD.md`. Creates `EPIC.md` files after approval.
-- **`/metis:generate-tasks [epic]`** — generate task files. Flat mode: no arg, populates `tasks/`. Epic mode: takes epic name, populates that epic's `tasks/`. Errors on mode/arg mismatch.
-- **`/metis:feature <description>`** — describe a new feature mid-stream. Produces feature spec and task files. Works in all modes.
+- **`/metis:epic-breakdown`** — propose 8–15 epics from `BUILD.md` and create the `epics/` scaffold (one directory per epic with an `EPIC.md` inside) after approval. Refuses if a flat `tasks/` directory already has content; points at `/metis:promote-to-epics` instead.
+- **`/metis:generate-tasks [epic]`** — generate task files. With no argument, populates a flat `tasks/` directory (creates it if absent). With an epic name, populates `epics/<name>/tasks/`. Errors if the argument shape does not match the filesystem shape (e.g. passing an epic name in a flat-`tasks/` project, or omitting it when only `epics/` exists).
+- **`/metis:feature <description>`** — describe a new feature mid-stream. Produces feature spec and task files. Works regardless of whether the project uses epics.
 - **`/metis:skeleton-plan`** — plan the thinnest end-to-end slice. Read-only.
 
 ### Feature loop (5)
@@ -504,12 +512,12 @@ Twenty-two commands total. All namespaced as `/metis:<name>` to avoid collisions
 
 ### Epic boundaries (1)
 
-- **`/metis:epic-retro <epic>`** — *epic mode only*. Write `retro.md` for a finished epic.
+- **`/metis:epic-retro <epic>`** — write `retro.md` for a finished epic. Requires a matching `epics/<name>/` directory; errors if the project has no `epics/`.
 
 ### Maintenance (2)
 
 - **`/metis:scratch-cleanup`** — propose promotions out of `scratch/` and deletions. Waits for approval.
-- **`/metis:promote-to-epics`** — *flat mode only*. Graduate flat → epic by grouping existing tasks into proposed epics.
+- **`/metis:promote-to-epics`** — graduate flat → epic layout by grouping existing tasks into proposed epics. Requires a flat `tasks/` with content and an empty or absent `epics/`; errors otherwise.
 
 ### Command-to-skill-to-subagent mapping
 
@@ -540,22 +548,22 @@ Twenty-two commands total. All namespaced as `/metis:<name>` to avoid collisions
 
 Commands are thin wrappers. Skills carry the substance. Subagents provide clean context + tool restrictions for task-level execution.
 
-### Error messages on mode mismatch
+### Error messages on layout mismatch
 
-Commands that check mode should produce helpful errors:
+Commands that check filesystem layout should produce helpful errors. Each error names what's on disk and points at the likely-correct alternative:
 
 ```
-This command requires epic mode, but this project is configured 
-for flat mode (.metis/config.yaml).
+This command requires an epics/ directory, but this project has a 
+flat tasks/ directory at the root.
 
-If your project has outgrown flat mode, run:
+If your project has outgrown the flat layout, run:
   /metis:promote-to-epics
 
 Otherwise, you probably want:
   /metis:generate-tasks
 ```
 
-Helpful errors with the likely-correct alternative. Not "wrong mode, goodbye."
+Helpful errors with the likely-correct alternative. Not "wrong layout, goodbye."
 
 ---
 
@@ -572,7 +580,7 @@ Specifies task file structure:
 - Section order: Goal, Context (excerpted), Scope boundaries, Acceptance criteria, Expected file changes, Notes
 - Sizing: ~400–1200 words. Longer means split.
 - Excerpting rule: quote doc sections directly, don't just link
-- In epic mode, the parent `EPIC.md` is part of every task's implicit context (subagents load it alongside the task file)
+- When the task lives under an epic, the parent `EPIC.md` is part of every task's implicit context (readers load it alongside the task file)
 
 Task files are stable by default, not immutable: the user may edit any field by hand. The `id` and `title` are expected to stay fixed once a task is underway because other artifacts refer to them, but changing them is a supported workflow — reconcile via `/metis:log-work` or a direct resync, not by forbidding the edit.
 
@@ -601,7 +609,7 @@ Canonical YAML frontmatter fields:
 ```yaml
 ---
 id: "0007"                    # zero-padded 4-digit STRING (quoted — YAML parses 0007 as int 7)
-epic: 002-billing             # epic mode only
+epic: 002-billing             # present only when the task lives under epics/<name>/tasks/
 title: Stripe webhook handler
 status: pending | in-progress | in-review | done | blocked
 priority: 1-5
@@ -657,7 +665,7 @@ The task-authoring and epic-authoring responsibilities are each split across two
 
 **Purpose**: Given one decomposed unit of work, produce a well-formed task file.
 
-**Covers**: Outcome-framed goals, excerpting from source docs (quote rather than link), scope-boundary articulation (explicitly listing what's out), testable acceptance criteria, sizing (~400–1200 words), id assignment, epic-mode parent-duplication discipline, flagging local ambiguity.
+**Covers**: Outcome-framed goals, excerpting from source docs (quote rather than link), scope-boundary articulation (explicitly listing what's out), testable acceptance criteria, sizing (~400–1200 words), id assignment, no-duplicating-the-parent discipline when the task lives under an epic, flagging local ambiguity.
 
 **Used by**: `/metis:generate-tasks`, `/metis:feature`.
 
@@ -697,7 +705,7 @@ The task-authoring and epic-authoring responsibilities are each split across two
 
 ### `decomposing-build-into-epics`
 
-**Purpose**: Cut `BUILD.md` (or a set of flat-mode tasks being promoted) into the right number of capability-sized epics.
+**Purpose**: Cut `BUILD.md` (or an existing flat `tasks/` backlog being promoted) into the right number of capability-sized epics.
 
 **Covers**: Capability-not-category framing ("Users can sign up and log in" not "Auth"), rough targets (~8–15 epics total, enough tasks per epic to justify the directory but no quota), dependency identification, "does this want to split?" heuristics, when to merge, flagging structural ambiguity.
 
@@ -833,7 +841,7 @@ Two subagents at `.claude/agents/metis/<name>.md`: `task-planner` and `task-revi
 
 **System prompt covers**:
 - Fresh context — the reviewer didn't write the code, has no ego
-- What to load (CLAUDE.md, task file including acceptance criteria, parent `EPIC.md` in epic mode, git diff, implementer's return notes)
+- What to load (task file including acceptance criteria, parent `EPIC.md` when the task lives under one, git diff, implementer's return notes; `CLAUDE.md` is auto-loaded)
 - What NOT to load (the plan — we want judgment against the task file, not compliance with the plan)
 - Evaluation per acceptance criterion: pass/fail + evidence (file/line citations)
 - Separate code quality from spec compliance
@@ -866,13 +874,13 @@ A subagent's system prompt references skills it should use. Skills activate with
 
 ## Example flows
 
-### Epic mode, docs-first, greenfield
+### Epic layout, docs-first, greenfield
 
 The canonical Metis flow.
 
 **Setup** (fresh instance per step):
 
-1. `/metis:init` → choose epic mode
+1. `/metis:init` → scaffold the Metis directories (no mode question — the layout emerges from later commands)
 2. `/metis:reconcile` → synthesis + contradictions
 3. `/metis:walk-open-items` → resolve each contradiction and open question, finalize the docs
 4. `/metis:build-spec` → `BUILD.md`
@@ -902,25 +910,25 @@ Occasionally: `/metis:rebaseline`, `/metis:pushback`.
 
 **Mid-stream addition**: `/metis:feature "..."` when new requirements emerge.
 
-### Flat mode, docs-first
+### Flat layout, docs-first
 
 For medium projects.
 
-1. `/metis:init` → flat mode
+1. `/metis:init` → scaffold
 2. `/metis:reconcile` (skip if `docs/` is thin)
 3. `/metis:walk-open-items` (skip if no open items)
 4. `/metis:build-spec`
-5. `/metis:generate-tasks` (no arg in flat mode)
+5. `/metis:generate-tasks` (no epic argument — writes into flat `tasks/`)
 6. `/metis:skeleton-plan`, implement skeleton
-7. Feature loop (same as epic mode, no epic ceremony)
+7. Feature loop (same as epic layout, no epic ceremony)
 8. Periodic `/metis:rebaseline`, `/metis:scratch-cleanup`
-9. `/metis:promote-to-epics` if project outgrows flat
+9. `/metis:promote-to-epics` if the project outgrows the flat layout
 
-### Flat mode, prompt-seeded, no docs
+### Flat layout, prompt-seeded, no docs
 
-Weakest mode but supported.
+The weakest starting point, but supported.
 
-1. `/metis:init` → flat mode
+1. `/metis:init` → scaffold
 2. `/metis:build-spec "a task-tracking app with auth, teams, and weekly digest emails"` → agent asks clarifying questions, produces `BUILD.md`
 3. `/metis:generate-tasks`
 4. Skeleton + feature loop as above
@@ -929,9 +937,9 @@ Weakest mode but supported.
 
 Simplified in v0.1 (no dedicated `/metis:explore`). Relies on Claude Code's native exploration.
 
-1. `/metis:init` → flat or epic mode
+1. `/metis:init` → scaffold
 2. `/metis:build-spec "add SSO and billing on top of the existing codebase"` → agent explores the codebase natively, reads relevant code, asks clarifying questions, produces `BUILD.md` describing what to build (not what exists)
-3. `/metis:generate-tasks`
+3. `/metis:generate-tasks` (flat layout) or `/metis:epic-breakdown` + `/metis:generate-tasks <epic>` (epic layout) — pick based on expected size
 4. Feature loop — each task's `docs_refs` can point at code paths as well as docs
 
 ---
@@ -945,24 +953,24 @@ These were worked through in conversation and shouldn't be re-opened unless new 
 - **Metis is a toolset, not a workflow.** Its value is context maintenance across sessions — a fresh agent can read on-disk state and know where the project stands. The engineering-loop commands (plan/implement/review) are optional.
 - **Targeting engineers with large doc-heavy projects.** Explicit audience.
 - **"Structure the project, not the agent"** is the load-bearing principle.
-- **Seven opinions are the spine**: structure-project-not-agent; Metis-is-optional; docs-before-code when docs exist; task-scoped-context (including parent `EPIC.md` in epic mode); fresh-instances-at-boundaries; append-only-decisions; context-efficiency.
+- **Seven opinions are the spine**: structure-project-not-agent; Metis-is-optional; docs-before-code when docs exist; task-scoped-context (including parent `EPIC.md` when the task lives under one); fresh-instances-at-boundaries; append-only-decisions; context-efficiency.
 - **The user retains full control.** Every artifact Metis produces can be hand-edited. Reconciliation (`/metis:sync`, `/metis:log-work`) absorbs user edits rather than fighting them.
 - **Context efficiency is a design constraint, not a polish task.** Skills, subagents, commands, and conventions are each authored under a token budget. Each layer loads only the slice of the conventions it actually needs.
 - **Not building cross-harness support in v0.1.** Claude Code only.
 - **Not building lite/heavy modes.** Metis is the heavy-structure option; people who want lighter should use something else.
 
-### On modes
+### On project layout
 
-- **Two modes: flat and epic.** Determined at `/metis:init`.
-- **Flat is default.** Epic is opt-in via flag at init or graduation via `/metis:promote-to-epics`.
+- **Two layouts: flat and epic.** Emergent from filesystem state rather than a configured mode. A project has a flat `tasks/` or an `epics/` directory; commands read the filesystem to know which they are dealing with. There is no `mode:` field in `.metis/config.yaml`.
+- **Flat is the implicit default.** A bare `/metis:init` scaffolds nothing layout-specific. The first of `/metis:generate-tasks` or `/metis:epic-breakdown` creates the shape.
 - **No sub-epics.** Subtasks live as checklists inside task files. If a "subtask" deserves its own file, it's actually a task.
-- **Mode stored in `.metis/config.yaml`.** Commands check mode and error with helpful alternatives when invoked wrong.
+- **Commands check filesystem state and error with helpful alternatives when invoked in the wrong shape.** See §Layout-dependent command behavior for the specific checks each command performs.
 
 ### On commands
 
 - **All commands namespaced `/metis:*`** to avoid collisions.
 - **`/metis:init` is non-destructive.** Uses delimited sections in `CLAUDE.md` and `.gitignore`. Preserves existing content.
-- **`/metis:generate-tasks` takes an arg in epic mode, no arg in flat mode.** Errors on mismatch.
+- **`/metis:generate-tasks` takes an epic-name argument when the project has an `epics/` directory and no argument when it has a flat `tasks/`.** Errors if the argument shape does not match the filesystem shape.
 - **`/metis:init` is run last in build order** because it scaffolds everything else; knowing what "everything else" looks like helps.
 - **Commands are thin wrappers over skills and subagents.** ~300–800 words each. Heavy lifting in skills and conventions.
 
@@ -1068,13 +1076,13 @@ These aren't rejected — they're deferred. The rough order of v0.2 priorities w
 
 Things not fully decided. Worth addressing when building.
 
-1. **Should `/metis:init` interactively ask questions, or take flags?** e.g. `/metis:init --mode=epic --name="MyProject"` vs. interactive Q&A. Leaning interactive for first-time users, with flags for power users.
+1. **Should `/metis:init` interactively ask questions, or take flags?** e.g. `/metis:init --name="MyProject"` vs. interactive Q&A. The mode question is gone (see Refinement 11), so the remaining init-time questions are lighter — project name, git-init-or-not, a few policy defaults. Leaning interactive for first-time users, with flags for power users.
 
 2. **How should `BOARD.md` be generated?** Options: regenerated on-demand by a command, regenerated automatically on task status changes (hook?), or hand-updated. Leaning toward "regenerated on-demand by a new `/metis:refresh-board` command or as a side effect of other commands" — but this is unspecified.
 
 3. **Where exactly do plans live during `/metis:plan-task` → `/metis:implement-task`?** Current assumption: `scratch/plans/<id>.md`, gitignored. Confirm this is right.
 
-4. **Should `/metis:feature` produce a feature spec file, or inline the feature description into task files?** Probably a spec file at `features/NNN-<name>.md` in flat mode, and a new epic in epic mode. But the exact file vs inline trade-off wasn't fully worked through.
+4. **Should `/metis:feature` produce a feature spec file, or inline the feature description into task files?** Probably a spec file at `features/NNN-<name>.md` when the project has a flat `tasks/` layout, and a new epic when the project uses `epics/`. But the exact file vs inline trade-off wasn't fully worked through.
 
 5. **How to handle `/metis:generate-tasks` regeneration?** ~~If tasks exist already and user runs it again (e.g., after editing BUILD.md), does it refuse, merge, or replace?~~ **Partially resolved** by the post-handoff refinements: `/metis:sync` now handles the "spec changed, cascade to tasks" case explicitly, so `/metis:generate-tasks` can simply refuse regeneration and point users to `/metis:sync` for edits or `/metis:feature` for additions.
 
@@ -1082,7 +1090,7 @@ Things not fully decided. Worth addressing when building.
 
 7. **Should there be a `/metis:status` command?** Just a quick "where are we, what's blocked, what's the next thing" overview. Might be subsumed by `/metis:session-start` or `BOARD.md`. Undefined.
 
-8. **The name "features/"** directory in flat mode vs. tagging tasks with `feature: NNN-<name>` frontmatter. Tagging feels cleaner (keeps the structure flat) but features being first-class files makes them easier to find. Unresolved.
+8. **The name "features/"** directory (under a flat `tasks/` layout) vs. tagging tasks with `feature: NNN-<name>` frontmatter. Tagging feels cleaner (keeps the structure flat) but features being first-class files makes them easier to find. Unresolved.
 
 9. **Token estimation for `/metis:reconcile` decision.** Should Metis automatically count tokens and choose between main-agent and hybrid modes, or should it prompt the user? Probably the former, with a manual override flag.
 
@@ -1348,7 +1356,7 @@ Concretely:
 - **The conventions layer is a human/design-time reference.** At runtime, each skill / subagent / command carries only the slice it needs. Conventions files are not bulk-loaded into sessions.
 - **Context efficiency is promoted to a load-bearing principle.** Metis should cost less context than the disorder it prevents. "Works but bloated" is a bug.
 
-No manifest changes. The shift is in *framing and discipline*, which is carried through the principles in §4, the workflow section, the conventions descriptions, and the subagent load lists (parent `EPIC.md` added in epic mode).
+No manifest changes. The shift is in *framing and discipline*, which is carried through the principles in §4, the workflow section, the conventions descriptions, and the subagent load lists (parent `EPIC.md` added when the task lives under one).
 
 ### Refinement 9 — `reconciling-docs` split; Phase 0 does not write decisions
 
@@ -1378,6 +1386,35 @@ Two-stage review is preserved but its shape changes slightly: it is now main-ses
 
 Net manifest impact: −1 subagent (3 → 2).
 
+### Refinement 11 — "Mode" drops; project shape is emergent from the filesystem
+
+The original design treated flat vs. epic as a configured mode: `/metis:init` asked the question, `.metis/config.yaml` carried a `mode:` field, and every command that behaved differently in the two shapes checked the config. A later pass identified this as ceremony against principle #2 (Metis is optional; it reconciles, it does not enforce).
+
+The concept bought very little: a single source for layout checks, and a commitment point when the user graduated from flat to epic. Both are available from the filesystem directly. A project with an `epics/` directory containing at least one `EPIC.md` has an epic layout; a project with a flat `tasks/` directory has a flat layout. `/metis:promote-to-epics` is itself the graduation commitment — the config write would only have been bookkeeping after the fact.
+
+Against those marginal wins, mode cost: an extra concept for users to learn before doing anything useful; a config file that must stay in sync with the filesystem (a drift source Metis would have needed to defend against); an init-time decision before the user knew which shape they wanted; and a collision with the "absorb user edits" principle — if a user hand-creates `epics/`, the framework should understand it, not check against a config that has started lying.
+
+Resolution: drop `mode` as a first-class concept. Commands check the filesystem directly for the shape they need, and error messages name what's on disk rather than what's in a config:
+
+```
+This command requires an epics/ directory, but this project has a 
+flat tasks/ directory at the root.
+```
+
+Specific adjustments folded into the canonical sections above:
+
+- §Project modes: flat vs epic → **§Flat and epic layouts**. Reframed as structural state, not configured state.
+- `/metis:init` no longer asks a mode question; it scaffolds the shared framework surface (`.metis/`, `.claude/`, `scratch/`, `CLAUDE.md` delimiters, `.gitignore` delimiters) and leaves the layout to whichever of `/metis:generate-tasks` or `/metis:epic-breakdown` the user runs first.
+- `/metis:generate-tasks` infers layout from the filesystem: no argument when `tasks/` is flat, an epic-name argument when `epics/` exists. Errors on shape mismatch.
+- `/metis:epic-breakdown`, `/metis:epic-retro`, `/metis:promote-to-epics` check for the specific filesystem preconditions they need and point at the likely-correct alternative when they fail.
+- Frontmatter `epic` is **derived from path**: required when a task sits at `epics/<name>/tasks/<id>-*.md`, forbidden when it sits at `tasks/<id>-*.md`. The field is a consistency check against the filesystem, not a flag.
+- Skills and subagents that previously said "in epic mode" now say "when the task lives under an epic" — the same load condition, stated in terms of the artifact's location rather than a global project flag.
+- Ambiguous state (`tasks/` and `epics/` both populated) is surfaced by the next command that hits it, not silently resolved. Recovery is user-driven.
+
+`.metis/config.yaml` may still exist for genuine configuration (`spec_version`, project name, defaults) but no longer carries a `mode:` field.
+
+Net manifest impact: no file changes. The shift is in framing, command-level behavior, and the loss of one config field.
+
 ### Manifest impact of all refinements
 
 | Layer | Before refinements | After refinements |
@@ -1386,6 +1423,8 @@ Net manifest impact: −1 subagent (3 → 2).
 | Skills | 10 | 15 (Refinements 1–2 added `propagating-spec-changes` and `logging-external-work`; Refinement 9 split `reconciling-docs` into `reconciling-docs` + `walking-open-items`; `session-handoff`, `writing-retros`, and `honest-scope-reporting` accreted during drafting without dedicated refinement entries) |
 | Conventions | 5 | 4 (`frontmatter-schema` adds `doc_hashes` + `spec_version`; `write-rules` was relocated to `docs/metis-write-rules.md` as a design-time reference and gained the command-prompts convention) |
 | Subagents | 3 | 2 (Refinement 10 retires `task-implementer`; `task-planner` and `task-reviewer` remain, both gaining invocation-prompt discipline and loading parent `EPIC.md` when the task lives under one) |
+
+Refinement 11 (mode removal) makes no change to the file counts above; its effect is on command-level behavior and the removal of the `mode:` field from `.metis/config.yaml`.
 
 ---
 

@@ -13,7 +13,7 @@ Two failure modes pull against each other. Under-rejecting approves a diff that 
 ## Read first
 
 - The task file being reviewed and the diff under review, along with the source-doc passages behind the task's `docs_refs` and the command output the implementer cited for tests or verification. Re-open the cited doc sections when a criterion turns on a passage the task abbreviated.
-- In epic mode, the parent `EPIC.md`.
+- When the task lives under an epic, the parent `EPIC.md`.
 
 The plan at `scratch/plans/<id>.md` is deliberately not on the read list — see "Reviewing without the plan" below.
 

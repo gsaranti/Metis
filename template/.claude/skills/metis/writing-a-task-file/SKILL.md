@@ -48,10 +48,10 @@ Structural ambiguity — which of two architectural paths this feature takes —
 
 Take the next unused project-wide id — not per-epic. Gaps are expected (a deleted or superseded task leaves its id retired); do not reuse ids to fill gaps.
 
-## Epic mode: do not duplicate the parent
+## Tasks under an epic: do not duplicate the parent
 
-In epic mode, every task implicitly loads its parent `EPIC.md`. Do not duplicate the epic-level goal, scope, or exit criterion inside the task file. Quote from `EPIC.md` only when the task turns on a specific clause — and then only that clause. The parent is part of every subagent's context already; duplicating it taxes every load and breeds drift when the epic's scope shifts and only some tasks are updated.
+When a task lives under an epic (`epics/<name>/tasks/<id>-*.md`), every reader — planner, implementer, reviewer — implicitly loads the parent `EPIC.md` alongside the task file. Do not duplicate the epic-level goal, scope, or exit criterion inside the task file. Quote from `EPIC.md` only when the task turns on a specific clause — and then only that clause. The parent is part of the load already; duplicating it taxes every read and breeds drift when the epic's scope shifts and only some tasks are updated.
 
 ## Examples
 
-- `examples/good-task.md` — a clean mid-sized epic-mode task: outcome-framed Goal, excerpted Context with attribution, specific scope boundaries, testable acceptance criteria with evidence, Notes empty. **Read this before writing your first task in a session.**
+- `examples/good-task.md` — a clean mid-sized task that lives under an epic: outcome-framed Goal, excerpted Context with attribution, specific scope boundaries, testable acceptance criteria with evidence, Notes empty. **Read this before writing your first task in a session.**

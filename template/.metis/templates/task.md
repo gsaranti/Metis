@@ -1,6 +1,6 @@
 ---
 id: "NNNN"
-# epic: NNN-name           # required in epic mode; omit entirely in flat mode
+# epic: NNN-name           # required if this task lives under epics/<name>/tasks/; omit entirely for flat tasks/
 title:
 status: pending
 # priority: 3              # 1–5, 1 is highest; default 3

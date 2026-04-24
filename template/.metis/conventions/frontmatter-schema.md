@@ -41,11 +41,13 @@ Stable by default: other artifacts (frontmatter `depends_on`, decisions, `CURREN
 Valid: `"0007"`, `"0042"`, `"1234"`.
 Invalid: `7`, `"00007"`, `"7"`.
 
-### `epic` — required in epic mode; forbidden in flat mode
+### `epic` — required when the task lives under an epic; forbidden otherwise
 
 Directory name of the owning epic, without the `epics/` prefix and without a trailing slash. Must match the on-disk directory exactly.
 
 Example: `002-billing`.
+
+Presence is derived from where the task file sits. A task at `epics/<name>/tasks/<id>-*.md` must declare `epic: <name>`; a task at `tasks/<id>-*.md` must not declare `epic` at all. The field is not a flag — it is a consistency check against the filesystem.
 
 ### `title` — required
 
@@ -105,10 +107,10 @@ A task is flagged stale when the project `spec_version` is greater than the task
 
 | Field | Required | Notes |
 |---|---|---|
-| `id` | yes | both modes |
-| `title` | yes | both modes |
-| `status` | yes | both modes |
-| `epic` | yes in epic mode | forbidden in flat mode |
+| `id` | yes | — |
+| `title` | yes | — |
+| `status` | yes | — |
+| `epic` | yes when the task lives under an epic | forbidden otherwise |
 | `priority` | no | default 3 |
 | `depends_on` | no | default `[]` |
 | `estimate` | no | — |
@@ -124,8 +126,9 @@ A frontmatter block is invalid if any of the following hold:
 - An unknown field is present
 - A required field is missing
 - `status` or `estimate` is not in its enum
-- `epic` is present in a flat-mode project
-- `epic` is absent in an epic-mode project
+- `epic` is present but the task file is not inside `epics/<name>/tasks/`
+- `epic` is absent but the task file sits inside `epics/<name>/tasks/`
+- `epic` value does not match the `<name>` segment of the task file's path
 - `id` does not match the filename prefix
 - `doc_hashes` contains a key that is not in `docs_refs`
 - `priority` is outside 1–5

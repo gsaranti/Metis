@@ -1,6 +1,6 @@
 # Epic format
 
-An `EPIC.md` file defines one capability-level unit of work: a cluster of tasks held together by a single testable exit criterion. Epics only exist in epic mode. There is no target task count — the work dictates that.
+An `EPIC.md` file defines one capability-level unit of work: a cluster of tasks held together by a single testable exit criterion. Epics are optional — a project either has an `epics/` directory with one or more `EPIC.md` files, or it keeps a flat `tasks/` directory at the project root. There is no target task count — the work dictates that.
 
 ## Filename and location
 

@@ -14,7 +14,7 @@ Metis is built in three conceptual layers — skills, commands, and conventions 
 
 **Skills own the artifact.** A skill is artifact-shaped teaching — what makes a good X, when to split, how sections should read, which conventions to consult. The register is descriptive. A skill names the *kinds* of inputs the artifact requires ("a body of work plus the source docs it references") but does not prescribe specific files, loading sequence, or session orchestration. Skills reference conventions; skills do not reference other skills; skills do not carry routing metadata.
 
-**Commands own the turn.** A command is invocation-shaped orchestration — argument and mode parsing, error messages on mismatch, the specific load list for this invocation, subagent dispatch if any, invocation-prompt handling, write scope and confirmation/preview flows, and the output format back to the user. The register is directive. Commands invoke skills by reference rather than inlining their content.
+**Commands own the turn.** A command is invocation-shaped orchestration — argument parsing, filesystem-state checks (does the project have an `epics/` directory? a flat `tasks/`? neither?), error messages on mismatch, the specific load list for this invocation, subagent dispatch if any, invocation-prompt handling, write scope and confirmation/preview flows, and the output format back to the user. The register is directive. Commands invoke skills by reference rather than inlining their content.
 
 **Subagents are scoped commands.** A subagent's system prompt is a command that runs in a fresh context window with restricted tools. Same layer, same rules: invoke skills by reference; name specific inputs and flow; do not teach artifact shape.
 
@@ -121,7 +121,7 @@ The rules below describe who among Metis's own agents and commands writes to eac
 
 - **Writes**: `/metis:init` (and future upgrade commands) writes `.metis/config.yaml`, `.metis/version`, `.metis/MANIFEST.md`, `.metis/conventions/*`, `.metis/templates/*`.
 - **Subagents**: never.
-- **User edits**: allowed. `.metis/config.yaml` is the one the user is most likely to touch (mode, project settings). Edits to convention and template files are allowed too but take effect on the user's local install — they will diverge from upstream Metis.
+- **User edits**: allowed. `.metis/config.yaml` is the one the user is most likely to touch (project settings like `spec_version`). Edits to convention and template files are allowed too but take effect on the user's local install — they will diverge from upstream Metis.
 
 ### `.claude/`
 
