@@ -31,7 +31,8 @@ The rules below describe who among Metis's own agents and commands writes to eac
 #### `BUILD.md`
 
 - **Writes**: `/metis:build-spec` (initial creation), `/metis:sync` (propagating upstream doc changes).
-- **Subagents**: never. Enforced as an explicit tool restriction on `task-implementer`.
+- **Subagents**: never.
+- **`/metis:implement-task`**: never. Implementation runs in the main session but treats `BUILD.md` as off-limits — if a task cannot be completed without a `BUILD.md` edit, the command surfaces the conflict rather than editing. Spec changes are `/metis:sync` territory.
 - **Rule**: any change to `BUILD.md` outside its initial creation requires an accompanying `decisions/` entry.
 - **User edits**: allowed. If the edit is substantive, write a companion `decisions/` entry so the "why" is recorded.
 
@@ -72,17 +73,17 @@ The rules below describe who among Metis's own agents and commands writes to eac
 
 - **Writes**:
   - Task-generation commands (`/metis:generate-tasks`, `/metis:feature`) at creation.
-  - The `task-implementer` subagent — only the task file it was assigned, updating `status` and appending to Notes.
+  - `/metis:implement-task` — only the task file whose id was passed in, updating `status` and appending to Notes. Runs in the main session; the write restriction is prompt-level discipline rather than a tool restriction.
   - The `task-reviewer` subagent — only the task file it was reviewing, appending review findings to Notes.
   - `/metis:sync` — updates fields when upstream specs change. Requires user approval and a decision entry. `in-progress` tasks require explicit confirmation. `done` tasks are never edited — drift becomes a new task or a superseding decision.
   - `/metis:log-work` — updates fields to reflect code written outside the workflow; verifies against `git diff`.
-- **Subagents besides the assigned one**: never. The implementer does not touch other task files, even if "obviously related."
+- **Commands and subagents besides the assigned one**: never. `/metis:implement-task` does not touch other task files, even if "obviously related"; the reviewer subagent does not touch task files it was not dispatched against.
 - **User edits**: allowed on any field. `id` and `title` are stable by default because other artifacts refer to them; if they change, reconcile via `/metis:log-work` or a resync. See `frontmatter-schema.md`.
 
 ### `epics/<name>/EPIC.md`
 
 - **Writes**: `/metis:epic-breakdown`, `/metis:promote-to-epics`, `/metis:sync`.
-- **Subagents**: never. (The three task-level subagents *read* the parent `EPIC.md` in epic mode but do not write to it.)
+- **Subagents**: never. (The two task-level subagents — `task-planner` and `task-reviewer` — *read* the parent `EPIC.md` when the task lives under an epic but do not write to it. `/metis:implement-task`, which runs in the main session, also reads it and does not write to it.)
 - **User edits**: allowed. Status transitions (`pending` / `in-progress` / `done`) are expected to be manual edits.
 
 ### `epics/<name>/retro.md`
@@ -187,9 +188,11 @@ Metis's other load-bearing property is that a fresh session can get oriented wit
 
 ### Subagents as context firewalls
 
-Task-level subagents exist partly for tool-restriction enforcement (above), but equally for context isolation. Plan, implement, and review each involve heavy reads — `BUILD.md`, the task file, referenced docs, prior decisions, diffs. Doing that work in the main session would load all of it into the session's context; dispatching a subagent lets that reading happen in a fresh window that returns only a summary. The main session's context grows by the summary, not the inputs.
+Task-level subagents exist partly for tool-restriction enforcement (above), but equally for context isolation. Plan and review each involve heavy reads — the task file, referenced docs, the plan, diffs — that return as a compressed summary to the main session; dispatching a subagent lets that reading happen in a fresh window and the main session's context grows by the summary, not by the inputs. The reviewer additionally depends on fresh context for *independence*: a reviewer that had seen the implementation's reasoning is not a reviewer.
 
-The corollary is a design heuristic for new commands and skills: if the work involves heavy reading, dispatch a subagent rather than doing the reading in the main session. `/metis:reconcile`, `/metis:plan-task`, and `/metis:implement-task` all follow this pattern. Anything else that wants to load many files in the main session deserves scrutiny.
+Implementation is the exception. `/metis:implement-task` runs in the main session because the main session wants to see what happens during implementation — the user may interject, and the eventual follow-ups would re-derive context that a subagent's return had just compressed away. The write restrictions that the subagent would have enforced structurally (no writes to `BUILD.md`, `BOARD.md`, `scratch/CURRENT.md`, `decisions/`, or other task files) are carried as prompt-level discipline in the command instead. See Refinement 10 in the handoff for the reasoning.
+
+The corollary as a design heuristic for new commands and skills: if the work is a one-shot heavy read that produces a single artifact and returns a summary, dispatch a subagent. If the work wants interactivity, wants the user watching, or benefits from the main session knowing what happened in detail, keep it in the main session and carry the discipline in the command prompt.
 
 ### Session-level discipline
 

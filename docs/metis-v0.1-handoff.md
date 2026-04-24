@@ -220,12 +220,12 @@ The canonical per-task loop, when the user wants Metis's engineering structure:
 
 1. `/metis:pick-task` → choose an unblocked task
 2. `/metis:plan-task <id>` → planner subagent produces a plan, user reviews
-3. `/metis:implement-task <id>` → implementer subagent implements, tests, returns with real test output
-4. `/metis:review-task <id>` → reviewer subagent judges against acceptance criteria (two-stage review)
+3. `/metis:implement-task <id>` → main session implements, tests, and closes with real test output and a scope report (per Refinement 10, implementation runs in the main session rather than a subagent)
+4. `/metis:review-task <id>` → reviewer subagent judges against acceptance criteria (two-stage review: main-session implementation + fresh-context reviewer)
 5. `/metis:scope-check` → agent enumerates what it skipped
 6. Merge
 
-This loop is optional. Any task can be coded by the user alone, paired with an agent outside Metis, or partially driven through Metis (e.g., plan by hand, implement with the subagent) and still end up reconciled. `/metis:log-work` absorbs code written outside the loop by diffing the working tree against the task file and updating status, notes, and frontmatter accordingly. Hand-edits to task files are equally legitimate; Metis reads from disk and trusts what it finds there.
+This loop is optional. Any task can be coded by the user alone, paired with an agent outside Metis, or partially driven through Metis (e.g., plan by hand, implement interactively, skip the reviewer) and still end up reconciled. `/metis:log-work` absorbs code written outside the loop by diffing the working tree against the task file and updating status, notes, and frontmatter accordingly. Hand-edits to task files are equally legitimate; Metis reads from disk and trusts what it finds there.
 
 Session begins with `/metis:session-start` (loading dose), ends with `/metis:session-end` (update `CURRENT.md`).
 
@@ -376,7 +376,6 @@ scratch/                   # ephemeral, mostly gitignored
   agents/
     metis/
       task-planner.md
-      task-implementer.md
       task-reviewer.md
   skills/
     metis/
@@ -487,7 +486,7 @@ Twenty-two commands total. All namespaced as `/metis:<name>` to avoid collisions
 
 - **`/metis:pick-task`** — list unblocked, prioritized tasks.
 - **`/metis:plan-task <id>`** — dispatch `task-planner` subagent. Does not write code.
-- **`/metis:implement-task <id>`** — dispatch `task-implementer` subagent.
+- **`/metis:implement-task <id>`** — implement a task in the main session. Loads the task file, the parent `EPIC.md` if the task lives under one, the approved plan at `scratch/plans/<id>.md` if present, and only the docs in `docs_refs`. Writes land in the assigned task file (status → `in-review`, appended Notes) and the code it touches; `BUILD.md`, `BOARD.md`, `scratch/CURRENT.md`, `decisions/`, and other task files are off-limits as prompt-level discipline. Closes with a scope report per `honest-scope-reporting`. Not a subagent — see §Refinement 10.
 - **`/metis:review-task <id>`** — dispatch `task-reviewer` subagent. Judges against acceptance criteria.
 - **`/metis:scope-check`** — ask agent to enumerate what it skipped or reduced, no justification.
 
@@ -526,7 +525,7 @@ Twenty-two commands total. All namespaced as `/metis:<name>` to avoid collisions
 | `/metis:skeleton-plan` | — | — |
 | `/metis:pick-task` | — | — |
 | `/metis:plan-task` | — | `task-planner` |
-| `/metis:implement-task` | — | `task-implementer` |
+| `/metis:implement-task` | `planning-a-task`, `writing-a-task-file`, `honest-scope-reporting` | — |
 | `/metis:review-task` | — | `task-reviewer` |
 | `/metis:scope-check` | `honest-scope-reporting` | — |
 | `/metis:session-start` | — | — |
@@ -746,7 +745,7 @@ The task-authoring and epic-authoring responsibilities are each split across two
 
 **Covers**: No-justification rule (just list, don't defend), categories (skipped, deferred, stubbed, handled differently), making it easy for the parent to triage.
 
-**Used by**: `/metis:scope-check`, `task-implementer` subagent returns.
+**Used by**: `/metis:scope-check`, `/metis:implement-task` (closing scope report).
 
 ### `session-handoff`
 
@@ -805,7 +804,7 @@ Skills teach what makes the artifact work, not how Claude should behave. Structu
 
 ## Subagents
 
-Three subagents at `.claude/agents/metis/<name>.md`. Each has tool restrictions that enforce workflow properties structurally rather than through prompt discipline.
+Two subagents at `.claude/agents/metis/<name>.md`: `task-planner` and `task-reviewer`. Each has tool restrictions that enforce workflow properties structurally rather than through prompt discipline. The third task-level command in the feature loop, `/metis:implement-task`, runs in the main session rather than a subagent — see Refinement 10 for the reasoning. Its discipline (load list, write scope, return shape, invocation-prompt rules) is carried by the command prompt rather than a subagent system prompt.
 
 ### `task-planner`
 
@@ -817,30 +816,12 @@ Three subagents at `.claude/agents/metis/<name>.md`. Each has tool restrictions 
 
 **System prompt covers**:
 - Who they are (fresh context, no parent memory)
-- What to load (CLAUDE.md, the specified task file, the parent `EPIC.md` in epic mode, only the docs in `docs_refs`)
+- What to load (the specified task file, the parent `EPIC.md` when the task lives under one, only the docs in `docs_refs`)
 - What NOT to read (other task files, `BUILD.md`, other epics)
 - What to produce (plan at `scratch/plans/<id>.md`)
 - What to return (plan summary + flagged ambiguities)
 
 **Why the tool restriction**: can't start implementing while planning. Enforced structurally.
-
-### `task-implementer`
-
-**Purpose**: Implement a task per an approved plan.
-
-**Tools**: `Read`, `Edit`, `Write` (restricted from `BUILD.md`, `BOARD.md`, `scratch/CURRENT.md`, `decisions/`, other task files), `Bash`, `Glob`, `Grep`.
-
-**Uses skills**: `honest-scope-reporting`, plus whatever task-level skills exist (future: `writing-code-well`, `test-discipline`, etc.).
-
-**System prompt covers**:
-- Fresh context
-- What to load (CLAUDE.md, task file, parent `EPIC.md` in epic mode, approved plan, only referenced docs)
-- Rules: follow the plan, deviate only with explanation; tests when they fit; real test output in return
-- Updates: task file status → in-review, appended Notes section
-- Hard restrictions: do NOT write to BUILD.md/BOARD.md/CURRENT.md/other tasks/decisions
-- Return shape: what did, what skipped + why, test results, open questions
-
-**Why the tool restriction**: prevents silent architectural drift. Implementer can't decide mid-task that `BUILD.md` should change.
 
 ### `task-reviewer`
 
@@ -860,9 +841,9 @@ Three subagents at `.claude/agents/metis/<name>.md`. Each has tool restrictions 
 
 **Why the tool restriction**: read-only means reviewer can't "helpfully fix" — must report findings. Prevents the reviewer from becoming a second implementer.
 
-### Handling invocation prompts (all three subagents)
+### Handling invocation prompts (both subagents)
 
-Each of the three subagents accepts an optional free-text prompt from the dispatching command (e.g., `/metis:plan-task 0007 "focus on retry semantics; the existing code uses tenacity, follow that pattern"`). Discipline rules baked into every subagent's system prompt:
+Each subagent accepts an optional free-text prompt from the dispatching command (e.g., `/metis:plan-task 0007 "focus on retry semantics; the existing code uses tenacity, follow that pattern"`). Discipline rules baked into every subagent's system prompt:
 
 1. **Augment, don't replace.** The invocation prompt augments the task file. The task file remains authoritative. If the prompt genuinely contradicts the task file (e.g., "ignore the acceptance criteria for test coverage"), the subagent flags the conflict and asks rather than silently choosing.
 
@@ -870,7 +851,7 @@ Each of the three subagents accepts an optional free-text prompt from the dispat
 
 3. **Acknowledge use explicitly.** The subagent's return states how the prompt was used so it's traceable after the fact. Example: "Per your note to use tenacity, I followed the existing retry pattern in `billing/client.py` rather than implementing from scratch."
 
-These rules also apply to main-agent commands that accept a prompt (`/metis:reconcile`, `/metis:walk-open-items`, `/metis:build-spec`, `/metis:sync`, `/metis:log-work`, `/metis:epic-breakdown`, `/metis:epic-retro`). The prompt is ephemeral; it is never persisted to disk.
+These rules also apply to main-agent commands that accept a prompt (`/metis:reconcile`, `/metis:walk-open-items`, `/metis:build-spec`, `/metis:implement-task`, `/metis:sync`, `/metis:log-work`, `/metis:epic-breakdown`, `/metis:epic-retro`). The prompt is ephemeral; it is never persisted to disk.
 
 ### Subagent composition with skills
 
@@ -879,7 +860,7 @@ The relationship:
 - **Subagent** = container (system prompt, tools, identity)
 - **Skills** = capabilities invoked within the subagent's context
 
-A subagent's system prompt references skills it should use. Skills activate within the subagent's fresh context and guide its behavior. This is why the skill list above maps to subagent use: most skills get invoked *within* subagents, not by the parent agent.
+A subagent's system prompt references skills it should use. Skills activate within the subagent's fresh context and guide its behavior. Subagents invoke skills by reference — the system prompt names the skills relevant to the job and the agent reads the SKILL.md on demand, rather than inlining skill content into the subagent prompt or bulk-loading every skill at startup. The same invoke-by-reference pattern applies to main-agent commands; whether a given skill is invoked from a subagent or from the main session is a property of the calling command, not of the skill.
 
 ---
 
@@ -1004,10 +985,10 @@ These were worked through in conversation and shouldn't be re-opened unless new 
 
 ### On subagents
 
-- **Three subagents in v0.1**: `task-planner`, `task-implementer`, `task-reviewer`.
-- **Tool restrictions enforce workflow properties.** Planner can't edit code. Reviewer is read-only. Implementer can't write to `BUILD.md`/`BOARD.md`/etc.
-- **Two-stage review** (implementer + reviewer, both fresh contexts) is standard for non-trivial tasks.
-- **Subagent briefs are self-sufficient.** Task file + CLAUDE.md + referenced docs + parent `EPIC.md` (in epic mode) is enough context. If it's not, the task file is underspecified.
+- **Two subagents in v0.1**: `task-planner` and `task-reviewer`. `/metis:implement-task` runs in the main session rather than a subagent (Refinement 10).
+- **Tool restrictions enforce workflow properties for the two subagents.** Planner can't edit code. Reviewer is read-only.
+- **Two-stage review** (main-session implementation + fresh-context reviewer subagent) is standard for non-trivial tasks. The independence comes from the reviewer's fresh context, not from the implementer being a subagent.
+- **Subagent briefs are self-sufficient.** Task file + CLAUDE.md (auto-loaded) + referenced docs + parent `EPIC.md` (when the task lives under one) is enough context. If it's not, the task file is underspecified.
 
 ### On skills vs conventions
 
@@ -1039,7 +1020,7 @@ Build from the deepest layer outward. Each layer depends only on what's below it
 1. **Conventions** (4 files). Everything else depends on these: `task-format.md`, `epic-format.md`, `decision-format.md`, `frontmatter-schema.md`. (A separate design-time reference, `docs/metis-write-rules.md`, captures the framework's layer responsibilities and who-writes-where rules; it informs how the skills and commands are written but is not itself loaded at runtime.)
 2. **Templates** (3 files). Directly instantiate the conventions — `task.md`, `epic.md`, `decision.md` — and serve as canonical starting points for each artifact type. Built immediately after conventions because writing the templates solidifies the convention spec by making it concrete.
 3. **Skills** (15 skills). The substance of agent behavior. Each skill is a directory with `SKILL.md` plus an `examples/` folder. Examples are critical — skills without examples are hand-wavy.
-4. **Subagents** (3 subagents). Containers that compose skills + tool restrictions: `task-planner`, `task-implementer`, `task-reviewer`.
+4. **Subagents** (2 subagents). Containers that compose skills + tool restrictions: `task-planner` and `task-reviewer`. (The third task-level command, `/metis:implement-task`, is built in the commands layer rather than as a subagent — see Refinement 10.)
 5. **Commands** (22 commands). Thin wrappers that dispatch subagents or invoke skills. **Within this step, `/metis:init` is built last** because it scaffolds everything else; knowing what "everything else" looks like helps.
 
 ### Why layer-by-layer instead of vertical slice
@@ -1050,7 +1031,7 @@ An earlier draft of this section recommended building the smallest vertical slic
 - Writing each layer as a coherent set produces stronger internal consistency (the 5 conventions naturally feel like a family when written together; same for the 15 skills).
 - The conventions and templates layers are essentially zero-risk because they're pure spec — build them in full and cash in the cohesion benefit immediately.
 
-The tradeoff being accepted: if the convention → skill → command relationship has a structural flaw, it surfaces after writing 5 conventions + 3 templates + 15 skills + 3 subagents rather than after one of each. Mitigations: most of these files are short and well-specified by this document, the structural risk is real but bounded, and refactoring skills when the first command lands is a tolerable cost.
+The tradeoff being accepted: if the convention → skill → command relationship has a structural flaw, it surfaces after writing 4 conventions + 3 templates + 15 skills + 2 subagents rather than after one of each. Mitigations: most of these files are short and well-specified by this document, the structural risk is real but bounded, and refactoring skills when the first command lands is a tolerable cost.
 
 If the first command lands and reveals a shape change, expect to revisit some skills. Treat that as expected, not as a failure.
 
@@ -1121,7 +1102,7 @@ Things not fully decided. Worth addressing when building.
 
 If you're a new Claude conversation reading this to continue the work:
 
-**Where to start**: Layer by layer, per §14. Build all 5 conventions first, then all 3 templates, then all 15 skills (with examples), then all 3 subagents, then all 22 commands (with `/metis:init` last). Propose a concrete plan for the current layer before writing, and surface any ambiguity against the doc as you go.
+**Where to start**: Layer by layer, per §14. Build all 4 conventions first, then all 3 templates, then all 15 skills (with examples), then all 2 subagents, then all 22 commands (with `/metis:init` last). Propose a concrete plan for the current layer before writing, and surface any ambiguity against the doc as you go.
 
 **What to reference**:
 
@@ -1379,6 +1360,24 @@ This refinement also committed to a sharper line between doc-finalization and de
 
 Net manifest impact: +1 skill.
 
+### Refinement 10 — Implementation runs in the main session; `task-implementer` subagent retired
+
+The original design placed all three task-level commands in the subagent layer: `task-planner`, `task-implementer`, `task-reviewer`. The implementer's tool restrictions (no writes to `BUILD.md`, `BOARD.md`, `scratch/CURRENT.md`, `decisions/`, or other task files) were framed as structural enforcement of workflow properties — the agent literally could not drift because the tool permissions would not let it.
+
+A later pass surfaced two problems with this framing, both of which pulled toward moving implementation back to the main session.
+
+First, the structural-enforcement argument sits uneasily against principle #1, "structure the project, not the agent." Tool-restricting a subagent is structuring the agent. The workflow properties the restriction protects — no silent `BUILD.md` edits, no cross-task bleed, no unannounced decision writes — are already carried by (a) prompt discipline in the command itself, (b) the reconciliation commands (`/metis:sync`, `/metis:log-work`) absorbing drift after the fact, and (c) the write flows `BUILD.md` and `decisions/` have of their own. Belt-and-braces with tool restrictions reads as ceremony once the prompt-level rules and reconciliation are in place.
+
+Second, the context-firewall argument — heavy task-level reads staying out of the main session — is asymmetric across the three commands. Planning and review are one-shot heavy reads that produce a single artifact and return a compressed summary; the firewall pays off cleanly because the main session grows by a summary instead of by the inputs. Implementation is different: the main session *wants* to know what actually happened, asks follow-ups that re-derive context, and benefits from the user being able to interject mid-work. A subagent's compressed return compresses away information the parent will re-load anyway, and the lack of interactivity forces ambiguity into either a guess or a round-trip flag.
+
+Resolution: retire `task-implementer` as a subagent. `/metis:implement-task` becomes a main-session command. The discipline that lived in the subagent's system prompt — load list (task file, parent `EPIC.md` when the task lives under one, approved plan at `scratch/plans/<id>.md` if present, only the docs in `docs_refs`), write scope (the assigned task file and the code it touches, nothing else), invocation-prompt rules (augment / flag scope expansion / acknowledge use), scope report per `honest-scope-reporting` on close — is carried by the command prompt instead. The same rules land in the same place; what changes is where the execution runs and whether the parent session watches it happen.
+
+`task-planner` and `task-reviewer` stay as subagents. The planner is a legitimate one-shot heavy read (load context, produce plan file, return summary) where the context firewall pays off. The reviewer's case is stronger still: review independence is load-bearing — a reviewer that had seen the implementer's reasoning is not a reviewer — and fresh context is how the framework earns that independence. Tool restrictions on both stay valuable for the same reason they always were: the planner cannot start coding, the reviewer cannot "helpfully fix" and become a second implementer.
+
+Two-stage review is preserved but its shape changes slightly: it is now main-session implementation followed by a fresh-context reviewer subagent. The independence the two-stage pattern is built around comes from the reviewer's freshness, not from the implementer being a subagent.
+
+Net manifest impact: −1 subagent (3 → 2).
+
 ### Manifest impact of all refinements
 
 | Layer | Before refinements | After refinements |
@@ -1386,7 +1385,7 @@ Net manifest impact: +1 skill.
 | Commands | 20 | 22 (+`/metis:sync`, +`/metis:log-work`; renamed walk-contradictions → walk-open-items) |
 | Skills | 10 | 15 (Refinements 1–2 added `propagating-spec-changes` and `logging-external-work`; Refinement 9 split `reconciling-docs` into `reconciling-docs` + `walking-open-items`; `session-handoff`, `writing-retros`, and `honest-scope-reporting` accreted during drafting without dedicated refinement entries) |
 | Conventions | 5 | 4 (`frontmatter-schema` adds `doc_hashes` + `spec_version`; `write-rules` was relocated to `docs/metis-write-rules.md` as a design-time reference and gained the command-prompts convention) |
-| Subagents | 3 | 3 (no new subagents; existing ones gain invocation-prompt discipline and load parent `EPIC.md` in epic mode) |
+| Subagents | 3 | 2 (Refinement 10 retires `task-implementer`; `task-planner` and `task-reviewer` remain, both gaining invocation-prompt discipline and loading parent `EPIC.md` when the task lives under one) |
 
 ---
 
