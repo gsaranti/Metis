@@ -117,7 +117,7 @@ In priority order:
 2. ~~**Resolve the skills-prescribe-files tension in `write-rules.md`.**~~ **Done.** Resolved by moving `write-rules.md` to `docs/metis-write-rules.md` — it was a design-time narrative misfiled in the runtime conventions folder. The relocation makes the conventions folder coherent (file-format specs only) and reframes the layer-responsibilities paragraph as framework-author guidance rather than a rule the skills are violating.
 3. **Add `frontmatter-schema.md` as on-demand load to `writing-an-epic-file`.** One-line edit.
 4. **Prune the identified redundancies** in `reconciling-docs` (pass-cadence paragraphs), `honest-scope-reporting` (duplicate "don't manufacture" reminders), `writing-decisions` (Permanence and preview tightening), `logging-external-work` (source-of-truth re-statement), and `propagating-spec-changes` (cascade-by-epic-state mirroring). Combined: ~800–1,200 words recovered, no output-quality loss.
-5. **Consider whether the skill-owned-artifact pattern should be named.** A one-line note in the handoff or in `docs/metis-write-rules.md` acknowledging that 10 of 15 skills own their artifact's shape (no dedicated convention file) would make the split feel deliberate rather than accidental.
+5. ~~**Consider whether the skill-owned-artifact pattern should be named.**~~ **Done.** One sentence added to the handoff's Skills section opener naming the ten-skill-owned / five-convention-backed split and the reason (convention files exist for formats shared across multiple skills and commands, not per-artifact).
 
 Items 1–3 are each a single-file edit. Items 4–5 are a short dedicated pass that could be done in one sitting.
 

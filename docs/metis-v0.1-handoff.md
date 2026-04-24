@@ -640,7 +640,7 @@ It also defines the **command-prompts convention** (an optional trailing free-te
 
 ## Skills
 
-Fifteen skills at `.claude/skills/metis/<name>/SKILL.md`. Each is focused know-how that embeds judgment, not just rules.
+Fifteen skills at `.claude/skills/metis/<name>/SKILL.md`. Each is focused know-how that embeds judgment, not just rules. Ten of them own their artifact's shape inline (under an `## Artifact shape` H2); the other five point at `.metis/conventions/*.md` for formats shared across multiple skills and commands.
 
 The task-authoring and epic-authoring responsibilities are each split across two skills: one for **decomposition** (how to cut a body of work into the right number of right-sized units) and one for **writing a single artifact** (given one unit, produce the file). The split lets callers load only the half they need — a command that decomposes a BUILD.md and writes twenty task files loads both; a manual user prompt to add a single task loads only the write-half — and keeps each skill's register tight around one kind of judgment.
 
