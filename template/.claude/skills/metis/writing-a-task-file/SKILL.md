@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Writing a task file
 
-A task file is the self-sufficient brief a subagent works from. The job of this skill is to take one decomposed unit of work and render it into that file. The decomposition call — what belongs in this task vs. a sibling, what the right number of tasks is — has already been made by the time this skill runs.
+A task file is the self-sufficient brief a reader works from. The job of this skill is to take one decomposed unit of work and render it into that file. The decomposition call — what belongs in this task vs. a sibling, what the right number of tasks is — has already been made by the time this skill runs.
 
 ## Read first
 
@@ -17,7 +17,7 @@ Load `.metis/conventions/frontmatter-schema.md` on demand when populating frontm
 
 ## Frontmatter quality
 
-`depends_on` and `touches` are the fields that most commonly inflate. `depends_on` names real blocking prerequisites — another task must finish before this one can start — not a wishlist of related work. `touches` names the primary surfaces a planner needs to reason about; listing every file the implementer might incidentally open makes the field noise rather than signal. Inflated frontmatter degrades `/metis:pick-task` and `/metis:sync` more than missing values do.
+`depends_on` and `touches` are the fields that most commonly inflate. `depends_on` names real blocking prerequisites — another task must finish before this one can start — not a wishlist of related work. `touches` names the primary surfaces a planner needs to reason about; listing every file the implementer might incidentally open makes the field noise rather than signal. Inflated frontmatter degrades task-pickup and spec-change propagation more than missing values do.
 
 ## Describe outcomes, not implementation
 

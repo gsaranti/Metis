@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 A cascade is what happens when one upstream change — an edit to a file in `docs/`, or a direct edit to `BUILD.md` — reaches downstream artifacts that were built against the prior framing. The job of this skill is to detect what the change reaches, classify each candidate as cosmetic or substantive, move through the substantive set under user approval using status-aware rules, and record each accepted change as a decision so the "why" is not buried in file edits.
 
-Two failure modes pull against each other. Silent drift leaves downstream artifacts quoting a passage the source has since rewritten; a later subagent plans against a framing the docs no longer support. Indiscriminate cascade walks every wording tweak as a commitment shift; ceremony exhausts the user and the changes that actually matter get rubber-stamped inside the pile.
+Two failure modes pull against each other. Silent drift leaves downstream artifacts quoting a passage the source has since rewritten; a later reader plans against a framing the docs no longer support. Indiscriminate cascade walks every wording tweak as a commitment shift; ceremony exhausts the user and the changes that actually matter get rubber-stamped inside the pile.
 
 ## Read first
 
