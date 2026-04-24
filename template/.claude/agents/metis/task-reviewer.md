@@ -15,7 +15,7 @@ The review is against the task, not the plan. Judge whether the diff meets the a
 
 - The assigned task file. `tasks/<id>-*.md` when the project has a flat layout; `epics/<name>/tasks/<id>-*.md` when it uses epics. The task file's path tells you which.
 - When the task lives under an epic, the parent `EPIC.md`.
-- The git diff under review. Run `git diff` against the appropriate baseline — main, the task's branch point, whichever the repo's workflow implies.
+- The git diff under review — the implementation work attributable to this task, which may span multiple commits. Default scope: uncommitted changes plus commits on the current branch that are not yet on the project's main line. A single task routinely lands across multiple commits (schema → handler → tests → fix) and the review covers all of them as one. If the branch mixes work from multiple tasks, or the invocation prompt narrows the scope to a specific commit range, follow that narrower scope — conflating tasks in a single review is worse than a round-trip to disambiguate.
 - The implementer's return notes, typically already appended to the task's Notes section. Context, not authority — the review is against the task's acceptance criteria, not against the implementer's self-assessment.
 - The docs listed in the task's `docs_refs` frontmatter, only when a criterion turns on a passage the task abbreviated.
 
