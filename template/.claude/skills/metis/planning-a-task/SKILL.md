@@ -53,6 +53,12 @@ An **assumption** is a guess the plan needed to make and can name. Because it is
 
 A **flag** is a gap the plan could not settle without guessing in a way that would not be checkable. Local flags — a field type, a specific error code — go in the plan's flags section and the implementer is told to defer them upward. Structural flags — acceptance criteria that turn on behavior the source docs do not pin down — do not belong in a flags section. They belong upstream — the finding is that the task file itself is underspecified, not that the plan needs more words.
 
+## The task may already be done
+
+Before sequencing the plan, a light check against the task's `touches` and acceptance criteria is worth the cost. Glob the expected paths, read the likely files, look for whether the commitments the task makes are already evidenced in the code. If they are, the right return is not a plan — it is a finding naming which files already exist and which criteria are visibly met. The caller decides from the finding what to do next.
+
+The bar is *is there evidence the work is substantially done*, not *is every criterion verified*. A full verification would re-read files the plan should only glance at; it belongs downstream of the plan, not inside it. When evidence is ambiguous — some files present, some criteria partially evident — produce the plan but flag the overlap in its assumptions section so the caller can weigh the overlap against proceeding. A plan that proceeds as if the code were absent when it is obviously present is the same kind of silent drift this skill warns against in the other direction.
+
 ## Pushing back on the task file
 
 This is the one upstream-facing register the plan carries. When acceptance criteria cannot be made testable without an extra call, when two honest plans could be written depending on a scope detail the task did not fix, when `depends_on` is missing a real blocking prerequisite, when the task bundles two unrelated outcomes, or when making the plan honest would require changes outside the task's scope, the plan's job is to surface the gap upstream — not to widen itself until the ambiguity is hidden inside the steps. A plan that silently resolves a task-file ambiguity is where silent drift starts.
