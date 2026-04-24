@@ -36,7 +36,7 @@ Note the quoted strings on `id` and `depends_on` values — leading-zero numbers
 
 Zero-padded 4-digit string. Unique within the project. The filename prefix matches (`0007-stripe-webhook-handler.md`).
 
-Stable by default: other artifacts (frontmatter `depends_on`, decisions, `CURRENT.md`, etc.) reference this id, so changing it has cascading cost. If it must change, reconcile the dependents via `/metis:log-work` or a resync.
+Stable by default: other artifacts (frontmatter `depends_on`, decisions, `CURRENT.md`, etc.) reference this id, so changing it has cascading cost. If it must change, the dependents have to be reconciled after the fact.
 
 Valid: `"0007"`, `"0042"`, `"1234"`.
 Invalid: `7`, `"00007"`, `"7"`.
@@ -71,7 +71,7 @@ Integer, 1–5. **1 is highest.** Default: 3.
 
 ### `depends_on` — optional
 
-List of task IDs as zero-padded strings. Absent or empty means no dependencies. `/metis:pick-task` filters out tasks whose dependencies are not `done`.
+List of task IDs as zero-padded strings. Absent or empty means no dependencies. A task whose dependencies are not all `done` is not eligible to be picked up.
 
 ### `estimate` — optional
 
@@ -87,19 +87,19 @@ List of paths (files or directories) the task is expected to modify. Advisory �
 
 List of source-doc references. Each entry is a path from the project root, optionally suffixed with `#section-anchor`. Task files must **excerpt** these sections (see `task-format.md`), not merely link them.
 
-`/metis:rebaseline` and `/metis:sync` read this field to detect drift.
+The field supports drift detection — when a listed doc changes, downstream reconciliation can identify which tasks are affected.
 
 ### `doc_hashes` — generated
 
 Map of `docs_refs` path → first 12 characters of the SHA-256 of the referenced file's contents at the time the task was last reconciled with that doc.
 
-Generated when the task is created. Updated by `/metis:sync` when the task absorbs a doc change. If a path in `docs_refs` is missing from `doc_hashes`, `/metis:rebaseline` computes the hash on next run.
+Generated when the task is created. Updated when the task absorbs a doc change. If a path in `docs_refs` is missing from `doc_hashes`, the hash is computed on the next drift-detection pass.
 
 Hashing the whole file (not just the section anchor) is intentional: simpler, and the common case is "the whole doc changed."
 
 ### `spec_version` — generated
 
-Integer. The project's `BUILD.md` version that this task was last reconciled against. Stored project-wide in `.metis/config.yaml` and copied into each new task at creation. Bumped by `/metis:sync` when the `BUILD.md` sections referenced by a task change.
+Integer. The project's `BUILD.md` version that this task was last reconciled against. Stored project-wide in `.metis/config.yaml` and copied into each new task at creation. Bumped when the `BUILD.md` sections referenced by a task change and the task is reconciled against them.
 
 A task is flagged stale when the project `spec_version` is greater than the task's `spec_version` **and** the intervening `BUILD.md` delta touches sections this task references.
 

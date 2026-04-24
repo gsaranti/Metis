@@ -8,7 +8,7 @@ status: pending
 # estimate: medium         # small | medium | large
 # touches: []              # paths the task will modify
 # docs_refs: []            # source-doc references; excerpt these into Context
-# doc_hashes: {}           # generated — populated by /metis:rebaseline and /metis:sync
+# doc_hashes: {}           # generated — populated automatically; do not hand-edit
 # spec_version: 1          # generated — set at task creation
 ---
 
@@ -18,7 +18,7 @@ One or two sentences. The outcome, not the activity. "Users can Y," "the system 
 
 ## Context
 
-Excerpt the relevant passages from each `docs_refs` entry as blockquotes with source attribution. Quote, do not just link — a subagent with only this task file and its cited docs must have enough to work.
+Excerpt the relevant passages from each `docs_refs` entry as blockquotes with source attribution. Quote, do not just link — a reader with only this task file and its cited docs must have enough to work.
 
 > From `docs/path.md#anchor`:
 >

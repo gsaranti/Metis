@@ -11,7 +11,7 @@ Example: `epics/001-authentication/EPIC.md`.
 The epic directory also contains:
 
 - `tasks/` — task files for this epic (see `task-format.md`)
-- `retro.md` — written at epic close by `/metis:epic-retro`
+- `retro.md` — written at epic close
 
 ## Frontmatter
 
