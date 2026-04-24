@@ -1334,13 +1334,16 @@ This was originally floated for `/metis:plan-task`, `/metis:implement-task`, `/m
 
 The reasoning ties to principle #1 ("structure the project, not the agent"). If Metis forbids the user from giving in-the-moment guidance, then Metis *is* the religion you're trying to avoid. The framework provides scaffolding and opinions; it should not dictate how every task is approached.
 
-Three discipline points (codified in `docs/metis-write-rules.md` and the subagent system prompts):
+Four discipline points (codified in `docs/metis-write-rules.md` and the subagent system prompts):
 
 1. **Augment, don't replace.** The prompt augments the task file (or command context); it does not override it. If the prompt genuinely contradicts the task file, flag the conflict and ask.
 2. **Flag scope expansion.** If the prompt expands scope, note it in the return rather than silently doing it.
 3. **Acknowledge use explicitly.** The return states how the prompt was used. Traceable after the fact.
+4. **Resolve named skills.** The prompt may name additional skills — Metis's own, user-authored, or project-specific; local or global — that the agent should consult alongside the skills the command already invokes. Resolve each reference the same way any skill reference is resolved, across whatever skill sources the runtime exposes. Invoked skills are acknowledged in the return; unresolvable names are flagged rather than guessed. User-referenced skills augment; they do not override the task file or the command's built-in skills.
 
 The prompt is **ephemeral** — never persisted to disk.
+
+The fourth rule is a later extension of the convention. The motivation: a user mid-project will accumulate skills that aren't part of Metis — team-review checklists, testing patterns, code-style documents, or personal skills kept in `~/.claude/skills/` — and being able to name them in the prompt is the natural way to bring them to bear on one specific invocation without wiring them into a command permanently. The alternative (editing the subagent's `skills:` frontmatter or bulk-loading project skills) fights the context-budget discipline and takes the "Metis is optional" principle in the wrong direction. Deliberately, the rule does not prescribe a lookup mechanism — the runtime already knows how to resolve skills across project-local, user-global, plugin, and Metis sources, and pinning the convention to one specific glob pattern would have missed skill sources that aren't in the project tree.
 
 Open question (#14 above): does this convention apply to *every* command, or only substantive ones? Leaning "every command where the agent does real thinking" — excludes purely mechanical ones like `/metis:pick-task`, `/metis:session-start`, `/metis:scratch-cleanup`.
 

@@ -55,11 +55,12 @@ Reaching for any of these means the plan has grown past planning. Stop and retur
 
 ## Invocation prompt
 
-The command may carry a trailing free-text prompt, e.g. `/metis:plan-task 0007 "focus on retry semantics; the existing code uses tenacity, follow that pattern"`. Three rules:
+The command may carry a trailing free-text prompt, e.g. `/metis:plan-task 0007 "focus on retry semantics; the existing code uses tenacity, follow that pattern"`. Four rules:
 
 1. **Augment, do not replace.** The task file is authoritative. The prompt adds direction on top. If it genuinely contradicts the task file — overrides an acceptance criterion, flips a scope boundary — flag the conflict and ask rather than silently choosing.
 2. **Flag scope expansion.** If the prompt asks for work beyond the task file, note the expansion in the return rather than quietly planning for it.
 3. **Acknowledge use explicitly.** The return states how the prompt shaped the plan, so the influence is traceable after the fact. Example: *"Per your note, sequenced the retry step against the existing tenacity pattern in `billing/client.py` rather than proposing a new dependency."*
+4. **Resolve named skills.** The prompt may name additional skills — Metis's own, user-authored, or project-specific; local or global — for this subagent to consult alongside the skills it already invokes. Resolve each reference the same way any skill reference is resolved, across whatever skill sources the runtime exposes. An invoked skill's influence is acknowledged in the return. If a name cannot be resolved, flag it rather than guessing. User-referenced skills augment the task file and the built-in skills; they do not override them.
 
 The prompt is ephemeral — do not copy it into the plan file or any other persisted artifact.
 

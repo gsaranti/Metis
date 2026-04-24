@@ -152,11 +152,12 @@ tenacity, follow that pattern"
 /metis:sync "only propagate the auth doc changes, defer the billing ones"
 ```
 
-Three discipline rules apply to any command or subagent that accepts such a prompt:
+Four discipline rules apply to any command or subagent that accepts such a prompt:
 
 1. **Augment, do not replace.** The prompt adds to the task file or command context; it does not override it. If it genuinely contradicts the task file, flag the conflict and ask rather than silently choosing a side.
 2. **Flag scope expansion.** If the prompt widens scope beyond the task file, note the expansion in the return instead of quietly doing it.
 3. **Acknowledge use explicitly.** The return states how the prompt was used, so the influence is traceable after the fact. Example: *"Per your note about tenacity, I followed the retry pattern in `billing/client.py` rather than adding a new dependency."*
+4. **Resolve named skills.** The prompt may name additional skills — Metis's own, user-authored, or project-specific; local or global — for the agent to consult alongside the skills the command already invokes. Resolve each reference the same way any skill reference is resolved, across whatever skill sources the runtime exposes. An invoked skill's influence is acknowledged in the return. If a name cannot be resolved, flag it rather than guessing. User-referenced skills augment — they do not override the task file, the command's built-in skills, or the three rules above.
 
 The prompt is **ephemeral**. It is never persisted to disk, never added to frontmatter, never copied into a task Notes section except as a natural part of the subagent's return commentary.
 
