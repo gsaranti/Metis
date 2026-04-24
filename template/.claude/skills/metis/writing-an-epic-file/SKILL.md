@@ -15,6 +15,8 @@ Two failure modes pull against each other: an epic that reads like a task list, 
 - `.metis/conventions/epic-format.md` — the structural spec (section order, sizing target, exit-criterion discipline). Not restated here.
 - `.metis/templates/epic.md` — the skeleton.
 
+Load `.metis/conventions/frontmatter-schema.md` on demand when populating frontmatter or resolving a field question. Use it as a lookup, not required reading.
+
 ## Frontmatter quality
 
 `goal` and `exit_criterion` carry the most load. `goal` names the outcome — what users or the system can do when the epic is done — in one sentence. `exit_criterion` names the single testable check that proves it. If `goal` reads as a theme ("billing") rather than a capability ("a team admin can view and update their billing"), the epic has no real anchor for scope decisions, and both scope and `exit_criterion` drift to fill the vacuum.
