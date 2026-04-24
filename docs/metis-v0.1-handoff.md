@@ -443,43 +443,23 @@ Test for placement: *would a user care about this if Metis didn't exist?* If yes
 <!-- existing user content stays untouched -->
 
 <!-- metis:start -->
-## Metis workflow
-
-This project uses Metis for structured agentic development.
-
-**Layout**: flat (`tasks/`) or epic (`epics/<name>/tasks/`) — whichever exists on disk.
-
-**Key files**:
-- BUILD.md — what we're building
-- tasks/ (or epics/) — individual work items
-- decisions/ — append-only ADRs
-- scratch/CURRENT.md — session handoff
-
-**Write rules**:
-- Only the parent session writes to scratch/CURRENT.md
-- Subagents write only to their assigned task file and their return value
-- Decisions go in decisions/, not in scratch
-- BOARD.md is generated; don't hand-edit
-
-**Task file format**: see .metis/conventions/task-format.md
-
-**Commands**: /metis:session-start, /metis:pick-task, 
-/metis:plan-task <id>, /metis:implement-task <id>, 
-/metis:review-task <id>, /metis:session-end
+...Metis workflow primer (short overview of layout, key files,
+   highlighted write rules, and a pointer to the `/metis:` command set)...
 <!-- metis:end -->
 ```
 
-On re-run, `/metis:init` replaces content between `<!-- metis:start -->` and `<!-- metis:end -->`, preserving user edits elsewhere in the file.
+The block body is shipped at `template/.metis/scripts/claude-block.md` and is the canonical source. `/metis:init`'s script (`.metis/scripts/init.sh`) reads that file at runtime and splices it between the delimiters; on re-run, it replaces only the body between the markers, preserving user edits elsewhere in `CLAUDE.md`. Editing the block content means editing `claude-block.md` — this doc is not the source.
 
 ### .gitignore additions
 
 ```gitignore
 # <!-- metis:start -->
-scratch/*
-!scratch/CURRENT.md
-!scratch/questions.md
+...scratch-ignore rules (ignore ephemeral contents, keep the
+   load-bearing files like scratch/CURRENT.md and scratch/questions.md)...
 # <!-- metis:end -->
 ```
+
+The block body is shipped at `template/.metis/scripts/gitignore-block.txt` and is the canonical source. Same splice mechanics as `CLAUDE.md`.
 
 ---
 
