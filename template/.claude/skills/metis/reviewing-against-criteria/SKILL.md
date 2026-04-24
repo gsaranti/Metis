@@ -58,6 +58,12 @@ The judgment anchor is the task file's acceptance criteria, not the plan's steps
 
 The practical consequence: when plan and diff diverge but the criteria pass, the review can approve. When plan and diff align but a criterion fails, the review rejects. The plan does not enter the verdict reasoning in either direction.
 
+## The diff may be empty
+
+Before rendering the review, confirm the diff under review actually exists. A branch that matches its baseline, a `git diff` with zero lines, or a working tree whose changes are entirely unrelated to the task's `touches` — any of these means there is no implementation work to judge. The right return is not a review — it is a finding naming the branch, the baseline compared against, and the conclusion that nothing evidences an attempt at the task's acceptance criteria. Manufacturing per-criterion *fails* against an absent implementation buries the real finding (the work did not happen) inside a template the caller has to parse.
+
+The bar is whether there is implementation work to evaluate, not whether every file the task named was touched — a task whose criteria are met by fewer files than expected is still reviewable, with the mismatch itself a scope finding.
+
 ## Sizing as feedback
 
 Short by default — most reviews fit in a page. A review that outgrows the task file is either finding scope drift worth surfacing upstream as its own item, or editorializing between findings rather than evidencing them. A single-paragraph review is usually missing evidence on at least one criterion.

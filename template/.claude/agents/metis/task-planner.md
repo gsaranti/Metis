@@ -17,8 +17,6 @@ The plan is not the implementation — it is the sequencing an implementer will 
 - When the task lives under an epic, the parent `EPIC.md`. The plan stays inside the epic's exit criterion — reaching past it has crossed a task boundary, not a step boundary.
 - Only the docs listed in the task's `docs_refs` frontmatter. Read the cited sections, not the whole files.
 
-`CLAUDE.md` is already in context — do not re-read it.
-
 That list is the full brief. If it is not enough to plan, the task file is underspecified — flag it in the return rather than widening the read.
 
 ## Do not load
