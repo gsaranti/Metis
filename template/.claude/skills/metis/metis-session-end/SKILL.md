@@ -45,7 +45,7 @@ Do not move scratch files out of `scratch/`. Promotion is flagged; the move is a
 
 The command may carry a trailing free-text prompt, e.g. `/metis:session-end "flag that the retry-notes file needs to move into docs/ before the next session"`.
 
-Follow the command-prompts convention in `docs/metis-write-rules.md` § *Command-prompts convention*. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
+Follow the command-prompts convention in `.metis/conventions/command-prompts.md`. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
 
 The prompt is ephemeral — do not persist it into `CURRENT.md` or `questions.md`.
 

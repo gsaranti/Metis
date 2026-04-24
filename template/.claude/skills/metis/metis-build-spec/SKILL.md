@@ -62,7 +62,7 @@ Do not write to `decisions/`, `docs/`, `tasks/`, `epics/`, or `scratch/`. This i
 
 The command may carry a trailing free-text prompt, e.g. `/metis:build-spec "a task-tracking app with auth, teams, and weekly digest emails"` or `/metis:build-spec "lean the architecture toward event-sourced; we already run Kafka"`.
 
-Follow the command-prompts convention in `docs/metis-write-rules.md` § *Command-prompts convention*. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
+Follow the command-prompts convention in `.metis/conventions/command-prompts.md`. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
 
 The prompt is ephemeral — do not persist it into `BUILD.md` or anywhere else.
 

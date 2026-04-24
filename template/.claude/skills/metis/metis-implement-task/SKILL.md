@@ -80,7 +80,7 @@ Reaching for any of these means the implementation has grown past its scope. Sto
 
 The command may carry a trailing free-text prompt, e.g. `/metis:implement-task 0007 "skip mocking the webhook endpoint — use a real local test server"`.
 
-Follow the command-prompts convention in `docs/metis-write-rules.md` § *Command-prompts convention*. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
+Follow the command-prompts convention in `.metis/conventions/command-prompts.md`. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
 
 The prompt is ephemeral — do not copy it into the task file or any other persisted artifact beyond the brief "prompt usage" acknowledgment in Notes.
 

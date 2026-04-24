@@ -71,7 +71,7 @@ Do not write to `BUILD.md`, sibling epics' files, `decisions/`, `docs/`, or `scr
 
 The command may carry a trailing free-text prompt after the description, e.g. `/metis:feature "weekly digest email" "keep it under four tasks; we ship this in one sprint"`.
 
-Follow the command-prompts convention in `docs/metis-write-rules.md` § *Command-prompts convention*. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
+Follow the command-prompts convention in `.metis/conventions/command-prompts.md`. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
 
 The prompt is ephemeral — do not persist it into the feature spec, the new epic, or any task file.
 

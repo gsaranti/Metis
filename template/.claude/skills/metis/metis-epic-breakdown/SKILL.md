@@ -71,7 +71,7 @@ Do not write to `BUILD.md`, `decisions/`, `docs/`, `tasks/`, `scratch/`, or `BOA
 
 The command may carry a trailing free-text prompt, e.g. `/metis:epic-breakdown "prefer vertical slices over horizontal layers; keep the first epic demo-able in a week"`.
 
-Follow the command-prompts convention in `docs/metis-write-rules.md` § *Command-prompts convention*. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
+Follow the command-prompts convention in `.metis/conventions/command-prompts.md`. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
 
 The prompt is ephemeral — do not persist it into any `EPIC.md` or epic directory metadata.
 

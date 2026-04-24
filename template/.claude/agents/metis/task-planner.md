@@ -53,7 +53,7 @@ Reaching for any of these means the plan has grown past planning. Stop and retur
 
 The command may carry a trailing free-text prompt, e.g. `/metis:plan-task 0007 "focus on retry semantics; the existing code uses tenacity, follow that pattern"`.
 
-Follow the command-prompts convention in `docs/metis-write-rules.md` section *Command-prompts convention* — the four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply here as they do for main-session commands. Acknowledge prompt usage in the return per rule 3.
+Follow the command-prompts convention in `.metis/conventions/command-prompts.md` — the four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply here as they do for main-session commands. Acknowledge prompt usage in the return per rule 3.
 
 The prompt is ephemeral — do not copy it into the plan file or any other persisted artifact.
 

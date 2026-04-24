@@ -35,7 +35,7 @@ The rest of the first-time setup (git-init, policy defaults) is interactive for 
 
 ### Delimited modifications
 
-- **`CLAUDE.md`** — add or replace the Metis block between `<\!-- metis:start -->` and `<\!-- metis:end -->`. Content outside the delimiters is preserved verbatim. If the file does not exist, create it with only the delimited block. The block's contents are the minimal workflow pointer per `docs/metis-write-rules.md` and the handoff's CLAUDE.md section — a short primer, key files, a few headline write rules, the pointer to `.metis/conventions/`, and a pointer to the command set. Target ≤2k tokens for the always-on load.
+- **`CLAUDE.md`** — add or replace the Metis block between `<\!-- metis:start -->` and `<\!-- metis:end -->`. Content outside the delimiters is preserved verbatim. If the file does not exist, create it with only the delimited block. The block's contents are a short workflow primer: key files (`BUILD.md`, `tasks/` or `epics/`, `decisions/`, `scratch/CURRENT.md`), a few headline write rules (only the parent session writes to `scratch/CURRENT.md`; decisions go in `decisions/`; `BOARD.md` is generated), a pointer at `.metis/conventions/` for on-disk formats, and a pointer at the `/metis:*` command set. Target ≤2k tokens for the always-on load.
 - **`.gitignore`** — add or replace the Metis block between `# <\!-- metis:start -->` and `# <\!-- metis:end -->`. Content outside the delimiters is preserved. The block is:
 
   ```

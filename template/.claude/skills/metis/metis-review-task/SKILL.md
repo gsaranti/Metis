@@ -57,7 +57,7 @@ Do not write to the task file's non-Notes sections, code, `BUILD.md`, `BOARD.md`
 
 ## Invocation prompt
 
-The trailing prompt is forwarded to the subagent verbatim. The four discipline rules (augment / flag scope expansion / acknowledge use / resolve named skills) live canonically in `docs/metis-write-rules.md` section *Command-prompts convention* and are enforced inside `task-reviewer.md`. This command does not re-check them; it relays the subagent's prompt-usage acknowledgment through to the user in the return.
+The trailing prompt is forwarded to the subagent verbatim. The four discipline rules (augment / flag scope expansion / acknowledge use / resolve named skills) live canonically in `.metis/conventions/command-prompts.md` and are enforced inside `task-reviewer.md`. This command does not re-check them; it relays the subagent's prompt-usage acknowledgment through to the user in the return.
 
 ## Return
 

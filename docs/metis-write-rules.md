@@ -144,49 +144,13 @@ When a file in `docs/` changes:
 
 ## Command-prompts convention
 
-This section is the canonical source for the rules. Individual command and subagent prompts reference it by path rather than restating the rules — if the rules change, they change once here, not across twenty-two files.
+**The canonical source is `.metis/conventions/command-prompts.md`** — a runtime-shipped convention file. Commands and subagents reference that file by path; the four rules are not restated in command or subagent prompts, and they are not canonical in this doc either. This section exists as a design-time orientation pointer — if you are reading this doc to understand Metis, you should know the convention exists and where it lives — but the rules themselves are in the convention file.
 
-Every substantive Metis command accepts an optional trailing free-text prompt that augments its default behavior:
+Keeping the canonical rules in `.metis/conventions/` rather than in `docs/` is deliberate: runtime artifacts (skills, subagents, templates, conventions) ship with a Metis install; `docs/` is development-only. A pointer from a runtime file into `docs/` would break the moment Metis is packaged or the user clones without the docs directory.
 
-```
-/metis:plan-task 0007 "focus on retry semantics; the existing code uses
-tenacity, follow that pattern"
+### Summary (not canonical)
 
-/metis:reconcile "give special weight to docs/billing.md, it's the most recent"
-
-/metis:sync "only propagate the auth doc changes, defer the billing ones"
-```
-
-Four discipline rules apply to any command or subagent that accepts such a prompt:
-
-1. **Augment, do not replace.** The prompt adds to the task file or command context; it does not override it. If it genuinely contradicts the task file, flag the conflict and ask rather than silently choosing a side.
-2. **Flag scope expansion.** If the prompt widens scope beyond the task file, note the expansion in the return instead of quietly doing it.
-3. **Acknowledge use explicitly.** The return states how the prompt was used, so the influence is traceable after the fact. Example: *"Per your note about tenacity, I followed the retry pattern in `billing/client.py` rather than adding a new dependency."*
-4. **Resolve named skills.** The prompt may name additional skills — Metis's own, user-authored, or project-specific; local or global — for the agent to consult alongside the skills the command already invokes. Resolve each reference the same way any skill reference is resolved, across whatever skill sources the runtime exposes. An invoked skill's influence is acknowledged in the return. If a name cannot be resolved, flag it rather than guessing. User-referenced skills augment — they do not override the task file, the command's built-in skills, or the three rules above.
-
-The prompt is **ephemeral**. It is never persisted to disk, never added to frontmatter, never copied into a task Notes section except as a natural part of the subagent's return commentary.
-
-Purely mechanical commands (`/metis:pick-task`, `/metis:session-start`, `/metis:scratch-cleanup`, `/metis:skeleton-plan`, `/metis:pushback`, `/metis:rebaseline`, `/metis:init`) may silently accept and ignore a trailing prompt. All other commands follow the four rules above.
-
-### How commands reference this section
-
-A substantive command's Invocation prompt section carries three things: one command-specific example, a one-line pointer at this section, and one line naming what the prompt *specifically for this command* is ephemeral against (so the command-specific persistence discipline survives even though the rules themselves live here). Example shape:
-
-```markdown
-## Invocation prompt
-
-The command may carry a trailing free-text prompt, e.g. `/metis:sync "..."`.
-
-Follow the command-prompts convention in `docs/metis-write-rules.md`
-§ *Command-prompts convention*. The four rules (augment / flag scope
-expansion / acknowledge use / resolve named skills) apply; acknowledge
-prompt usage in the return per rule 3.
-
-The prompt is ephemeral — do not persist it into task files, epic files,
-or decision entries.
-```
-
-Subagent system prompts (`.claude/agents/metis/task-planner.md`, `task-reviewer.md`) also reference this section; the four rules are not restated in the subagent files either.
+A substantive Metis skill or subagent that accepts a trailing free-text prompt references `.metis/conventions/command-prompts.md` and follows the four rules there — augment / flag scope expansion / acknowledge use / resolve named skills — treating the prompt as ephemeral. Seven skills are purely mechanical (`/metis:pick-task`, `/metis:session-start`, `/metis:scratch-cleanup`, `/metis:skeleton-plan`, `/metis:pushback`, `/metis:rebaseline`, `/metis:init`): they silently accept and ignore trailing prompts and do not reference the convention. Whether a given skill is mechanical or substantive is a property of the skill, not of the convention — the convention does not look up at its callers.
 
 ## Context budget
 

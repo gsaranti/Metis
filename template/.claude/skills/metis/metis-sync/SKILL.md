@@ -59,7 +59,7 @@ Do not write to `BOARD.md`, `scratch/`, `docs/` beyond what a cascade might name
 
 The command may carry a trailing free-text prompt, e.g. `/metis:sync "only propagate the auth doc changes, defer the billing ones"`.
 
-Follow the command-prompts convention in `docs/metis-write-rules.md` § *Command-prompts convention*. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
+Follow the command-prompts convention in `.metis/conventions/command-prompts.md`. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
 
 The prompt is ephemeral — do not persist it into task files, epic files, or decision entries.
 

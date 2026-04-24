@@ -52,7 +52,7 @@ Do not write to code, `BUILD.md`, `BOARD.md`, `decisions/`, or the task file's n
 
 The command may carry a trailing free-text prompt, e.g. `/metis:scope-check "pay attention to the retry paths; I'm suspicious they got stubbed"`.
 
-Follow the command-prompts convention in `docs/metis-write-rules.md` § *Command-prompts convention*. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
+Follow the command-prompts convention in `.metis/conventions/command-prompts.md`. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
 
 The prompt is ephemeral — do not persist it into the report or the Notes append.
 

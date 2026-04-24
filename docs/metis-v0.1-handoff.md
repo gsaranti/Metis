@@ -580,9 +580,9 @@ Helpful errors with the likely-correct alternative. Not "wrong layout, goodbye."
 
 ## Conventions
 
-Four files at `.metis/conventions/`. They define the canonical on-disk formats Metis relies on. Conventions are a **human- and design-time reference**: they encode the shape of files so both the user and Metis's agents agree on what those files mean. At runtime, skills, subagents, and commands each carry only the slice of the conventions they need — the conventions files are not bulk-loaded into every session.
+Five files at `.metis/conventions/`. They define the canonical on-disk formats and cross-artifact conventions Metis relies on. Conventions are a **human- and design-time reference as well as a runtime one**: they encode shapes and conventions so both the user and Metis's agents agree on what those files mean. Runtime skills, subagents, and commands each carry only the slice they need rather than bulk-loading every convention per session.
 
-(A fifth document, `write-rules.md`, originally lived alongside these but was moved to `docs/metis-write-rules.md`. It is a design-time narrative about who-writes-where and the framework's layer responsibilities, not a file-format spec; it is never referenced by a skill at runtime, so keeping it in the runtime conventions folder was misleading. See "Write rules (design-time reference)" below.)
+(A sixth document, `write-rules.md`, originally lived alongside these but was moved to `docs/metis-write-rules.md`. It is a design-time narrative about who-writes-where and the framework's layer responsibilities, not a file-format spec; it is never referenced by a skill at runtime, so keeping it in the runtime conventions folder was misleading. See "Write rules (design-time reference)" below. The convention that *is* load-bearing at runtime — how commands and subagents handle the optional trailing free-text prompt — lives at `.metis/conventions/command-prompts.md`; see Refinement 12.)
 
 ### `task-format.md`
 
@@ -638,6 +638,12 @@ spec_version: 3               # bumps when BUILD.md sections this task reference
 ```
 
 Specifies what's required vs optional, what values are valid, and why each field exists. The `doc_hashes` and `spec_version` fields support drift detection — when a referenced doc or `BUILD.md` section changes, the task is flagged stale by `/metis:rebaseline` and offered for cascade by `/metis:sync`.
+
+### `command-prompts.md`
+
+Canonical source for how a Metis skill or subagent handles the optional trailing free-text prompt a user can type after a slash invocation. Carries the four discipline rules (augment / flag scope expansion / acknowledge use / resolve named skills) and the ephemerality rule. Nothing more — the convention does not look up at its callers; it does not prescribe how skills reference it, nor enumerate which skills do and don't.
+
+Added in Refinement 12. Lives in `.metis/conventions/` rather than `docs/` because runtime artifacts (skills, subagents) need to reference it, and runtime files may not reach into `docs/`. Of the 22 command-register skills, the 15 that accept a trailing prompt point at this file; the 7 mechanical skills (see the handoff's §The command list and the §On commands bullet naming them) silently accept and ignore trailing prompts and do not reference the convention. Both subagents reference it.
 
 ### Write rules (design-time reference, lives in `docs/metis-write-rules.md`)
 
@@ -1445,7 +1451,7 @@ Resolution: migrate all 22 commands to SKILL.md format, preserve the content-reg
 
 Three sub-decisions that followed from the migration:
 
-- **Invocation-prompt rules live in one place.** The four-rule block (augment / flag scope expansion / acknowledge use / resolve named skills) had accreted into fifteen commands plus both subagents — seventeen copies of the same paragraph. The rules now live canonically in `docs/metis-write-rules.md` § *Command-prompts convention*; each command carries one command-specific example, one pointer at the canonical source, and one command-specific "what not to persist it into" line. The subagents follow the same pattern. This resolved the largest source of genuine cross-file duplication the command layer had.
+- **Invocation-prompt rules live in one runtime-shipped place.** The four-rule block (augment / flag scope expansion / acknowledge use / resolve named skills) had accreted into fifteen commands plus both subagents — seventeen copies of the same paragraph. An initial pass on the migration put the canonical source in `docs/metis-write-rules.md`, but `docs/` is development-only and runtime artifacts must not reach into it; the second pass relocated the rules into `.metis/conventions/command-prompts.md`, which ships with every Metis install. Each command carries one command-specific example, one pointer at the convention file, and one command-specific "what not to persist it into" line. The subagents follow the same pattern. This resolved the largest source of genuine cross-file duplication the command layer had, and also surfaced a rule worth making explicit: **no runtime artifact (skill, subagent, template, convention) may reference `docs/`** — those files are design-time reading, and Metis is shipped as the `template/` tree without them.
 - **`argument-hint` is dropped.** The classic commands-format frontmatter field does not appear in SKILL.md's documented schema. Argument shape now lives in the body under `## Arguments`, which most commands already had.
 - **`.claude/commands/` is accepted but unused by Metis.** Claude Code continues to support that directory; Metis writes nothing there. The MANIFEST.md stops listing it.
 
@@ -1453,7 +1459,7 @@ What did not change: the subagents (`task-planner` and `task-reviewer`) still li
 
 The move also fixed one drift in the mapping: `/metis:implement-task` had listed `writing-a-task-file` as a skill reference for "the shape of an implementer's Notes append on close," but that skill teaches creating a new task file and is silent on appends. The migrated `/metis:implement-task` drops the reference and carries the Notes-append guidance inline — a short paragraph saying what the implementer writes is not worth a dedicated skill in v0.1.
 
-Net manifest impact: no file-count changes to conventions, teaching skills, or subagents. 22 command files move from `.claude/commands/metis/*.md` to `.claude/skills/metis/<name>/SKILL.md`. One old skill reference fixed.
+Net manifest impact: conventions go from 4 to 5 (adding `.metis/conventions/command-prompts.md` — the canonical home for the four invocation-prompt rules, so runtime artifacts do not reach into `docs/`). Teaching skills and subagents unchanged. 22 command files move from `.claude/commands/metis/*.md` to `.claude/skills/metis/metis-<name>/SKILL.md`. One old skill reference fixed.
 
 ### Manifest impact of all refinements
 
@@ -1461,10 +1467,10 @@ Net manifest impact: no file-count changes to conventions, teaching skills, or s
 |---|---|---|
 | Commands | 20 | 22 (+`/metis:sync`, +`/metis:log-work`; renamed walk-contradictions → walk-open-items) |
 | Skills (teaching + command) | 10 | 37 (15 teaching-register from Refinements 1–2 and 9; 22 command-register from Refinement 12 absorbing the commands layer) |
-| Conventions | 5 | 4 (`frontmatter-schema` adds `doc_hashes` + `spec_version`; `write-rules` was relocated to `docs/metis-write-rules.md` as a design-time reference and gained the command-prompts convention) |
+| Conventions | 5 | 5 (`frontmatter-schema` adds `doc_hashes` + `spec_version`; `write-rules` was relocated to `docs/metis-write-rules.md` as a design-time reference; `command-prompts.md` added in Refinement 12 as the runtime-shipped canonical home for the four invocation-prompt rules) |
 | Subagents | 3 | 2 (Refinement 10 retires `task-implementer`; `task-planner` and `task-reviewer` remain, both gaining invocation-prompt discipline and loading parent `EPIC.md` when the task lives under one) |
 
-Refinement 11 (mode removal) makes no change to the file counts above; its effect is on command-level behavior and the removal of the `mode:` field from `.metis/config.yaml`. Refinement 12 (commands merge into SKILL.md format) collapses the commands-layer and teaching-skills-layer into one on-disk directory under `.claude/skills/metis/` while preserving the content-register distinction; the count in the *Skills* row reflects both registers sharing a tree.
+Refinement 11 (mode removal) makes no change to the file counts above; its effect is on command-level behavior and the removal of the `mode:` field from `.metis/config.yaml`. Refinement 12 (commands merge into SKILL.md format) collapses the commands-layer and teaching-skills-layer into one on-disk directory under `.claude/skills/metis/` while preserving the content-register distinction, and adds `.metis/conventions/command-prompts.md` as the canonical runtime home for the invocation-prompt rules.
 
 ---
 

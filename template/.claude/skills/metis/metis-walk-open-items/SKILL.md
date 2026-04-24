@@ -81,7 +81,7 @@ Do not write to `BUILD.md`, `decisions/`, `tasks/`, `epics/`, or `scratch/`. Pha
 
 The command may carry a trailing free-text prompt, e.g. `/metis:walk-open-items "prioritize the auth items; defer anything billing-related"`.
 
-Follow the command-prompts convention in `docs/metis-write-rules.md` § *Command-prompts convention*. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
+Follow the command-prompts convention in `.metis/conventions/command-prompts.md`. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
 
 The prompt is ephemeral — do not persist it into any doc, pointer, or active-file entry.
 

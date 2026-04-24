@@ -65,7 +65,7 @@ Do not write to `BUILD.md`, source docs, `BOARD.md`, or `scratch/`. If the diff 
 
 ## Invocation prompt
 
-The required `<description>` is not an invocation prompt — it is an argument the command consumes directly and passes to the skill. If a trailing quoted prompt follows the description (rare in practice), follow the command-prompts convention in `docs/metis-write-rules.md` § *Command-prompts convention*. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
+The required `<description>` is not an invocation prompt — it is an argument the command consumes directly and passes to the skill. If a trailing quoted prompt follows the description (rare in practice), follow the command-prompts convention in `.metis/conventions/command-prompts.md`. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
 
 The description is persisted (in task Notes, in retroactive-task Context). A trailing prompt is ephemeral — do not persist it.
 
