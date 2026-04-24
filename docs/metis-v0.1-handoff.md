@@ -376,24 +376,35 @@ scratch/                   # ephemeral, mostly gitignored
     decision.md
 
 .claude/                   # Claude Code integration (harness-specific)
-  commands/
-    metis/
-      init.md
-      reconcile.md
-      ... (22 commands)
   agents/
     metis/
       task-planner.md
       task-reviewer.md
   skills/
     metis/
+      # command-register skills (22) — slash-command-invoked, 'name: metis:<x>',
+      # directory prefixed 'metis-' so top-level commands are visually distinct
+      # from the teaching skills they call
+      metis-plan-task/
+        SKILL.md
+      metis-reconcile/
+        SKILL.md
+      metis-init/
+        SKILL.md
+      ... (22 command-register skills, all 'metis-<name>/')
+      # teaching-register skills (15) — referenced from commands, no directory prefix
       writing-a-task-file/
         SKILL.md
         examples/
       reconciling-docs/
         SKILL.md
-      ... (15 skills)
+      planning-a-task/
+        SKILL.md
+        examples/
+      ... (15 teaching-register skills)
 ```
+
+As of Refinement 12, Metis does not populate `.claude/commands/`. Claude Code still supports that directory (and treats a file at `.claude/commands/deploy.md` as equivalent to `.claude/skills/deploy/SKILL.md`), but Metis's commands live as command-register SKILL.md files alongside the teaching skills.
 
 ### Flat-layout variation
 
@@ -420,7 +431,7 @@ Test for placement: *would a user care about this if Metis didn't exist?* If yes
 
 ### Files Metis creates vs modifies
 
-**Creates fresh**: `BUILD.md`, `BOARD.md`, `decisions/`, `tasks/` or `epics/`, `scratch/`, `.metis/`, `.claude/commands/metis/`, `.claude/agents/metis/`, `.claude/skills/metis/`, `docs/SYNTHESIS.md`, `docs/INDEX.md`, `docs/CONTRADICTIONS.md`, `docs/QUESTIONS.md`, `docs/RESOLVED.md`.
+**Creates fresh**: `BUILD.md`, `BOARD.md`, `decisions/`, `tasks/` or `epics/`, `scratch/`, `.metis/`, `.claude/agents/metis/`, `.claude/skills/metis/` (both command-register and teaching-register skills), `docs/SYNTHESIS.md`, `docs/INDEX.md`, `docs/CONTRADICTIONS.md`, `docs/QUESTIONS.md`, `docs/RESOLVED.md`.
 
 **Modifies with delimited sections**: `CLAUDE.md`, `.gitignore`.
 
@@ -546,7 +557,7 @@ Twenty-two commands total. All namespaced as `/metis:<name>` to avoid collisions
 | `/metis:scratch-cleanup` | — | — |
 | `/metis:promote-to-epics` | `decomposing-build-into-epics`, `writing-an-epic-file` | — |
 
-Commands are thin wrappers. Skills carry the substance. Subagents provide clean context + tool restrictions for task-level execution.
+Commands are thin wrappers. Skills carry the substance. Subagents provide clean context + tool restrictions for task-level execution. As of Refinement 12, commands and teaching skills share a file format (`.claude/skills/metis/<name>/SKILL.md`); they remain distinct *content registers* — commands own the turn, teaching skills own the artifact — with the invoke-by-reference pattern unchanged.
 
 ### Error messages on layout mismatch
 
@@ -972,7 +983,8 @@ These were worked through in conversation and shouldn't be re-opened unless new 
 - **`/metis:init` is non-destructive.** Uses delimited sections in `CLAUDE.md` and `.gitignore`. Preserves existing content.
 - **`/metis:generate-tasks` takes an epic-name argument when the project has an `epics/` directory and no argument when it has a flat `tasks/`.** Errors if the argument shape does not match the filesystem shape.
 - **`/metis:init` is run last in build order** because it scaffolds everything else; knowing what "everything else" looks like helps.
-- **Commands are thin wrappers over skills and subagents.** ~300–800 words each. Heavy lifting in skills and conventions.
+- **Commands are thin wrappers over teaching skills and subagents.** ~500–1200 words each. Heavy lifting in teaching skills and conventions.
+- **Commands live as SKILL.md files** under `.claude/skills/metis/metis-<name>/` with `name: metis:<name>` and `disable-model-invocation: true` — see Refinement 12. The command/skill distinction is content register; the `metis-` directory prefix is a filesystem-readable hint to the same distinction, so a browse of `.claude/skills/metis/` shows the 22 top-level commands grouped together at the top of an alphabetized list.
 
 ### On directory layout
 
@@ -1029,7 +1041,7 @@ Build from the deepest layer outward. Each layer depends only on what's below it
 2. **Templates** (3 files). Directly instantiate the conventions — `task.md`, `epic.md`, `decision.md` — and serve as canonical starting points for each artifact type. Built immediately after conventions because writing the templates solidifies the convention spec by making it concrete.
 3. **Skills** (15 skills). The substance of agent behavior. Each skill is a directory with `SKILL.md` plus an `examples/` folder. Examples are critical — skills without examples are hand-wavy.
 4. **Subagents** (2 subagents). Containers that compose skills + tool restrictions: `task-planner` and `task-reviewer`. (The third task-level command, `/metis:implement-task`, is built in the commands layer rather than as a subagent — see Refinement 10.)
-5. **Commands** (22 commands). Thin wrappers that dispatch subagents or invoke skills. **Within this step, `/metis:init` is built last** because it scaffolds everything else; knowing what "everything else" looks like helps.
+5. **Commands** (22 command-register SKILL.md files). Thin wrappers that dispatch subagents or invoke teaching skills. File-format-wise these are skills — `.claude/skills/metis/<name>/SKILL.md` with `name: metis:<name>` and `disable-model-invocation: true`; see Refinement 12 — but the content register (orchestration, not artifact-teaching) is what sets them apart. **Within this step, `/metis:init` is built last** because it scaffolds everything else; knowing what "everything else" looks like helps.
 
 ### Why layer-by-layer instead of vertical slice
 
@@ -1110,14 +1122,14 @@ Things not fully decided. Worth addressing when building.
 
 If you're a new Claude conversation reading this to continue the work:
 
-**Where to start**: Layer by layer, per §14. Build all 4 conventions first, then all 3 templates, then all 15 skills (with examples), then all 2 subagents, then all 22 commands (with `/metis:init` last). Propose a concrete plan for the current layer before writing, and surface any ambiguity against the doc as you go.
+**Where to start**: Layer by layer, per §14. Build all 4 conventions first, then all 3 templates, then all 15 teaching-register skills (with examples), then all 2 subagents, then all 22 command-register SKILL.md files (with `/metis:init` last). Propose a concrete plan for the current layer before writing, and surface any ambiguity against the doc as you go. If picking up at or after the commands layer, note that both registers live under `.claude/skills/metis/` — see Refinement 12 and the layout in §Directory structure.
 
 **What to reference**:
 
 - This document as the canonical source of design decisions.
-- [Claude Code docs on custom commands](https://code.claude.com/docs/en/slash-commands) for the command file format.
-- [Claude Code docs on skills](https://code.claude.com/docs/en/extend-claude-code) for skill file format.
-- [Claude Code docs on subagents](https://code.claude.com/docs/en/subagents) for the agent file format.
+- [Claude Code docs on skills](https://code.claude.com/docs/en/skills) for SKILL.md file format (both command-register and teaching-register skills use this).
+- [Claude Code docs on subagents](https://code.claude.com/docs/en/sub-agents) for the agent file format.
+- `.claude/commands/*.md` is still accepted by Claude Code but unused by Metis as of Refinement 12; the classic commands format docs at [slash-commands](https://code.claude.com/docs/en/commands) are informational only.
 
 **What NOT to do**:
 
@@ -1418,16 +1430,41 @@ Specific adjustments folded into the canonical sections above:
 
 Net manifest impact: no file changes. The shift is in framing, command-level behavior, and the loss of one config field.
 
+### Refinement 12 — Commands merge into SKILL.md format; `.claude/commands/` retires from Metis
+
+Claude Code now treats `.claude/commands/<name>.md` and `.claude/skills/<name>/SKILL.md` as equivalent sources for the slash command `/<name>`. The skills format additionally supports a supporting-files directory, `disable-model-invocation`, `allowed-tools`, and the rest of the SKILL.md frontmatter surface; the commands format is parity-minus. The commands-layer build that had just completed used the classic `.claude/commands/metis/*.md` format. A review pass raised the question: given the format equivalence, is the two-directory split buying anything, or is it ceremony the new surface has made redundant?
+
+The answer turned on separating two things that had been conflated. The *file format* difference between `.claude/commands/*.md` and `.claude/skills/<name>/SKILL.md` is real but thin — same invocation, same argument handling, same in-context loading. The *content register* difference between command-register content (orchestration — preconditions, load lists, write scope, subagent dispatch, return shape) and teaching-register content (artifact shape — what makes a good task file, when to split) is load-bearing and independent of file format. The layer discipline Metis earns — "commands own the turn, skills own the artifact" — is a property of content, not of directory.
+
+Resolution: migrate all 22 commands to SKILL.md format, preserve the content-register split. Both layers now live under `.claude/skills/metis/`, distinguished by:
+
+- **Directory prefix.** Command-register skills sit at `.claude/skills/metis/metis-<name>/SKILL.md` (e.g. `metis-plan-task/`, `metis-reconcile/`); teaching-register skills sit at `.claude/skills/metis/<skill-name>/SKILL.md` with no prefix (e.g. `planning-a-task/`, `reconciling-docs/`). The prefix is a filesystem-readable hint to the content distinction — an alphabetized listing of the directory surfaces the 22 top-level commands as a contiguous block. It does not affect slash-command resolution, which goes through the `name:` frontmatter.
+- **Frontmatter.** Command-register skills carry `name: metis:<name>` (so `/metis:plan-task` resolves), `disable-model-invocation: true` (the user is the one invoking via the slash form; Claude does not autonomously trigger), and a short `description:`. Teaching-register skills carry a bare `name:` (e.g., `name: planning-a-task`) and `disable-model-invocation: true` (they are dispatched by commands, not ambient helpers).
+- **Content shape.** Command-register files carry `## Preconditions`, `## Load`, `## Do not load`, `## Write scope`, `## Return` — the "own the turn" sections. Teaching-register files carry `## Read first`, `## Artifact shape`, `## Examples` — the "own the artifact" sections. The section names themselves signal which register a file is in.
+- **Skill references.** Command-register files invoke teaching skills by reference ("Invoke by reference — read the skill file itself, do not paraphrase from memory: `planning-a-task`"). Teaching files do not reference other skills.
+
+Three sub-decisions that followed from the migration:
+
+- **Invocation-prompt rules live in one place.** The four-rule block (augment / flag scope expansion / acknowledge use / resolve named skills) had accreted into fifteen commands plus both subagents — seventeen copies of the same paragraph. The rules now live canonically in `docs/metis-write-rules.md` § *Command-prompts convention*; each command carries one command-specific example, one pointer at the canonical source, and one command-specific "what not to persist it into" line. The subagents follow the same pattern. This resolved the largest source of genuine cross-file duplication the command layer had.
+- **`argument-hint` is dropped.** The classic commands-format frontmatter field does not appear in SKILL.md's documented schema. Argument shape now lives in the body under `## Arguments`, which most commands already had.
+- **`.claude/commands/` is accepted but unused by Metis.** Claude Code continues to support that directory; Metis writes nothing there. The MANIFEST.md stops listing it.
+
+What did not change: the subagents (`task-planner` and `task-reviewer`) still live at `.claude/agents/metis/*.md` in Claude Code's subagent format — that format has its own features (tool restrictions, color, the `name:` for dispatch) that SKILL.md doesn't carry. The teaching skills keep their existing locations and frontmatter. The command-to-skill-to-subagent mapping table above holds; only the *file paths of the commands* shifted.
+
+The move also fixed one drift in the mapping: `/metis:implement-task` had listed `writing-a-task-file` as a skill reference for "the shape of an implementer's Notes append on close," but that skill teaches creating a new task file and is silent on appends. The migrated `/metis:implement-task` drops the reference and carries the Notes-append guidance inline — a short paragraph saying what the implementer writes is not worth a dedicated skill in v0.1.
+
+Net manifest impact: no file-count changes to conventions, teaching skills, or subagents. 22 command files move from `.claude/commands/metis/*.md` to `.claude/skills/metis/<name>/SKILL.md`. One old skill reference fixed.
+
 ### Manifest impact of all refinements
 
 | Layer | Before refinements | After refinements |
 |---|---|---|
 | Commands | 20 | 22 (+`/metis:sync`, +`/metis:log-work`; renamed walk-contradictions → walk-open-items) |
-| Skills | 10 | 15 (Refinements 1–2 added `propagating-spec-changes` and `logging-external-work`; Refinement 9 split `reconciling-docs` into `reconciling-docs` + `walking-open-items`; `session-handoff`, `writing-retros`, and `honest-scope-reporting` accreted during drafting without dedicated refinement entries) |
+| Skills (teaching + command) | 10 | 37 (15 teaching-register from Refinements 1–2 and 9; 22 command-register from Refinement 12 absorbing the commands layer) |
 | Conventions | 5 | 4 (`frontmatter-schema` adds `doc_hashes` + `spec_version`; `write-rules` was relocated to `docs/metis-write-rules.md` as a design-time reference and gained the command-prompts convention) |
 | Subagents | 3 | 2 (Refinement 10 retires `task-implementer`; `task-planner` and `task-reviewer` remain, both gaining invocation-prompt discipline and loading parent `EPIC.md` when the task lives under one) |
 
-Refinement 11 (mode removal) makes no change to the file counts above; its effect is on command-level behavior and the removal of the `mode:` field from `.metis/config.yaml`.
+Refinement 11 (mode removal) makes no change to the file counts above; its effect is on command-level behavior and the removal of the `mode:` field from `.metis/config.yaml`. Refinement 12 (commands merge into SKILL.md format) collapses the commands-layer and teaching-skills-layer into one on-disk directory under `.claude/skills/metis/` while preserving the content-register distinction; the count in the *Skills* row reflects both registers sharing a tree.
 
 ---
 
@@ -1442,6 +1479,7 @@ This document distills a long design conversation. Key moments worth knowing abo
 - The two-mode (flat/epic) design replaced an earlier plan for a single "medium/large" distinction.
 - `.metis/` as a directory for framework scaffolding was chosen to keep project artifacts first-class at the root.
 - Namespacing commands as `/metis:*` was a deliberate choice after recognizing collision risk with Claude Code built-ins.
-- The v0.1 scope was repeatedly trimmed as features were added. Initial post-handoff scope was 20 commands / 10 skills / 5 conventions / 3 subagents. A subsequent design pass (see "Refinements" section) added two change-management commands (`/metis:sync`, `/metis:log-work`) and two supporting skills, bringing the manifest to 22 / 12 / 5 / 3.
+- The v0.1 scope was repeatedly trimmed as features were added. Initial post-handoff scope was 20 commands / 10 skills / 5 conventions / 3 subagents. A subsequent design pass (see "Refinements" section) added two change-management commands (`/metis:sync`, `/metis:log-work`) and two supporting skills, bringing the manifest to 22 / 15 / 4 / 2 after all eleven refinements landed.
+- Refinement 12, landing after the commands layer was first-drafted, collapsed the commands layer and teaching skills layer into one directory (`.claude/skills/metis/`) under the SKILL.md format while preserving the content-register split. The manifest file count stayed the same; what shifted was file paths, frontmatter, and the canonical home of the invocation-prompt rules.
 
-The last meaningful decision before this handoff: Metis v0.1 manifest. Ready to build.
+The last meaningful decision before this handoff: Metis v0.1 manifest and the commands-merge-into-skills move. Ready to dogfood.

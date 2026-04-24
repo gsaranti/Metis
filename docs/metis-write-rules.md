@@ -12,15 +12,17 @@ Metis's value is that a fresh agent can read on-disk state and know where the pr
 
 Metis is built in three conceptual layers — skills, commands, and conventions — with a strict one-way dependency: **command → skill → convention**. Subagents are a variant of the command layer. Each layer has a distinct kind of content; keeping them separate is what lets the framework scale without drift.
 
-**Skills own the artifact.** A skill is artifact-shaped teaching — what makes a good X, when to split, how sections should read, which conventions to consult. The register is descriptive. A skill names the *kinds* of inputs the artifact requires ("a body of work plus the source docs it references") but does not prescribe specific files, loading sequence, or session orchestration. Skills reference conventions; skills do not reference other skills; skills do not carry routing metadata.
+**File layout as of the skills-format migration.** Both layers live as SKILL.md files under `.claude/skills/metis/<name>/`. Command-register skills sit at `.claude/skills/metis/metis-<name>/SKILL.md` — the `metis-` prefix on the directory makes the top-level commands visually distinct from the teaching skills they call — and carry `name: metis:<name>` in frontmatter (so `/metis:plan-task` resolves against `.claude/skills/metis/metis-plan-task/SKILL.md`). Teaching-register skills sit at `.claude/skills/metis/<skill-name>/SKILL.md` with no prefix, and carry a bare `name:` (e.g. `name: planning-a-task`). Both set `disable-model-invocation: true` — command-register skills because the user is the one who types the slash form; teaching-register skills because they are a library dispatched by commands, not ambient helpers that auto-trigger on conversation cues. The distinction between the two registers is content; the `metis-` directory prefix is a filesystem-readable hint to the same distinction. See Refinement 12 in the handoff for the reasoning; `.claude/commands/` is accepted but no longer used by Metis itself.
 
-**Commands own the turn.** A command is invocation-shaped orchestration — argument parsing, filesystem-state checks (does the project have an `epics/` directory? a flat `tasks/`? neither?), error messages on mismatch, the specific load list for this invocation, subagent dispatch if any, invocation-prompt handling, write scope and confirmation/preview flows, and the output format back to the user. The register is directive. Commands invoke skills by reference rather than inlining their content.
+**Skills own the artifact.** A teaching-register skill is artifact-shaped teaching — what makes a good X, when to split, how sections should read, which conventions to consult. The register is descriptive. A skill names the *kinds* of inputs the artifact requires ("a body of work plus the source docs it references") but does not prescribe specific files, loading sequence, or session orchestration. Skills reference conventions; skills do not reference other skills; skills do not carry routing metadata.
 
-**Subagents are scoped commands.** A subagent's system prompt is a command that runs in a fresh context window with restricted tools. Same layer, same rules: invoke skills by reference; name specific inputs and flow; do not teach artifact shape.
+**Commands own the turn.** A command-register skill is invocation-shaped orchestration — argument parsing, filesystem-state checks (does the project have an `epics/` directory? a flat `tasks/`? neither?), error messages on mismatch, the specific load list for this invocation, subagent dispatch if any, invocation-prompt handling, write scope and confirmation/preview flows, and the output format back to the user. The register is directive. Commands invoke teaching-register skills by reference rather than inlining their content.
+
+**Subagents are scoped commands.** A subagent's system prompt is a command that runs in a fresh context window with restricted tools. Same layer, same rules: invoke skills by reference; name specific inputs and flow; do not teach artifact shape. Subagents live at `.claude/agents/metis/<name>.md` rather than under the skills tree; their file format is the Claude Code subagent format, not SKILL.md.
 
 **Conventions own the on-disk format.** Section order, filename rules, frontmatter schema. Conventions are static reference; they do not reach upward into skill or command behavior.
 
-The one-way rule is what keeps the split honest: a skill that starts naming specific files is drifting into command territory; a command that starts teaching section structure is drifting into skill territory. When content fits none of the layers cleanly, it usually belongs in a command prompt — which is allowed to be directive about a specific turn.
+The one-way rule is what keeps the split honest: a teaching skill that starts naming specific files is drifting into command territory; a command that starts teaching section structure is drifting into skill territory. When content fits none of the layers cleanly, it usually belongs in a command prompt — which is allowed to be directive about a specific turn.
 
 ## File-by-file write permissions
 
@@ -125,9 +127,10 @@ The rules below describe who among Metis's own agents and commands writes to eac
 
 ### `.claude/`
 
-- **Writes**: `/metis:init` (and future upgrade commands) writes `.claude/commands/metis/*`, `.claude/agents/metis/*`, `.claude/skills/metis/*/`.
+- **Writes**: `/metis:init` (and future upgrade commands) writes `.claude/skills/metis/*/SKILL.md` (both command-register and teaching-register skills) and `.claude/agents/metis/*`.
 - **Subagents**: never.
-- **User edits**: allowed — customizing a command, subagent, or skill prompt for a specific project is supported. The same "diverges from upstream" caveat applies.
+- **User edits**: allowed — customizing a command or skill prompt for a specific project is supported. The same "diverges from upstream" caveat applies.
+- **`.claude/commands/`**: Metis writes nothing here as of the skills-format migration. Claude Code still accepts command files there, but Metis's own commands live as command-register SKILL.md files under `.claude/skills/metis/`. See Refinement 12 in the handoff.
 
 ## Doc-change propagation
 
@@ -140,6 +143,8 @@ When a file in `docs/` changes:
 5. `in-progress` tasks require explicit confirmation before editing.
 
 ## Command-prompts convention
+
+This section is the canonical source for the rules. Individual command and subagent prompts reference it by path rather than restating the rules — if the rules change, they change once here, not across twenty-two files.
 
 Every substantive Metis command accepts an optional trailing free-text prompt that augments its default behavior:
 
@@ -161,7 +166,27 @@ Four discipline rules apply to any command or subagent that accepts such a promp
 
 The prompt is **ephemeral**. It is never persisted to disk, never added to frontmatter, never copied into a task Notes section except as a natural part of the subagent's return commentary.
 
-Purely mechanical commands (`/metis:pick-task`, `/metis:session-start`, `/metis:scratch-cleanup`) may silently accept and ignore a trailing prompt. All other commands follow the three rules above.
+Purely mechanical commands (`/metis:pick-task`, `/metis:session-start`, `/metis:scratch-cleanup`, `/metis:skeleton-plan`, `/metis:pushback`, `/metis:rebaseline`, `/metis:init`) may silently accept and ignore a trailing prompt. All other commands follow the four rules above.
+
+### How commands reference this section
+
+A substantive command's Invocation prompt section carries three things: one command-specific example, a one-line pointer at this section, and one line naming what the prompt *specifically for this command* is ephemeral against (so the command-specific persistence discipline survives even though the rules themselves live here). Example shape:
+
+```markdown
+## Invocation prompt
+
+The command may carry a trailing free-text prompt, e.g. `/metis:sync "..."`.
+
+Follow the command-prompts convention in `docs/metis-write-rules.md`
+§ *Command-prompts convention*. The four rules (augment / flag scope
+expansion / acknowledge use / resolve named skills) apply; acknowledge
+prompt usage in the return per rule 3.
+
+The prompt is ephemeral — do not persist it into task files, epic files,
+or decision entries.
+```
+
+Subagent system prompts (`.claude/agents/metis/task-planner.md`, `task-reviewer.md`) also reference this section; the four rules are not restated in the subagent files either.
 
 ## Context budget
 

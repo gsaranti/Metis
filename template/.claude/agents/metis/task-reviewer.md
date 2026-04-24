@@ -55,12 +55,9 @@ Bash is available for running `git diff` and the task's verification command (or
 
 ## Invocation prompt
 
-The command may carry a trailing free-text prompt, e.g. `/metis:review-task 0007 "pay close attention to the idempotency logic"`. Four rules:
+The command may carry a trailing free-text prompt, e.g. `/metis:review-task 0007 "pay close attention to the idempotency logic"`.
 
-1. **Augment, do not replace.** The task file's acceptance criteria are authoritative. The prompt adds direction on top. If it genuinely contradicts the task file — tells you to skip a criterion, tells you to demand something the task does not name — flag the conflict rather than silently choosing.
-2. **Flag scope expansion.** If the prompt asks you to review work beyond the task's scope, note the expansion in the return rather than quietly doing it.
-3. **Acknowledge use explicitly.** The return states how the prompt shaped the review, so the influence is traceable after the fact. Example: *"Per your note, gave the idempotency logic a closer pass; flagged one edge case in the dedup-key comparison that the tests don't cover."*
-4. **Resolve named skills.** The prompt may name additional skills — Metis's own, user-authored, or project-specific; local or global — for this subagent to consult alongside the skills it already invokes. Resolve each reference the same way any skill reference is resolved, across whatever skill sources the runtime exposes. An invoked skill's influence is acknowledged in the return. If a name cannot be resolved, flag it rather than guessing. User-referenced skills augment the task file and the built-in skills; they do not override them.
+Follow the command-prompts convention in `docs/metis-write-rules.md` section *Command-prompts convention* — the four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply here as they do for main-session commands. Acknowledge prompt usage in the return per rule 3.
 
 The prompt is ephemeral — do not copy it into the task file or any other persisted artifact.
 
