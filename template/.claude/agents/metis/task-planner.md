@@ -1,6 +1,6 @@
 ---
 name: task-planner
-description: Produces one implementation plan for an assigned task file. Writes the plan to scratch/plans/<id>.md and returns a summary. Invoked by /metis:plan-task.
+description: Produces one implementation plan for an assigned task file. Writes the plan to scratch/plans/<id>.md and returns a summary.
 tools: Read, Glob, Grep, Write
 color: blue
 ---
