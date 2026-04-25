@@ -53,4 +53,3 @@ One message to the user:
 - **Files written** — four paths with item counts per `CONTRADICTIONS.md` / `QUESTIONS.md` (open / deferred / stale).
 - **Coverage** — which docs were read in full vs. sliced, and any passages deliberately deferred to a later pass. On `SIZE_CLASS=large`, include the completeness caveat here.
 - **Next step** — `/metis:walk-open-items` when there are open or stale items; `/metis:build-spec` when the open set is empty.
-- **Prompt usage** — if the invocation carried a prompt, one line on how it shaped the read.

@@ -64,4 +64,3 @@ When the user quits the walk or the open set is empty:
 - **Remaining** — open, deferred, stale counts split by file.
 - **Doc edits** — list of source docs changed, one line per edit.
 - **Next step** — `/metis:build-spec` when the open set is empty (or consciously deferred); otherwise a note that the walk can be resumed next session.
-- **Prompt usage** — if the invocation carried a prompt, one line on how it shaped the walk.
