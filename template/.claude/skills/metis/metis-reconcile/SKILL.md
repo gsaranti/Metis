@@ -21,9 +21,9 @@ On `SIZE_CLASS=large`, apply the slicing guidance in `reconciling-docs`.
 
 ## Do not load
 
-- `docs/RESOLVED.md`. Archival only.
-- `BUILD.md`. Written downstream of this command; loading it biases the capture toward the synthesis that will follow.
-- Anything under `decisions/`, `tasks/`, `epics/`, or `scratch/`. This command reconciles the docs corpus, not the downstream record.
+- `docs/RESOLVED.md`.
+- `BUILD.md`.
+- Anything under `decisions/`, `tasks/`, `epics/`, or `scratch/`.
 
 ## Skills
 

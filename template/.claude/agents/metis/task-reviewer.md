@@ -21,12 +21,12 @@ If a criterion cannot be evaluated from this set, surface a review finding rathe
 
 ## Do not load
 
-- The plan at `scratch/plans/<id>.md`. The review is against the task's acceptance criteria, not the planner's route.
-- Other task files. Even "obviously related" ones.
-- `BUILD.md`. The task file is authoritative for this unit of work.
+- The plan at `scratch/plans/<id>.md`.
+- Other task files.
+- `BUILD.md`.
 - `BOARD.md`, other epics' `EPIC.md` files.
-- `decisions/`. If a decision bears on this task, the task file should have cited it in `docs_refs`; if it didn't, that is a review finding against the task file.
-- `scratch/CURRENT.md`, `scratch/questions.md` — parent-session surface.
+- `decisions/`.
+- `scratch/CURRENT.md`, `scratch/questions.md`.
 
 ## Skills
 
@@ -40,8 +40,8 @@ Exactly one target:
 
 ### Do not write to
 
-- Any code or test file. Findings, not fixes — small-code-change suggestions go in the review block as nits or rejection reasons.
-- The task file's non-Notes sections. If a criterion needs rewording, that is a finding, not an edit.
+- Any code or test file.
+- The task file's non-Notes sections.
 - `BUILD.md`, `BOARD.md`, `scratch/CURRENT.md`, `decisions/`, other task files, plan files.
 - `.metis/`, `.claude/`.
 

@@ -28,9 +28,9 @@ Determined from the preflight + the trailing prompt:
 
 ## Do not load
 
-- `docs/CONTRADICTIONS.md`, `docs/QUESTIONS.md`, `docs/RESOLVED.md`. The brief synthesizes from the source docs themselves, not from the walk's working state.
-- `tasks/`, `epics/`, `scratch/`. Downstream of the brief.
-- `BOARD.md`. Generated.
+- `docs/CONTRADICTIONS.md`, `docs/QUESTIONS.md`, `docs/RESOLVED.md`.
+- `tasks/`, `epics/`, `scratch/`.
+- `BOARD.md`.
 
 ## Skills
 

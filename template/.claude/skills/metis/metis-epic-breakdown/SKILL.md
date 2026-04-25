@@ -19,8 +19,8 @@ Run `.metis/scripts/epic-breakdown-preflight.sh` before drafting. It exits non-z
 
 ## Do not load
 
-- Source docs under `docs/`. `BUILD.md` already synthesizes them.
-- `decisions/`, `tasks/`, `scratch/`, `BOARD.md`. None of these inform the capability cut.
+- Source docs under `docs/`.
+- `decisions/`, `tasks/`, `scratch/`, `BOARD.md`.
 
 ## Skills
 

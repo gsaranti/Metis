@@ -33,9 +33,9 @@ Non-sequential navigation is first-class — after resolving an out-of-order ite
 
 ## Do not load
 
-- `docs/RESOLVED.md`. Archive-only. Load on demand only if the user explicitly asks whether a related topic has been resolved before.
-- `BUILD.md`. Loading it biases resolution toward downstream framing.
-- Other open items. Walk one at a time; cross-contamination between items is how biased framing lands.
+- `docs/RESOLVED.md`.
+- `BUILD.md`.
+- Other open items.
 - `decisions/`, `tasks/`, `epics/`, `scratch/`.
 
 ## Skills

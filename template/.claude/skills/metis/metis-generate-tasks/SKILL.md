@@ -19,9 +19,9 @@ Run `.metis/scripts/generate-tasks-preflight.sh <epic-name>` (omit the argument 
 
 ## Do not load
 
-- Other epics' `EPIC.md` files. The cut is bounded by the one epic (or `BUILD.md` in flat layout).
-- Other task files. Dependencies are named by id.
-- `BOARD.md`, `decisions/`, `scratch/`, `docs/CONTRADICTIONS.md`, `docs/QUESTIONS.md`. None feed the cut.
+- Other epics' `EPIC.md` files.
+- Other task files.
+- `BOARD.md`, `decisions/`, `scratch/`, `docs/CONTRADICTIONS.md`, `docs/QUESTIONS.md`.
 
 ## Skills
 

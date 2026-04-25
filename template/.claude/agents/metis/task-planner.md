@@ -19,12 +19,12 @@ If the brief is not enough to plan, flag the task file as underspecified rather 
 
 ## Do not load
 
-- Other task files. Even "obviously related" ones.
-- `BUILD.md`. The task file is authoritative for this unit of work.
+- Other task files.
+- `BUILD.md`.
 - `BOARD.md`, other epics' `EPIC.md` files.
-- `decisions/`. If a decision bears on this task, the task file should have cited it in `docs_refs`; if it didn't, flag the gap rather than grepping.
-- `scratch/CURRENT.md`, `scratch/questions.md` — parent-session surface.
-- Other plans in `scratch/plans/`. Each plan stands alone.
+- `decisions/`.
+- `scratch/CURRENT.md`, `scratch/questions.md`.
+- Other plans in `scratch/plans/`.
 
 ## Skills
 
@@ -38,8 +38,8 @@ Exactly one file:
 
 ### Do not write to
 
-- The task file itself, including Notes. If the task file needs to change, surface the finding.
-- Code and test files. Planning does not implement — not a stub, not a scaffold, not a fixture.
+- The task file itself.
+- Code and test files.
 - `BUILD.md`, `BOARD.md`, `scratch/CURRENT.md`, `decisions/`, other task files, other plans.
 - `.metis/`, `.claude/`.
 
