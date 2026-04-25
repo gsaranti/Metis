@@ -1080,7 +1080,7 @@ Things not fully decided. Worth addressing when building.
 
 3. **Where exactly do plans live during `/metis:plan-task` → `/metis:implement-task`?** Current assumption: `scratch/plans/<id>.md`, gitignored. Confirm this is right.
 
-4. **Should `/metis:feature` produce a feature spec file, or inline the feature description into task files?** Probably a spec file at `features/NNN-<name>.md` when the project has a flat `tasks/` layout, and a new epic when the project uses `epics/`. But the exact file vs inline trade-off wasn't fully worked through.
+4. **Should `/metis:feature` produce a feature spec file, or inline the feature description into task files?** ~~Probably a spec file at `features/NNN-<name>.md` when the project has a flat `tasks/` layout, and a new epic when the project uses `epics/`.~~ **Resolved** during the audit pass: flat mode writes task files only — no feature-spec file. In epic mode, the feature becomes a new epic (that was always the plan). Flat mode exists to skip grouping ceremony; a per-feature spec file re-imports it. If flat grows into needing grouping, `/metis:promote-to-epics` graduates the layout. See also #8.
 
 5. **How to handle `/metis:generate-tasks` regeneration?** ~~If tasks exist already and user runs it again (e.g., after editing BUILD.md), does it refuse, merge, or replace?~~ **Partially resolved** by the post-handoff refinements: `/metis:sync` now handles the "spec changed, cascade to tasks" case explicitly, so `/metis:generate-tasks` can simply refuse regeneration and point users to `/metis:sync` for edits or `/metis:feature` for additions.
 
@@ -1088,7 +1088,7 @@ Things not fully decided. Worth addressing when building.
 
 7. **Should there be a `/metis:status` command?** Just a quick "where are we, what's blocked, what's the next thing" overview. Might be subsumed by `/metis:session-start` or `BOARD.md`. Undefined.
 
-8. **The name "features/"** directory (under a flat `tasks/` layout) vs. tagging tasks with `feature: NNN-<name>` frontmatter. Tagging feels cleaner (keeps the structure flat) but features being first-class files makes them easier to find. Unresolved.
+8. **The name "features/"** directory (under a flat `tasks/` layout) vs. tagging tasks with `feature: NNN-<name>` frontmatter. ~~Tagging feels cleaner (keeps the structure flat) but features being first-class files makes them easier to find. Unresolved.~~ **Resolved** during the audit pass: neither. Flat mode has no grouping of any kind — task files land directly in `tasks/` with no `features/` directory and no `feature:` frontmatter tag. The argument for keeping flat flat won: if grouping becomes valuable, that's the signal to run `/metis:promote-to-epics`. See also #4.
 
 9. **Token estimation for `/metis:reconcile` decision.** Should Metis automatically count tokens and choose between main-agent and hybrid modes, or should it prompt the user? Probably the former, with a manual override flag.
 
