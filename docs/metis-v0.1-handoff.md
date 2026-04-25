@@ -327,7 +327,6 @@ Two sets of files: project-root artifacts (project's own truth) and `.metis/` (f
 README.md                  # human onboarding
 CLAUDE.md                  # agent operating manual, has a delimited Metis section
 BUILD.md                   # canonical "what we're building", from /metis:build-spec
-BOARD.md                   # generated status index
 
 docs/                      # source material
   SYNTHESIS.md             # from /metis:reconcile
@@ -431,7 +430,7 @@ Test for placement: *would a user care about this if Metis didn't exist?* If yes
 
 ### Files Metis creates vs modifies
 
-**Creates fresh**: `BUILD.md`, `BOARD.md`, `decisions/`, `tasks/` or `epics/`, `scratch/`, `.metis/`, `.claude/agents/metis/`, `.claude/skills/metis/` (both command-register and teaching-register skills), `docs/SYNTHESIS.md`, `docs/INDEX.md`, `docs/CONTRADICTIONS.md`, `docs/QUESTIONS.md`, `docs/RESOLVED.md`.
+**Creates fresh**: `BUILD.md`, `decisions/`, `tasks/` or `epics/`, `scratch/`, `.metis/`, `.claude/agents/metis/`, `.claude/skills/metis/` (both command-register and teaching-register skills), `docs/SYNTHESIS.md`, `docs/INDEX.md`, `docs/CONTRADICTIONS.md`, `docs/QUESTIONS.md`, `docs/RESOLVED.md`.
 
 **Modifies with delimited sections**: `CLAUDE.md`, `.gitignore`.
 
@@ -485,13 +484,13 @@ Twenty-two commands total. All namespaced as `/metis:<name>` to avoid collisions
 
 - **`/metis:pick-task`** — list unblocked, prioritized tasks.
 - **`/metis:plan-task <id>`** — dispatch `task-planner` subagent. Does not write code.
-- **`/metis:implement-task <id>`** — implement a task in the main session. Loads the task file, the parent `EPIC.md` if the task lives under one, the approved plan at `scratch/plans/<id>.md` if present, and only the docs in `docs_refs`. Writes land in the assigned task file (status → `in-review`, appended Notes) and the code it touches; `BUILD.md`, `BOARD.md`, `scratch/CURRENT.md`, `decisions/`, and other task files are off-limits as prompt-level discipline. Closes with a scope report per `honest-scope-reporting`. Not a subagent — see §Refinement 10.
+- **`/metis:implement-task <id>`** — implement a task in the main session. Loads the task file, the parent `EPIC.md` if the task lives under one, the approved plan at `scratch/plans/<id>.md` if present, and only the docs in `docs_refs`. Writes land in the assigned task file (status → `in-review`, appended Notes) and the code it touches; `BUILD.md`, `scratch/CURRENT.md`, `decisions/`, and other task files are off-limits as prompt-level discipline. Closes with a scope report per `honest-scope-reporting`. Not a subagent — see §Refinement 10.
 - **`/metis:review-task <id>`** — dispatch `task-reviewer` subagent. Judges against acceptance criteria.
 - **`/metis:scope-check`** — ask agent to enumerate what it skipped or reduced, no justification.
 
 ### Sessions (4)
 
-- **`/metis:session-start`** — fresh-instance loading dose (`CLAUDE.md`, `CURRENT.md`, `BOARD.md`, active task file).
+- **`/metis:session-start`** — fresh-instance loading dose (`CLAUDE.md`, `CURRENT.md`, active task file).
 - **`/metis:session-end`** — update `scratch/CURRENT.md`, flag promotions out of `scratch/`.
 - **`/metis:rebaseline`** — drift detector. Read-only. Compares current state of `docs/`, `BUILD.md`, and `epics/`/`tasks/` against a lightweight baseline (git markers + frontmatter `doc_hash` / `spec_version`) and reports what changed and which downstream artifacts reference it. Does not write.
 - **`/metis:pushback`** — ask agent to defend its last choice.
@@ -633,7 +632,6 @@ A design-time reference for who writes what. Captures the rules as a whole so th
 - Subagents write only to their assigned task file and their return value
 - Decisions go in `decisions/`, never in scratch; they are append-only
 - `BUILD.md` changes only with an accompanying decision entry
-- `BOARD.md` is generated; don't edit by hand
 - Task files are stable by default but the user can hand-edit any field; Metis reconciles edits via `/metis:log-work` or a resync rather than forbidding them
 - When a doc in `docs/` changes, update `BUILD.md` if relevant and log a decision entry
 - Resolved items from `CONTRADICTIONS.md` / `QUESTIONS.md` move to `docs/RESOLVED.md` as minimal pointers; `RESOLVED.md` is never loaded during a walk unless explicitly requested
@@ -1076,7 +1074,7 @@ Things not fully decided. Worth addressing when building.
 
 1. **Should `/metis:init` interactively ask questions, or take flags?** e.g. `/metis:init --name="MyProject"` vs. interactive Q&A. The mode question is gone (see Refinement 11), so the remaining init-time questions are lighter — project name, git-init-or-not, a few policy defaults. Leaning interactive for first-time users, with flags for power users.
 
-2. **How should `BOARD.md` be generated?** Options: regenerated on-demand by a command, regenerated automatically on task status changes (hook?), or hand-updated. Leaning toward "regenerated on-demand by a new `/metis:refresh-board` command or as a side effect of other commands" — but this is unspecified.
+2. ~~**How should `BOARD.md` be generated?**~~ **Resolved** during the audit pass: `BOARD.md` is dropped from v0.1. Nothing in the skill layer writes it, the *Current state* block of `scratch/CURRENT.md` already carries the triage view, and a staleness alarm on a file with no owner is noise. If drift between `CURRENT.md` and frontmatter later proves to be a real problem, reintroduce via a post-write hook backed by `.metis/scripts/refresh-board.sh` — no skill needed.
 
 3. **Where exactly do plans live during `/metis:plan-task` → `/metis:implement-task`?** Current assumption: `scratch/plans/<id>.md`, gitignored. Confirm this is right.
 
@@ -1086,7 +1084,7 @@ Things not fully decided. Worth addressing when building.
 
 6. **What about task revision?** ~~If a task is half-done and the spec changes, how does Metis handle it?~~ **Resolved** by `/metis:sync`. Cascade rules by status: `done` tasks don't update in place (changes become new tasks or superseding decisions); `pending` / `in-review` can be edited in place; `in-progress` requires explicit confirmation.
 
-7. **Should there be a `/metis:status` command?** Just a quick "where are we, what's blocked, what's the next thing" overview. Might be subsumed by `/metis:session-start` or `BOARD.md`. Undefined.
+7. **Should there be a `/metis:status` command?** Just a quick "where are we, what's blocked, what's the next thing" overview. Might be subsumed by `/metis:session-start`. Undefined.
 
 8. **The name "features/"** directory (under a flat `tasks/` layout) vs. tagging tasks with `feature: NNN-<name>` frontmatter. ~~Tagging feels cleaner (keeps the structure flat) but features being first-class files makes them easier to find. Unresolved.~~ **Resolved** during the audit pass: neither. Flat mode has no grouping of any kind — task files land directly in `tasks/` with no `features/` directory and no `feature:` frontmatter tag. The argument for keeping flat flat won: if grouping becomes valuable, that's the signal to run `/metis:promote-to-epics`. See also #4.
 

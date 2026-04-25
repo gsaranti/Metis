@@ -24,7 +24,7 @@ If a criterion cannot be evaluated from this set, surface a review finding rathe
 - The plan at `scratch/plans/<id>.md`.
 - Other task files.
 - `BUILD.md`.
-- `BOARD.md`, other epics' `EPIC.md` files.
+- Other epics' `EPIC.md` files.
 - `decisions/`.
 - `scratch/CURRENT.md`, `scratch/questions.md`.
 
@@ -42,7 +42,7 @@ Exactly one target:
 
 - Any code or test file.
 - The task file's non-Notes sections.
-- `BUILD.md`, `BOARD.md`, `scratch/CURRENT.md`, `decisions/`, other task files, plan files.
+- `BUILD.md`, `scratch/CURRENT.md`, `decisions/`, other task files, plan files.
 - `.metis/`, `.claude/`.
 
 Reaching for any of these means the review has grown past reviewing. Stop and return the finding.

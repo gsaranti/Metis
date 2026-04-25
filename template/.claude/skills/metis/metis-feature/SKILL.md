@@ -26,7 +26,7 @@ Run `.metis/scripts/feature-preflight.sh`. It exits non-zero if `BUILD.md` is mi
 ## Do not load
 
 - Other epics' task files.
-- `decisions/`, `BOARD.md`, `scratch/`.
+- `decisions/`, `scratch/`.
 - `docs/CONTRADICTIONS.md`, `docs/QUESTIONS.md`, `docs/RESOLVED.md`.
 
 ## Skills

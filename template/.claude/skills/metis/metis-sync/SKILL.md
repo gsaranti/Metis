@@ -23,7 +23,7 @@ Write counterpart to `/metis:rebaseline`. When `docs/`, `BUILD.md`, or an epic h
 ## Do not load
 
 - The full source-doc corpus. Read only the passages the cascade walks.
-- `BOARD.md`, `scratch/`. Neither feeds the cascade.
+- `scratch/`.
 - Task bodies outside the candidate set. The point of the baseline is that a scan against it narrows the read.
 - `docs/CONTRADICTIONS.md`, `docs/QUESTIONS.md`, `docs/RESOLVED.md`. Phase 0 resolution is a separate command.
 
@@ -53,7 +53,7 @@ Invoke by reference, in the order the flow needs them:
 
 Do not write to `BUILD.md` or source docs directly. This command propagates *from* an upstream change the user or a separate command already made; it does not author the upstream change. If the cascade surfaces that `BUILD.md` itself has an issue, flag it — editing `BUILD.md` is a separate act (hand edit plus a `/metis:sync` cascade on the result, or a `/metis:build-spec` on a deleted file for a hard restart).
 
-Do not write to `BOARD.md`, `scratch/`, `docs/` beyond what a cascade might name.
+Do not write to `scratch/`, `docs/` beyond what a cascade might name.
 
 ## Invocation prompt
 

@@ -41,7 +41,7 @@ Write the retro at `epics/<name>/retro.md` after an epic has closed. This is the
 - `decisions/` wholesale. Decisions are findable by slug; load a specific decision only when an entry turns on it.
 - Other epics' files. The retro is against this one.
 - `BUILD.md`. An assumption failure against `BUILD.md` turns on a specific section; quote it rather than loading the file.
-- `BOARD.md`, `scratch/CURRENT.md`. Neither feeds the retro.
+- `scratch/CURRENT.md`.
 
 ## Skills
 

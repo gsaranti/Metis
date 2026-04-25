@@ -10,12 +10,10 @@ This project uses Metis — a docs-first toolset for keeping a project's intent,
 - `decisions/` — append-only ADRs.
 - `docs/` — source material (docs-first projects).
 - `scratch/CURRENT.md` — session handoff (read first on any new session).
-- `BOARD.md` — generated task-state index.
 
 **Write rules (highlights)**:
 - Only the main session writes to `scratch/CURRENT.md`.
 - Subagents write only to their assigned task file.
 - Decisions go in `decisions/` (append-only, never edited in place).
-- `BOARD.md` is generated; don't hand-edit.
 
 **Conventions** (on-disk formats) live in `.metis/conventions/`. **Command-register skills** live at `.claude/skills/metis/metis-<name>/SKILL.md`; type `/metis:` to see the set.

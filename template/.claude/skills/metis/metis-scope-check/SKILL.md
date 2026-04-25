@@ -47,7 +47,6 @@ Render a scope report against recent work — what was skipped, deferred, stubbe
 
 - Code and test files.
 - `BUILD.md`.
-- `BOARD.md`.
 - `decisions/`.
 - The task file's non-Notes sections.
 

@@ -39,7 +39,7 @@ Example shapes:
 
 - Task files other than those named (and any implied by a CRUD claim — a split's new id, a merge's superseder).
 - `BUILD.md`. If the diff touches an architectural commitment, that surfaces as a decision trigger; re-reading `BUILD.md` here does not change the check.
-- `BOARD.md`, `scratch/CURRENT.md`, `scratch/questions.md`. Parent-session surface; the log is against the code and the task files.
+- `scratch/CURRENT.md`, `scratch/questions.md`.
 - `decisions/` wholesale. Grep by slug when the description names a prior decision or when an architectural trigger fires.
 
 ## Skills
@@ -61,7 +61,7 @@ Invoke by reference:
 - **CRUD artifacts.** Split creates a new task at `pending` (no diff signal yet) or at the evidenced status; merge writes a superseder preserving the merged ids in Notes and does not delete originals.
 - **`decisions/YYYY-MM-DD-<slug>.md`** — only when an architecture trigger fires. Context pins the description passage and the diff surfaces; Evidence links the diff range and the task ids.
 
-Do not write to `BUILD.md`, source docs, `BOARD.md`, or `scratch/`. If the diff shifts a `BUILD.md` commitment, that is a finding — the decision entry records it, and `/metis:sync` handles the cascade through downstream tasks (which this command does not run itself).
+Do not write to `BUILD.md`, source docs, or `scratch/`. If the diff shifts a `BUILD.md` commitment, that is a finding — the decision entry records it, and `/metis:sync` handles the cascade through downstream tasks (which this command does not run itself).
 
 ## Invocation prompt
 

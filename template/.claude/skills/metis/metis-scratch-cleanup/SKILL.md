@@ -49,7 +49,7 @@ Every file in scope lands in one of four buckets:
 - Deletions within `scratch/`.
 - Moves from `scratch/` to `docs/`, to a task's Notes (append only; do not edit other sections), or to a new `decisions/` entry.
 
-Do not write to `CURRENT.md`, `questions.md`, `BUILD.md`, `BOARD.md`, `EPIC.md` files, or any task file's non-Notes sections. If a promotion to `BUILD.md` seems warranted, that is not a scratch-cleanup move — it is a `/metis:sync` cascade starting from a manual `BUILD.md` edit. Surface the finding rather than land the edit.
+Do not write to `CURRENT.md`, `questions.md`, `BUILD.md`, `EPIC.md` files, or any task file's non-Notes sections. If a promotion to `BUILD.md` seems warranted, that is not a scratch-cleanup move — it is a `/metis:sync` cascade starting from a manual `BUILD.md` edit. Surface the finding rather than land the edit.
 
 ## Return
 

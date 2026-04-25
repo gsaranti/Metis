@@ -33,7 +33,7 @@ Plan how to build the first end-to-end slice: one route, one screen, one databas
 
 - Epics beyond the first.
 - Tasks outside the skeleton's surface.
-- `decisions/`, `BOARD.md`, `scratch/`.
+- `decisions/`, `scratch/`.
 
 ## Write scope
 

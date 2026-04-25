@@ -20,7 +20,7 @@ Run `.metis/scripts/epic-breakdown-preflight.sh` before drafting. It exits non-z
 ## Do not load
 
 - Source docs under `docs/`.
-- `decisions/`, `tasks/`, `scratch/`, `BOARD.md`.
+- `decisions/`, `tasks/`, `scratch/`.
 
 ## Skills
 
@@ -36,7 +36,7 @@ Run `.metis/scripts/epic-breakdown-preflight.sh` before drafting. It exits non-z
 
 - `epics/NNN-kebab-name/EPIC.md` per approved epic. Create the parent directory if absent.
 
-Do not write to `BUILD.md`, `decisions/`, `docs/`, `tasks/`, `scratch/`, or `BOARD.md`.
+Do not write to `BUILD.md`, `decisions/`, `docs/`, `tasks/`, or `scratch/`.
 
 ## Invocation prompt
 

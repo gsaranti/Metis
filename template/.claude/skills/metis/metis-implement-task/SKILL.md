@@ -38,7 +38,7 @@ If the brief is not enough to implement the task, surface the gap rather than wi
 
 - Other task files.
 - `BUILD.md`.
-- `BOARD.md`, other epics' `EPIC.md` files.
+- Other epics' `EPIC.md` files.
 - `decisions/`.
 - `scratch/CURRENT.md`, `scratch/questions.md`.
 - Other plans in `scratch/plans/`.
@@ -57,7 +57,6 @@ If the brief is not enough to implement the task, surface the gap rather than wi
 
 - Other task files.
 - `BUILD.md`.
-- `BOARD.md`.
 - `decisions/`.
 - `scratch/CURRENT.md`, `scratch/questions.md`.
 - `scratch/plans/<id>.md`.

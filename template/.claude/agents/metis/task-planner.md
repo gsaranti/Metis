@@ -21,7 +21,7 @@ If the brief is not enough to plan, flag the task file as underspecified rather 
 
 - Other task files.
 - `BUILD.md`.
-- `BOARD.md`, other epics' `EPIC.md` files.
+- Other epics' `EPIC.md` files.
 - `decisions/`.
 - `scratch/CURRENT.md`, `scratch/questions.md`.
 - Other plans in `scratch/plans/`.
@@ -40,7 +40,7 @@ Exactly one file:
 
 - The task file itself.
 - Code and test files.
-- `BUILD.md`, `BOARD.md`, `scratch/CURRENT.md`, `decisions/`, other task files, other plans.
+- `BUILD.md`, `scratch/CURRENT.md`, `decisions/`, other task files, other plans.
 - `.metis/`, `.claude/`.
 
 Reaching for any of these means the plan has grown past planning. Stop and return the finding.

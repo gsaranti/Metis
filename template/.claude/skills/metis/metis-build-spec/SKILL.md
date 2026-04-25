@@ -30,7 +30,6 @@ Determined from the preflight + the trailing prompt:
 
 - `docs/CONTRADICTIONS.md`, `docs/QUESTIONS.md`, `docs/RESOLVED.md`.
 - `tasks/`, `epics/`, `scratch/`.
-- `BOARD.md`.
 
 ## Skills
 

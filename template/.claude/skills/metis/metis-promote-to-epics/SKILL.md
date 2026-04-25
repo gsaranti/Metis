@@ -41,7 +41,7 @@ Graduate a flat-layout project to an epic layout. Groups existing tasks into pro
 ## Do not load
 
 - Task bodies. The grouping does not rehydrate each task's Context; it works from title, Goal, `touches`, and `docs_refs`.
-- `decisions/`, `scratch/`, `BOARD.md`. None of these shape the grouping.
+- `decisions/`, `scratch/`.
 - Source docs directly. `BUILD.md` is the synthesized anchor; re-reading the corpus re-does the build-spec's work.
 
 ## Skills
@@ -63,7 +63,7 @@ Invoke by reference:
 - `epics/<name>/tasks/<id>-*.md` — moved from `tasks/`, with `epic:` added to frontmatter.
 - Removal of the flat `tasks/` directory after all task files have moved.
 
-Do not write to `BUILD.md`, `decisions/`, `docs/`, `BOARD.md`, or `scratch/`. If the grouping surfaces a `BUILD.md` gap (capability the tasks cover but `BUILD.md` does not), flag the finding for the user to address via a hand edit plus `/metis:sync`. If it surfaces an architectural choice worth a standing record, flag it — the decision entry is a separate act.
+Do not write to `BUILD.md`, `decisions/`, `docs/`, or `scratch/`. If the grouping surfaces a `BUILD.md` gap (capability the tasks cover but `BUILD.md` does not), flag the finding for the user to address via a hand edit plus `/metis:sync`. If it surfaces an architectural choice worth a standing record, flag it — the decision entry is a separate act.
 
 ## Handling the edge cases
 

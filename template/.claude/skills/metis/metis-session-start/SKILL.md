@@ -17,9 +17,8 @@ No hard preconditions. Missing state surfaces as an Anomaly in the Return.
 In this order:
 
 1. **`scratch/CURRENT.md`** — the previous session's handoff.
-2. **`BOARD.md`** — the generated task-state index. Note staleness as an Anomaly.
-3. **The active task file** — if `scratch/CURRENT.md` names one as in flight, read that file (and the parent `EPIC.md` if the task lives under an epic).
-4. **`scratch/questions.md`** — one-pass read; may carry questions beyond the CURRENT.md block.
+2. **The active task file** — if `scratch/CURRENT.md` names one as in flight, read that file (and the parent `EPIC.md` if the task lives under an epic).
+3. **`scratch/questions.md`** — one-pass read; may carry questions beyond the CURRENT.md block.
 
 ## Do not load
 
@@ -40,7 +39,7 @@ In this order:
 - **Blocked / queued** — one line each from `CURRENT.md` *Current state*.
 - **Open questions** — the pruned list from `CURRENT.md` *Open questions* plus any still-open entries in `scratch/questions.md` not already in the handoff.
 - **Where to start** — directly from `CURRENT.md` *Where to start*. Do not rewrite — pass it through.
-- **Anomalies** — anything unexpected: missing `CURRENT.md`, stale `BOARD.md`, an `in-progress` task with no handoff mention, a `scratch/plans/<id>.md` for a task not in flight. Surface rather than absorb.
+- **Anomalies** — anything unexpected: missing `CURRENT.md`, an `in-progress` task with no handoff mention, a `scratch/plans/<id>.md` for a task not in flight. Surface rather than absorb.
 
 ## Invocation prompt
 

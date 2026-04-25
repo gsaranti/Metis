@@ -21,7 +21,7 @@ Run `.metis/scripts/generate-tasks-preflight.sh <epic-name>` (omit the argument 
 
 - Other epics' `EPIC.md` files.
 - Other task files.
-- `BOARD.md`, `decisions/`, `scratch/`, `docs/CONTRADICTIONS.md`, `docs/QUESTIONS.md`.
+- `decisions/`, `scratch/`, `docs/CONTRADICTIONS.md`, `docs/QUESTIONS.md`.
 
 ## Skills
 

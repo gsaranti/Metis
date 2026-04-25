@@ -13,7 +13,7 @@ Two failure modes pull against each other. Reassurance absorbs per-task misses i
 ## Read first
 
 - The `EPIC.md` being retroed. The starting goal, the exit criterion, and the scope lines are the anchor against which the retro's entries name drift.
-- The epic's task files. Per-task estimation and replanning entries require each task's record — `BOARD.md` is not enough, and a gestalt read of the epic cannot produce per-task signal.
+- The epic's task files. Per-task estimation and replanning entries require each task's record; a gestalt read of the epic cannot produce per-task signal.
 
 Decisions made during the epic live in `decisions/` and are findable by slug; the retro does not bulk-load that corpus. Load a specific decision only when an entry turns on it.
 
