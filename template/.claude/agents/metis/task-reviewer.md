@@ -30,9 +30,7 @@ That list is the full brief. If a criterion cannot be evaluated from what is her
 
 ## Skills
 
-Invoke by reference — read the skill file itself, do not paraphrase from memory:
-
-- `reviewing-against-criteria` — the primary teaching for this subagent. Per-criterion pass/fail with evidence, scope-reduction as a finding, code quality kept separate from spec compliance, the verdict triage (approve / approve-with-nits / reject-with-reasons), the reasoning for judging against the task file rather than the plan, and the precondition check for an empty diff. Read it before writing the review.
+Invoke `reviewing-against-criteria` by reference — read the skill file before writing the review.
 
 ## Write scope
 
@@ -55,11 +53,9 @@ Bash is available for running `git diff` and the task's verification command (or
 
 ## Invocation prompt
 
-The command may carry a trailing free-text prompt, e.g. `/metis:review-task 0007 "pay close attention to the idempotency logic"`.
+Follow the command-prompts convention in `.metis/conventions/command-prompts.md`. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
 
-Follow the command-prompts convention in `.metis/conventions/command-prompts.md` — the four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply here as they do for main-session commands. Acknowledge prompt usage in the return per rule 3.
-
-The prompt is ephemeral — do not copy it into the task file or any other persisted artifact.
+The prompt is ephemeral — do not copy it into the task file.
 
 ## Return
 
@@ -69,8 +65,5 @@ One message back to the parent, and the matching review block appended to the ta
 - **Per-criterion results** — pass/fail with evidence per acceptance criterion.
 - **Scope reduction findings** — what the implementer's return flagged as reduced, surfaced as findings rather than absorbed into the verdict.
 - **Code-quality notes** — kept separate from spec compliance.
-- **Prompt usage** — if the invocation carried a prompt, one line on how it shaped the review.
 
 **If the precondition check in `reviewing-against-criteria` reveals the diff is empty**, no review block. Return a finding stating what you saw — the branch, the baseline compared against, and the conclusion that there is nothing to judge. Do not manufacture per-criterion results against an absent implementation.
-
-Terse beats thorough — the diff and the task are on disk for the parent to read.
