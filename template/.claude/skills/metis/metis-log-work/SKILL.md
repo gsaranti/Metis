@@ -10,7 +10,7 @@ Absorb work the user did outside the Metis loop — a hotfix, a spike, a refacto
 
 ## Argument
 
-- **`<description>`** — required. Free-text describing what happened and what the user claims about it. Task ids (`0007`) and epic ids (`002-billing`) referenced anywhere in the description are extracted as the attributed artifacts; if none are found, the work is treated as unattributed and produces a retroactive task. Passed verbatim to the reconcile step — never paraphrased before it informs the updates.
+- **`<description>`** — required. Free-text describing what happened and what the user claims about it. Task ids (`0007`) and epic ids (`002-billing`) referenced anywhere in the description are extracted as the attributed artifacts; if none are found, the work is treated as unattributed and produces a retroactive task. Passed verbatim to the reconcile step — never paraphrased.
 
 Example shapes:
 
@@ -70,7 +70,7 @@ If the diff shifts a `BUILD.md` commitment, that is a finding for the decision e
 
 ## Invocation prompt
 
-The `<description>` argument is the user's free-text input. It serves as both the command's primary input (passed verbatim to `logging-external-work`) and as a command prompt subject to the rules in `.metis/conventions/command-prompts.md` — augment / flag scope expansion / acknowledge use / resolve named skills. Acknowledge use in the return per rule 3.
+The `<description>` argument serves as both the command's primary input (passed verbatim to `logging-external-work`) and a command prompt subject to the rules in `.metis/conventions/command-prompts.md` — augment / flag scope expansion / acknowledge use / resolve named skills. Acknowledge use in the return per rule 3.
 
 Unlike most invocation prompts, the description is durable: for named-task work it appends to that task's Notes; for unnamed work it becomes the new task's Context.
 
