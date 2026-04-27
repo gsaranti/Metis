@@ -23,7 +23,7 @@ There is no convention file for a retro. Five blocks, each with its own judgment
 
 - **Estimation accuracy** — per task, not gestalt. One line for every task in the epic, naming the actual-vs-planned shape (time, scope, or complexity) or "tracked as planned."
 - **Replans** — tasks that were rewritten or split mid-flight, each with the task id, the shift, and the signal that would have surfaced it at task-write time. Absent when the breakdown held.
-- **Assumption failures** — Phase 1 positions (in `BUILD.md`, in the `EPIC.md`, in a starting decision) that the epic's work proved wrong. One line per, naming the assumption verbatim and the shape the code settled on.
+- **Assumption failures** — starting positions (in `BUILD.md`, in the `EPIC.md`, in a starting decision) that the epic's work proved wrong. One line per, naming the assumption verbatim and the shape the code settled on.
 - **Task-breakdown lessons** — patterns across the epic's tasks: splits that were too large, splits that were too small, dependencies that did not land. Absent when no pattern emerged.
 - **Scratch promotions** — scratch files that became load-bearing mid-epic and should leave `scratch/` before the directory is cleaned. The retro flags; it does not move. Absent when no promotions are due.
 
@@ -43,7 +43,7 @@ The signal must have been readable at task-write time, not only after the work e
 
 ## Assumption failures vs. implementation slips
 
-Not every surprise belongs in the retro. An assumption failure is a Phase 1 position — a `BUILD.md` commitment, an `EPIC.md` scope line, a starting decision — that the epic's work proved wrong. A typo, a library quirk, a flaky test is not. The test: would a reader of the starting docs have expected the epic to land the way it did? If no, and the gap is architectural, it is an assumption failure worth recording. If yes, the slip is local and belongs in the task's own Notes, not in the retro. Conflating the two pads the block with churn and hides the two or three entries that would actually shape the next epic's planning.
+Not every surprise belongs in the retro. An assumption failure is a starting position — a `BUILD.md` commitment, an `EPIC.md` scope line, a starting decision — that the epic's work proved wrong. A typo, a library quirk, a flaky test is not. The test: would a reader of the starting docs have expected the epic to land the way it did? If no, and the gap is architectural, it is an assumption failure worth recording. If yes, the slip is local and belongs in the task's own Notes, not in the retro. Conflating the two pads the block with churn and hides the two or three entries that would actually shape the next epic's planning.
 
 ## For improvement, not reassurance
 
