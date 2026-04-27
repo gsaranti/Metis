@@ -6,54 +6,60 @@ disable-model-invocation: true
 
 # /metis:sync
 
-Write counterpart to `/metis:rebaseline`. When `docs/`, `BUILD.md`, or an epic has changed and downstream artifacts were baselined against the prior framing, this command walks the cascade: detect candidates, classify cosmetic vs. substantive, propose edits one at a time (or batch the cosmetic set), and record each accepted change as a `decisions/` entry. Main-session command — cross-document reasoning, not subagent work.
+Cascade a detected upstream change through downstream tasks and epics one proposed edit at a time, recording each accepted change as a `decisions/` entry. After the cascade settles, walk any `BUILD.md` gaps the cascade surfaced.
 
-## Preconditions
+## Run the preflight
 
-- At least one artifact on disk that can drift. If the project has no tasks and no epics yet, there is nothing to cascade against — stop and point at `/metis:generate-tasks` or `/metis:epic-breakdown`.
-- A detectable upstream change. Run the rebaseline check (same logic as `/metis:rebaseline`) before proposing any edits. If nothing has drifted, stop and report the empty set — a sync with no candidates is a cheap reassurance, not a no-op that writes decisions.
+Invoke `.metis/scripts/sync-preflight.sh` first. The preflight runs the shared `drift-scan.sh` and adds sync-only blockers — conditions where rebaseline can safely report but sync cannot safely walk.
+
+- Exit non-zero: surface the script's stderr verbatim and stop.
+- Summary `status=no-artifacts`: stop and point at `/metis:generate-tasks` or `/metis:epic-breakdown` — there are no downstream artifacts to cascade against.
+- Summary `total=0`: stop and report the empty set.
+
+Otherwise, proceed with the Flow against the reported candidate set.
 
 ## Load
 
-- `.metis/config.yaml` for the project `spec_version`.
-- Task and epic frontmatter across the corpus — enough to run the drift scan and filter to the candidate set.
+- The scan output. The candidate set drives everything downstream.
 - For each candidate in the proposal phase: the task file or epic in full, plus the upstream change that made it a candidate (the specific doc passage or `BUILD.md` section).
-- `decisions/` — grep-only, by slug, to surface any prior decision the change supersedes. Never bulk-read.
+- `decisions/` — grep-only, by slug, to surface any prior decision the change supersedes.
 
 ## Do not load
 
-- The full source-doc corpus. Read only the passages the cascade walks.
+- The full source-doc corpus.
 - `scratch/`.
-- Task bodies outside the candidate set. The point of the baseline is that a scan against it narrows the read.
-- `docs/CONTRADICTIONS.md`, `docs/QUESTIONS.md`, `docs/RESOLVED.md`. Phase 0 resolution is a separate command.
+- Task bodies outside the candidate set.
+- `docs/CONTRADICTIONS.md`, `docs/QUESTIONS.md`, `docs/RESOLVED.md`.
 
 ## Skills
 
 Invoke by reference, in the order the flow needs them:
 
-- `propagating-spec-changes` — the primary teaching. Detection, cosmetic-vs-substantive classification, cascade rules by task and epic status (`done` → new task or superseding decision; `in-progress` → confirm; `pending` / `in-review` → edit in place), baseline-after-edit discipline, termination rules, and decision-per-accepted-change shaping. Read it before proposing anything.
-- `writing-decisions` — invoked per accepted substantive change. One decision per coherent upstream shift, not one per cascade.
+- `propagating-spec-changes` — read before proposing edits.
+- `writing-decisions` — invoked per accepted substantive change and per accepted upstream `BUILD.md` edit.
 
 ## Flow
 
-1. **Detect.** Run the drift scan. Produce the candidate set split by kind (doc drift, spec drift, filesystem drift) and by affected artifact.
-2. **Classify.** For each candidate, classify the upstream change as cosmetic or substantive. Cosmetic changes propagate via a single bulk-approval prompt; substantive changes walk one at a time. When unsure, err substantive.
-3. **Walk the substantive set.** For each substantive candidate: show the user the upstream change, the artifact, and the proposed edit. Apply status rules — `done` tasks get a new task or a superseding decision, never in-place; `in-progress` needs explicit confirmation; `pending` / `in-review` edits land with approval.
-4. **Record.** Per accepted substantive change (and per accepted cosmetic *batch*), write a `decisions/` entry via `writing-decisions` naming the upstream change, the downstream artifacts edited, and the consequences.
-5. **Bump baselines.** When a task absorbs a substantive edit (or is inspected and judged non-edit), bump its `doc_hashes` and, when `BUILD.md` was touched, its `spec_version`. Skipping the bump means the next rebaseline re-surfaces the same candidate.
-6. **Terminate if runaway.** When the cascade would walk an unreasonable number of items (dozens of substantive edits from one change, candidates running into every epic), stop and surface upstream rather than pushing through. A partial `BUILD.md` rewrite or a fresh reconcile on the affected slice produces a smaller, honest cascade.
+1. **Classify.** For each candidate in the scan output, classify the upstream change as cosmetic or substantive. Cosmetic changes propagate via a single bulk-approval prompt; substantive changes walk one at a time. When unsure, err substantive.
+2. **Walk the substantive set.** For each substantive candidate: show the user the upstream change, the artifact, and the proposed edit. Apply status rules — `done` tasks get a new task or a superseding decision, never in-place; `in-progress` needs explicit confirmation; `pending` / `in-review` edits land with approval. Collect `BUILD.md` surfaces along the way — observations where `BUILD.md` is silent, stale, or wrong on something the cascade had to resolve. Do not act on them yet; carry them into step 5.
+3. **Record.** Per accepted substantive change (and per accepted cosmetic *batch*), write a `decisions/` entry via `writing-decisions` naming the upstream change, the downstream artifacts edited, and the consequences.
+4. **Bump baselines.** When a task absorbs a substantive edit (or is inspected and judged non-edit), bump its `doc_hashes` and, when the upstream change was a `BUILD.md` shift, its `spec_version`.
+5. **Upstream pass.** If the walk collected any `BUILD.md` surfaces, propose each as a `BUILD.md` edit with explicit user approval. Per accepted edit: write the edit, file a `decisions/` entry, and bump the project `spec_version` in `.metis/config.yaml` when the edit was substantive. Source docs in `docs/` remain off-limits — those are upstream of sync. If the surface is a wholesale `BUILD.md` rewrite rather than a targeted edit, stop and point at `/metis:build-spec` instead.
+6. **Terminate if runaway.** When the cascade would walk an unreasonable number of items (dozens of substantive edits from one change, candidates running into every epic), stop and surface upstream rather than pushing through.
 
 ## Write scope
 
 - Task files across the candidate set — `status`, Notes appends for cascade record, `doc_hashes` / `spec_version` bumps after absorption. `done` tasks are never edited in place; drift against them becomes a new task or a superseding decision.
 - Epic files (`EPIC.md`) across the candidate set, under the same status-aware rules.
 - New task files when a `done` task's drift spawns net-new implementation work.
-- `decisions/YYYY-MM-DD-<slug>.md` — one per accepted substantive change or per accepted cosmetic batch.
-- `.metis/config.yaml` — bump the project `spec_version` when the cascade landed a `BUILD.md`-level change.
+- `decisions/YYYY-MM-DD-<slug>.md` — one per accepted substantive change, per accepted cosmetic batch, and per accepted upstream `BUILD.md` edit.
+- `BUILD.md` — only in the upstream pass (Flow step 5), one edit at a time with explicit user approval.
+- `.metis/config.yaml` — bump the project `spec_version` after a substantive `BUILD.md` edit lands in the upstream pass.
 
-Do not write to `BUILD.md` or source docs directly. This command propagates *from* an upstream change the user or a separate command already made; it does not author the upstream change. If the cascade surfaces that `BUILD.md` itself has an issue, flag it — editing `BUILD.md` is a separate act (hand edit plus a `/metis:sync` cascade on the result, or a `/metis:build-spec` on a deleted file for a hard restart).
+### Do not write to
 
-Do not write to `scratch/`, `docs/` beyond what a cascade might name.
+- Source docs in `docs/`. Source docs are upstream of sync; if a doc edit is needed, the user makes it by hand outside sync.
+- `scratch/`.
 
 ## Invocation prompt
 
@@ -67,8 +73,8 @@ The prompt is ephemeral — do not persist it into task files, epic files, or de
 
 - **Candidate summary** — cosmetic batch count, substantive walk count, structural inconsistencies named.
 - **Edits landed** — one line per task, epic, or new-task spawned. Include the decision filename each edit was recorded against.
-- **Deferred** — candidates the user chose not to walk now. They stay in the drift report for a later pass.
+- **Upstream edits** — `BUILD.md` edits landed in the upstream pass, each with its decision filename. "(none)" if no `BUILD.md` surfaces were proposed or accepted.
+- **Deferred** — candidates the user chose not to walk now, plus any `BUILD.md` surfaces the user declined.
 - **Baselines bumped** — which task `doc_hashes` / `spec_version` were updated, and whether the project `spec_version` advanced.
-- **Pending follow-ups** — new tasks spawned from `done`-task drift, named so the user can pick them up next.
-- **Prompt usage** — one line if a prompt was carried.
-- **Next step** — `/metis:rebaseline` to confirm the drift set is empty after this pass (or narrowed enough to defer further work).
+- **Pending follow-ups** — new tasks spawned from `done`-task drift.
+- **Next step** — `/metis:rebaseline` to confirm the drift set is empty. If the upstream pass advanced the project `spec_version`, a fresh `/metis:sync` may be wanted to cascade the new `BUILD.md` against tasks not in this pass's candidate set.
