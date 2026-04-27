@@ -10,7 +10,7 @@ Cascade a detected upstream change through downstream tasks and epics one propos
 
 ## Run the preflight
 
-Invoke `.metis/scripts/sync-preflight.sh` first. The preflight runs the shared `drift-scan.sh` and adds sync-only blockers — conditions where rebaseline can safely report but sync cannot safely walk.
+Invoke `.metis/scripts/sync-preflight.sh` first.
 
 - Exit non-zero: surface the script's stderr verbatim and stop.
 - Summary `status=no-artifacts`: stop and point at `/metis:generate-tasks` or `/metis:epic-breakdown` — there are no downstream artifacts to cascade against.
@@ -20,7 +20,7 @@ Otherwise, proceed with the Flow against the reported candidate set.
 
 ## Load
 
-- The scan output. The candidate set drives everything downstream.
+- The scan output.
 - For each candidate in the proposal phase: the task file or epic in full, plus the upstream change that made it a candidate (the specific doc passage or `BUILD.md` section).
 - `decisions/` — grep-only, by slug, to surface any prior decision the change supersedes.
 
@@ -58,7 +58,7 @@ Invoke by reference, in the order the flow needs them:
 
 ### Do not write to
 
-- Source docs in `docs/`. Source docs are upstream of sync; if a doc edit is needed, the user makes it by hand outside sync.
+- Source docs in `docs/`.
 - `scratch/`.
 
 ## Invocation prompt

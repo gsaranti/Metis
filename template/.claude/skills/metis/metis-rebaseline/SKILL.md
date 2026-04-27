@@ -10,7 +10,7 @@ Compare each task and epic's stored baseline against the current state of `docs/
 
 ## Run the scan
 
-Invoke `.metis/scripts/drift-scan.sh`. The script enumerates tasks and epics, computes current doc hashes, and emits the candidate set in three sections (Doc drift, Spec drift, Filesystem drift) plus a Summary footer.
+Invoke `.metis/scripts/drift-scan.sh` and render its output as the Return.
 
 If the script exits non-zero, surface its stderr verbatim and stop.
 
@@ -27,7 +27,7 @@ If the Summary reports `status=no-artifacts`, report that the project has no tas
 
 ## Write scope
 
-**None.** If the scan reports a task whose `docs_refs` was never baselined, name the gap; do not populate it here.
+**None.**
 
 ## Invocation prompt
 
@@ -38,5 +38,6 @@ Silently accept and ignore any trailing free-text prompt.
 - **Doc drift** — for each changed doc, the tasks and epics whose `docs_refs` include it, plus each artifact's `status`.
 - **Spec drift** — for each task trailing the project `spec_version`, the version gap.
 - **Filesystem drift** — each structural inconsistency, with the pair of files or paths involved.
-- **Summary counts** — total candidates by kind.
+- **Needs baseline** — tasks with `docs_refs` entries that have no stored `doc_hashes`. Surface as a gap; do not populate here.
+- **Summary counts** — drift totals by kind plus the needs-baseline count.
 - **Next step** — `/metis:sync` if drift warrants a cascade; say so when the report is empty.

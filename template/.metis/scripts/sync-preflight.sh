@@ -1,4 +1,4 @@
-#\!/usr/bin/env bash
+#!/usr/bin/env bash
 #
 # .metis/scripts/sync-preflight.sh
 #

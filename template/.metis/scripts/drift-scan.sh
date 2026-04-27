@@ -10,8 +10,10 @@
 # Used by /metis:rebaseline (read-only report) and /metis:sync
 # (cascade walker) so the drift logic lives in one place.
 #
-# Output: structured stdout — one section per drift kind, plus a
-# Project state header and a Summary footer.
+# Output: structured stdout — one section per drift kind plus a
+# Needs-baseline section, with a Project state header and a Summary
+# footer. total= in the Summary counts drift only (doc + spec + fs);
+# needs-baseline is reported separately as nb=.
 # Exit:   0 on success regardless of drift; 1 if BUILD.md is missing.
 
 set -euo pipefail
@@ -179,8 +181,11 @@ if artifact_count == 0:
     print('=== Filesystem drift ===')
     print('(none)')
     print()
+    print('=== Needs baseline ===')
+    print('(none)')
+    print()
     print('=== Summary ===')
-    print('doc=0 spec=0 fs=0 total=0')
+    print('doc=0 spec=0 fs=0 nb=0 total=0')
     print('status=no-artifacts')
     sys.exit(0)
 
@@ -190,6 +195,7 @@ if artifact_count == 0:
 doc_drift_by_doc = defaultdict(list)
 spec_drift = []
 fs_drift = []
+needs_baseline = []
 hash_cache = {}
 
 
@@ -225,6 +231,7 @@ def process(path, kind):
             continue
         stored = hashes.get(ref_path) or hashes.get(ref)
         if not stored:
+            needs_baseline.append((aid, status, ref_path))
             continue
         current = get_hash(ref_path)
         if current and current != stored:
@@ -279,11 +286,20 @@ else:
     print('(none)')
 print()
 
+print('=== Needs baseline ===')
+if needs_baseline:
+    for aid, status, ref in sorted(needs_baseline):
+        print(f'  - {aid} (status: {status}) — {ref}')
+else:
+    print('(none)')
+print()
+
 doc_count = sum(len(v) for v in doc_drift_by_doc.values())
 spec_count = len(spec_drift)
 fs_count = len(fs_drift)
+nb_count = len(needs_baseline)
 total = doc_count + spec_count + fs_count
 print('=== Summary ===')
-print(f'doc={doc_count} spec={spec_count} fs={fs_count} total={total}')
+print(f'doc={doc_count} spec={spec_count} fs={fs_count} nb={nb_count} total={total}')
 print(f'status={"drift" if total > 0 else "clean"}')
 PYEOF
