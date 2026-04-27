@@ -111,7 +111,7 @@ The rules below describe who among Metis's own agents and commands writes to eac
 
 - **Writes**: main session or subagents, ad hoc. Gitignored.
 - **Content**: spike code, web-fetch dumps, notes, anything ephemeral. Nothing in here is load-bearing.
-- **User edits**: allowed. `/metis:scratch-cleanup` surfaces anything worth promoting out.
+- **User edits**: allowed. `/metis:session-end` and `/metis:epic-retro` flag anything worth promoting out; the user moves it.
 
 ### `.metis/`
 
@@ -144,7 +144,7 @@ Keeping the canonical rules in `.metis/conventions/` rather than in `docs/` is d
 
 ### Summary (not canonical)
 
-A substantive Metis skill or subagent that accepts a trailing free-text prompt references `.metis/conventions/command-prompts.md` and follows the four rules there — augment / flag scope expansion / acknowledge use / resolve named skills — treating the prompt as ephemeral. Seven skills are purely mechanical (`/metis:pick-task`, `/metis:session-start`, `/metis:scratch-cleanup`, `/metis:skeleton-plan`, `/metis:pushback`, `/metis:rebaseline`, `/metis:init`): they silently accept and ignore trailing prompts and do not reference the convention. Whether a given skill is mechanical or substantive is a property of the skill, not of the convention — the convention does not look up at its callers.
+A substantive Metis skill or subagent that accepts a trailing free-text prompt references `.metis/conventions/command-prompts.md` and follows the four rules there — augment / flag scope expansion / acknowledge use / resolve named skills — treating the prompt as ephemeral. Six skills are purely mechanical (`/metis:pick-task`, `/metis:session-start`, `/metis:skeleton-plan`, `/metis:pushback`, `/metis:rebaseline`, `/metis:init`): they silently accept and ignore trailing prompts and do not reference the convention. Whether a given skill is mechanical or substantive is a property of the skill, not of the convention — the convention does not look up at its callers.
 
 ## Context budget
 

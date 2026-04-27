@@ -229,7 +229,7 @@ This loop is optional. Any task can be coded by the user alone, paired with an a
 
 Session begins with `/metis:session-start` (loading dose), ends with `/metis:session-end` (update `CURRENT.md`).
 
-Epic boundaries (when the project uses epics): `/metis:epic-retro` writes a retro, `/metis:scratch-cleanup` promotes useful scratch out, next epic's tasks get generated.
+Epic boundaries (when the project uses epics): `/metis:epic-retro` writes a retro (flags any scratch worth promoting out for the user to act on), next epic's tasks get generated.
 
 ### Pair programming dynamics
 
@@ -311,7 +311,7 @@ If both `tasks/` and `epics/` exist at the project root, the layout is ambiguous
 
 - The feature loop commands (`/metis:plan-task`, `/metis:implement-task`, `/metis:review-task`, `/metis:scope-check`)
 - Session commands (`/metis:session-start`, `/metis:session-end`)
-- Maintenance (`/metis:scratch-cleanup`, `/metis:rebaseline`, `/metis:pushback`)
+- Maintenance (`/metis:rebaseline`, `/metis:pushback`)
 
 The feature loop is the spine of Metis and is identical regardless of whether the project uses epics.
 
@@ -504,9 +504,8 @@ Twenty-two commands total. All namespaced as `/metis:<name>` to avoid collisions
 
 - **`/metis:epic-retro <epic>`** — write `retro.md` for a finished epic. Requires a matching `epics/<name>/` directory; errors if the project has no `epics/`.
 
-### Maintenance (2)
+### Maintenance (1)
 
-- **`/metis:scratch-cleanup`** — propose promotions out of `scratch/` and deletions. Waits for approval.
 - **`/metis:promote-to-epics`** — graduate flat → epic layout by grouping existing tasks into proposed epics. Requires a flat `tasks/` with content and an empty or absent `epics/`; errors otherwise.
 
 ### Command-to-skill-to-subagent mapping
@@ -533,7 +532,6 @@ Twenty-two commands total. All namespaced as `/metis:<name>` to avoid collisions
 | `/metis:sync` | `propagating-spec-changes`, `writing-decisions` | — |
 | `/metis:log-work` | `logging-external-work`, `writing-decisions` | — |
 | `/metis:epic-retro` | `writing-retros` | — |
-| `/metis:scratch-cleanup` | — | — |
 | `/metis:promote-to-epics` | `decomposing-build-into-epics`, `writing-an-epic-file` | — |
 
 Commands are thin wrappers. Skills carry the substance. Subagents provide clean context + tool restrictions for task-level execution. As of Refinement 12, commands and teaching skills share a file format (`.claude/skills/metis/<name>/SKILL.md`); they remain distinct *content registers* — commands own the turn, teaching skills own the artifact — with the invoke-by-reference pattern unchanged.
@@ -900,8 +898,7 @@ Occasionally: `/metis:rebaseline`, `/metis:pushback`.
 **Epic boundary** (once per finished epic):
 
 17. `/metis:epic-retro 001-<name>`
-18. `/metis:scratch-cleanup`
-19. `/metis:generate-tasks 002-<name>` → start next epic
+18. `/metis:generate-tasks 002-<name>` → start next epic
 
 **Mid-stream addition**: `/metis:feature "..."` when new requirements emerge.
 
@@ -916,7 +913,7 @@ For medium projects.
 5. `/metis:generate-tasks` (no epic argument — writes into flat `tasks/`)
 6. `/metis:skeleton-plan`, implement skeleton
 7. Feature loop (same as epic layout, no epic ceremony)
-8. Periodic `/metis:rebaseline`, `/metis:scratch-cleanup`
+8. Periodic `/metis:rebaseline`
 9. `/metis:promote-to-epics` if the project outgrows the flat layout
 
 ### Flat layout, prompt-seeded, no docs
@@ -1098,7 +1095,7 @@ Things not fully decided. Worth addressing when building.
 
 13. **Are the names `/metis:sync` and `/metis:log-work` final?** `/metis:sync` is a bit generic; alternatives: `/metis:propagate-changes`, `/metis:reconcile-drift`. `/metis:log-work` alternatives: `/metis:record-work`, `/metis:catch-up`.
 
-14. **Does the optional-prompt convention apply to every command, or only substantive ones?** Leaning "every command where the agent does real thinking" — excludes mechanical ones like `/metis:pick-task`, `/metis:session-start`, `/metis:scratch-cleanup`. Also fine to say "all commands accept an optional prompt; most of them just ignore it if it doesn't apply."
+14. **Does the optional-prompt convention apply to every command, or only substantive ones?** Leaning "every command where the agent does real thinking" — excludes mechanical ones like `/metis:pick-task`, `/metis:session-start`. Also fine to say "all commands accept an optional prompt; most of them just ignore it if it doesn't apply."
 
 ---
 
@@ -1341,7 +1338,7 @@ The prompt is **ephemeral** — never persisted to disk.
 
 The fourth rule is a later extension of the convention. The motivation: a user mid-project will accumulate skills that aren't part of Metis — team-review checklists, testing patterns, code-style documents, or personal skills kept in `~/.claude/skills/` — and being able to name them in the prompt is the natural way to bring them to bear on one specific invocation without wiring them into a command permanently. The alternative (editing the subagent's `skills:` frontmatter or bulk-loading project skills) fights the context-budget discipline and takes the "Metis is optional" principle in the wrong direction. Deliberately, the rule does not prescribe a lookup mechanism — the runtime already knows how to resolve skills across project-local, user-global, plugin, and Metis sources, and pinning the convention to one specific glob pattern would have missed skill sources that aren't in the project tree.
 
-Open question (#14 above): does this convention apply to *every* command, or only substantive ones? Leaning "every command where the agent does real thinking" — excludes purely mechanical ones like `/metis:pick-task`, `/metis:session-start`, `/metis:scratch-cleanup`.
+Open question (#14 above): does this convention apply to *every* command, or only substantive ones? Leaning "every command where the agent does real thinking" — excludes purely mechanical ones like `/metis:pick-task`, `/metis:session-start`.
 
 ### Refinement 8 — Reframing Metis as a context-maintenance toolset
 

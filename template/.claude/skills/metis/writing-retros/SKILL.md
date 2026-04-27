@@ -25,7 +25,7 @@ There is no convention file for a retro. Five blocks, each with its own judgment
 - **Replans** — tasks that were rewritten or split mid-flight, each with the task id, the shift, and the signal that would have surfaced it at task-write time. Absent when the breakdown held.
 - **Assumption failures** — starting positions (in `BUILD.md`, in the `EPIC.md`, in a starting decision) that the epic's work proved wrong. One line per, naming the assumption verbatim and the shape the code settled on.
 - **Task-breakdown lessons** — patterns across the epic's tasks: splits that were too large, splits that were too small, dependencies that did not land. Absent when no pattern emerged.
-- **Scratch promotions** — scratch files that became load-bearing mid-epic and should leave `scratch/` before the directory is cleaned. The retro flags; it does not move. Absent when no promotions are due.
+- **Scratch promotions** — scratch files that became load-bearing mid-epic and should be promoted out of `scratch/`. The retro flags; the user moves them. Absent when no promotions are due.
 
 An empty block is fine. Manufacturing entries to fill each one is the mirror image of absorbing them into gestalt.
 
@@ -55,4 +55,4 @@ Short by default — one to two pages. A retro that runs longer is usually narra
 
 ## Examples
 
-- `examples/good-retro.md` — a post-epic retro with per-task estimation entries, one replan with its prevention signal named, one assumption failure against a `BUILD.md` line, one task-breakdown lesson, and one scratch promotion flagged for cleanup. **Read this before your first retro in a session.**
+- `examples/good-retro.md` — a post-epic retro with per-task estimation entries, one replan with its prevention signal named, one assumption failure against a `BUILD.md` line, one task-breakdown lesson, and one scratch promotion flagged. **Read this before your first retro in a session.**

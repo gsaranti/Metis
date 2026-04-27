@@ -56,4 +56,4 @@ The prompt is ephemeral — do not persist it into `CURRENT.md` or `questions.md
 - **Questions delta** — what was pruned from `questions.md`, what was added.
 - **Promotion candidates** — scratch files flagged in *Where to start*. One line per.
 - **Pending decisions** — any architectural choice made this session that has not yet been filed. Surfaced as a flag, not written.
-- **Next step** — typically the session ends here; `/metis:scratch-cleanup` if flagged promotions should land now.
+- **Next step** — typically the session ends here.
