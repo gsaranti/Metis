@@ -6,13 +6,11 @@ disable-model-invocation: true
 
 # /metis:promote-to-epics
 
-Graduate a flat-layout project to an epic layout. Groups existing tasks into proposed epics, scaffolds `epics/<name>/` directories, and moves task files into `epics/<name>/tasks/` after approval.
+Graduate a flat-layout project to an epic layout.
 
 ## Preflight
 
-Invoke `.metis/scripts/promote-to-epics-preflight.sh` first. The script verifies a flat `tasks/` directory with content, no existing `epics/` content, and `BUILD.md`.
-
-If the script exits non-zero, surface its stderr verbatim and stop.
+Invoke `.metis/scripts/promote-to-epics-preflight.sh` first. If it exits non-zero, surface its stderr verbatim and stop.
 
 ## Load
 
@@ -57,7 +55,7 @@ If the grouping surfaces a `BUILD.md` gap (capability the tasks cover but `BUILD
 ## Handling the edge cases
 
 - **Tasks that do not fit any epic cleanly.** Surface explicitly. The user decides whether they really are a sibling epic, should be merged into the nearest group, or are superseded work that wants a `done` or `deleted` status before promotion proceeds.
-- **Tasks with `id` collisions.** Should not occur (ids are project-wide and don't change on promotion). If they do, stop and surface — renaming is a user-driven repair, not a silent fix.
+- **Tasks with `id` collisions.** Should not occur, but if they do, stop and surface — renaming is a user-driven repair, not a silent fix.
 - **Tasks with `depends_on` across proposed epic boundaries.** Allowed — flag them so the user can verify the epic dependency graph reflects them.
 
 ## Invocation prompt
