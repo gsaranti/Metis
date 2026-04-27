@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "metis-marketplace",
+  "version": "0.1.0-dev",
+  "description": "Marketplace listing for the Metis plugin.",
+  "plugins": [
+    {
+      "name": "metis",
+      "source": "./",
+      "description": "Docs-first agentic development framework for Claude Code.",
+      "license": "MIT"
+    }
+  ]
+}
