@@ -31,7 +31,7 @@ Do *not* write a decision for:
 
 - Local implementation choices inside a task — those belong in the task's Notes, or in the plan file.
 - Preferences that would be obvious from reading the resulting code.
-- Things you cannot yet commit to. That is a question, not a decision. Put it in `scratch/questions.md` (or `docs/QUESTIONS.md` if it surfaced during reconcile) and come back when you have a position.
+- Things you cannot yet commit to. That is a question, not a decision. Put it in `scratch/questions.md` and come back when you have a position.
 
 The test: would a reader six months from now benefit from finding this on its own, in `decisions/`, without context? If no, it is not a decision.
 
