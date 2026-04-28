@@ -68,9 +68,7 @@ If the diff shifts a `BUILD.md` commitment, that is a finding for the decision e
 
 ## Invocation prompt
 
-The `<description>` argument serves as both the command's primary input (passed verbatim to `references/logging-external-work.md`) and a command prompt subject to the rules in `.metis/conventions/command-prompts.md` — augment / flag scope expansion / acknowledge use / resolve named skills. Acknowledge use in the return per rule 3.
-
-Unlike most invocation prompts, the description is durable: for named-task work it appends to that task's Notes; for unnamed work it becomes the new task's Context.
+The `<description>` argument is both primary input and a command prompt under `.metis/conventions/command-prompts.md`. Unlike most prompts, it is durable — appended to a task's Notes (named work) or written into Context (unnamed work).
 
 ## Return
 

@@ -45,15 +45,12 @@ Exactly one target:
 - `BUILD.md`, `scratch/CURRENT.md`, `decisions/`, other task files, plan files.
 - `.metis/`, `.claude/`.
 
-Reaching for any of these means the review has grown past reviewing. Stop and return the finding.
 
 Bash is available for running `git diff` and the task's verification command (or tests named in the implementer's return). No mutating commands — no `git commit`, no `git add`, no writes through the shell.
 
 ## Invocation prompt
 
-Follow the command-prompts convention in `.metis/conventions/command-prompts.md`. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
-
-The prompt is ephemeral — do not copy it into the task file.
+Trailing prompt: see `.metis/conventions/command-prompts.md`.
 
 ## Return
 

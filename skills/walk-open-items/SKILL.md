@@ -52,9 +52,7 @@ Do not write to `BUILD.md`, `decisions/`, `tasks/`, `epics/`, or `scratch/`.
 
 ## Invocation prompt
 
-Follow the command-prompts convention in `.metis/conventions/command-prompts.md`. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
-
-The prompt is ephemeral — do not persist it into any doc, pointer, or active-file entry.
+Trailing prompt: see `.metis/conventions/command-prompts.md`.
 
 ## Return
 

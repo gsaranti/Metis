@@ -45,23 +45,13 @@ The slice earns its own section because it is the architecture's first real test
 
 ## Code exploration in existing-codebase mode
 
-When the brief is a delta on top of an existing codebase, dispatch `code-explorer` eagerly — once per architectural seam the brief is about to commit on. The auth shape, the data model, the integration surface, the deployment topology: each is a separate question with its own framing, not one bulk "look at the code." A bulk question gets a tour; a focused question gets a finding.
+When the brief is a delta on top of an existing codebase, dispatch `code-explorer` eagerly — once per architectural seam the brief is about to commit on (auth shape, data model, integration surface, deployment topology). The report's file:line refs land in the `BUILD.md` section that turns on the seam — e.g., *"the existing dedup layer at `src/billing/idempotency.py:42-71` keys on event-type; this brief commits to extending it to event-id."*
 
-Each dispatch passes the question, the framing (what `BUILD.md` is about to commit to and why), and any scope hints. The report returns inline with file:line refs; cite those refs in the `BUILD.md` section that turns on the seam — e.g., *"the existing dedup layer at `src/billing/idempotency.py:42-71` keys on event-type; this brief commits to extending it to event-id."* The cite is what makes the brief auditable against reality.
-
-When the report contains a surprise — the existing surface is not what the framing assumed — re-decide the spec before writing through. A surprise that lands in `BUILD.md` as a footnote is a surprise the brief absorbed without thinking; the right move is to let the surprise reshape the commitment, then write.
-
-A `code-explorer` dispatch and a `domain-researcher` dispatch can both be in play for the same seam — what the existing code does is one question, what the right shape of the new commitment is may be a separate one. Keep them as two dispatches, not one combined question.
+A `code-explorer` dispatch and a `domain-researcher` dispatch can both apply to one seam — what the existing code does is one question, what the right shape of the new commitment is may be a separate one. Keep them as two dispatches.
 
 ## Research, when the corpus does not cover it
 
-Some `BUILD.md` commitments turn on technical choices the user's docs do not specify — a library, an algorithm class, a system pattern. When the synthesis would have to commit to such a choice and the corpus is silent, dispatch the `domain-researcher` subagent automatically to fill the gap. No user gate; the user already approved this style of work by reaching `/metis:build-spec`.
-
-Before dispatching, check `docs/research/INDEX.md`. If a recent note already answers the question, cite the existing note rather than commissioning a new one. If the existing note is older than 60 days and the source landscape may have shifted, dispatch a refresh.
-
-Cite each research note inline in the `BUILD.md` section that turns on it — e.g., `(see docs/research/<slug>-<date>.md)`. Cite once per commitment, not once per paragraph; if the same note backs three sections, each cites it once at the point of commitment. The note's *Recommendation* is what `BUILD.md` commits to.
-
-If the cited note is older than 60 days, surface that beside the citation — `(see docs/research/<slug>-<date>.md; past 60-day staleness window, verify before committing)`.
+When `BUILD.md` would commit to a technical choice the corpus does not specify — a library, an algorithm class, a system pattern — dispatch `domain-researcher`. The cite lands in the `BUILD.md` section that turns on the choice.
 
 ## Sizing as feedback
 

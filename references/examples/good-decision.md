@@ -1,4 +1,10 @@
-# 2026-04-19 Session duration
+# Auth session duration
+
+Refresh tokens last 30 days, access tokens 15 minutes, refresh-on-use rotation.
+
+## Date
+
+2026-04-19
 
 ## Context
 

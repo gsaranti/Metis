@@ -32,8 +32,6 @@ This subagent writes nothing. The report returns inline as the tool result.
 
 - Anywhere in the repo. No file edits, no scratch artifact, no research note, no summary file.
 
-Reaching for a write tool means the exploration has crossed into commitment. Stop and return the finding.
-
 ## Return
 
 One message back to the parent:

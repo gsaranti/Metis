@@ -66,7 +66,3 @@ A decomposition is the set of epics that come out together. Three batch-level ch
 - **Coverage.** Every capability the build spec commits to belongs to exactly one epic, is explicitly deferred (noted as out of scope with a one-line reason), or is resolved as not epic-shaped above. Silent gaps — a capability the build spec named that no epic owns — are the common "missing feature" found months later.
 - **Rough count.** A typical build lands around eight to fifteen epics. Far fewer usually means capability-bundling; far more usually means layer-slicing or task-level units escaping into the epic layer. The number is a diagnostic, not a quota; a genuinely small build can honestly have four, a genuinely large one can honestly have twenty.
 - **Coherence.** Read the epic names as a list. If two sit next to each other and are hard to tell apart, or if one's name is a subset of the other's, re-check the merge signals above before handing off.
-
-## Examples
-
-- `examples/good-epic-decomposition.md` — a `BUILD.md` fragment and the resulting list of epic-sized units, with one-line rationale per cut and per merge. **Read this before your first epic decomposition in a session.**

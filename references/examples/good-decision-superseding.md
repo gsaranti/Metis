@@ -1,8 +1,14 @@
-# 2026-05-02 Session duration shortened to seven days
+# Auth session duration shortened to seven days
+
+Refresh tokens cut from 30 days to 7 to match a regulated-customer compliance posture; access tokens unchanged.
+
+## Date
+
+2026-05-02
 
 ## Context
 
-Supersedes `2026-04-19-session-duration.md`, which set refresh tokens to 30 days. The original Context committed to a daily-active SaaS shape and chose the standard pattern; this superseder narrows that shape after a real signal.
+Supersedes `decisions/2026-04-19-auth-session-duration.md`, which set refresh tokens to 30 days. The original Context committed to a daily-active SaaS shape and chose the standard pattern; this superseder narrows that shape after a real signal.
 
 The signal: an internal security review flagged that 30-day refresh tokens — even rotating ones — leave a stolen device with up to 30 days of access if the user does not notice and revoke. The product's customer base, since the original decision, has shifted to include users in regulated industries (healthcare, finance) for whom 30 days is materially too long. The choice is no longer between "long-lived for daily-active" and "session-only for higher-security" — it is between "long enough for daily-active" and "short enough for the regulated subset that now exists."
 
@@ -22,6 +28,6 @@ Refresh tokens last 7 days; access tokens stay at 15 minutes. Rotation behavior 
 
 ## Evidence
 
-- `decisions/2026-04-19-session-duration.md` — the superseded decision.
+- `decisions/2026-04-19-auth-session-duration.md` — the superseded decision.
 - `docs/security.md §Sessions` — updated 2026-05-01 to describe the regulated-customer shift that prompted this revision.
 - `scratch/plans/0044.md` — implementation plan for the rotation, including the no-forced-logout migration step.

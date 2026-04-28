@@ -61,11 +61,7 @@ Otherwise, proceed with the Flow against the reported candidate set.
 
 ## Invocation prompt
 
-The command may carry a trailing free-text prompt, e.g. `/metis:sync "only propagate the auth doc changes, defer the billing ones"`.
-
-Follow the command-prompts convention in `.metis/conventions/command-prompts.md`. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
-
-The prompt is ephemeral — do not persist it into task files, epic files, or decision entries.
+Trailing prompt: see `.metis/conventions/command-prompts.md`.
 
 ## Return
 

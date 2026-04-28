@@ -2,8 +2,14 @@
 name: NNN-kebab-case-name
 goal:
 status: pending
+# priority: 1
 exit_criterion:
 depends_on: []
+# docs_refs:
+#   - docs/<file>.md
+# doc_hashes:
+#   docs/<file>.md: <short-hash>
+# spec_version: 1
 ---
 
 ## Goal

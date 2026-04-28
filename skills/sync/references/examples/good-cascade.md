@@ -34,7 +34,13 @@ One decision entry, naming the cosmetic batch and the four walked candidates as 
 ## The decision file the cascade wrote
 
 ```markdown
-# 2026-04-15 Idempotency keying on event id
+# Idempotency keying on event id
+
+Stripe-webhook idempotency keys on `event.id`, replacing the prior event-type framing.
+
+## Date
+
+2026-04-15
 
 ## Context
 

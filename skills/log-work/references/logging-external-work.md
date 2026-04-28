@@ -58,7 +58,3 @@ A thin retroactive task told honestly beats a padded one. Inventing a richer Goa
 Some diffs touch a structural commitment the task Notes cannot hold. Signals: a boundary crossed (service call turned into a library import, or the inverse); a new component introduced (queue, cache, scheduler, background worker); a schema migration; a removed constraint or relaxed invariant; a cross-module contract changed. When one of those fires, the update proposal includes a decision in addition to the task updates.
 
 The decision's Context pins the upstream trigger — the description passage that named the move and the diff's specific surfaces — and Evidence links the diff range and the task ids that absorbed the work. Decision and Consequences follow `.metis/conventions/decision-format.md`; the judgment this skill carries is the trigger, not the shape of the file.
-
-## Examples
-
-- `examples/good-log-work.md` — one reconciliation across a description citing two tasks plus an unnamed refactor: a cleanly verified done, a done-with-daylight surfaced, a user-named split, a retroactive `done` task for the refactor, and the decision Context the architecture trigger produced. **Read this before your first external-work log in a session.**

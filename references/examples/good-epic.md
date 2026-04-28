@@ -1,9 +1,10 @@
 ---
 name: 002-billing
+goal: Stripe-side subscription changes reach our system reliably and within 30 seconds of the webhook landing.
 status: pending
 priority: 1
-depends_on: ["001-foundation"]
 exit_criterion: "A user-initiated subscription change in Stripe is reflected in our system within 30 seconds of the webhook landing, with no duplicates and no lost events under handler failure."
+depends_on: ["001-foundation"]
 docs_refs:
   - docs/billing.md
   - docs/security.md#webhook-verification

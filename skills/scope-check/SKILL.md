@@ -52,9 +52,7 @@ Render a scope report against recent work — what was skipped, deferred, stubbe
 
 ## Invocation prompt
 
-Follow the command-prompts convention in `.metis/conventions/command-prompts.md`. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
-
-The prompt is ephemeral — do not persist it into the report or the Notes append.
+Trailing prompt: see `.metis/conventions/command-prompts.md`.
 
 ## Return
 

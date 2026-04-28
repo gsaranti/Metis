@@ -79,3 +79,13 @@ A useful research note is one to three pages. Less is usually under-investigatio
 ## Staleness
 
 The same question researched within the last 60 days is the existing note's territory unless the parent asked for a refresh. If sources cited in the existing note have a chance of having changed (a library released a major version, a benchmark was published) and the parent is leaning on the recommendation, surface the staleness explicitly — `"existing note from <date>; libfoo released a 2.0 in <date>; consider refresh"` — and let the parent decide.
+
+## Dispatching from a calling skill
+
+Calling skills dispatch this subagent automatically when a commitment turns on a technical choice the project's docs do not cover. The protocol is the same across callers:
+
+1. **Check `docs/research/INDEX.md` first.** If a recent note already answers the question, cite it rather than commissioning a new one. The note's *Recommendation* is what the caller commits to; the rest of the note is the audit trail.
+2. **Refresh past 60 days.** If the existing note is older than 60 days and the source landscape may have shifted, dispatch a refresh.
+3. **Cite inline.** Format: `(see docs/research/<slug>-<date>.md)`. Cite once per commitment, not once per paragraph.
+4. **Surface staleness.** A cited note older than 60 days carries the flag inline — `(see docs/research/<slug>-<date>.md; past 60-day staleness window, verify before committing)`.
+5. **No user gate.** The dispatching skill decides whether the question is research-worthy. Reserve "ask the user" for what research cannot resolve — preference calls, business constraints, value judgments.

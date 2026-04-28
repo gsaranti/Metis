@@ -59,19 +59,13 @@ This is the one upstream-facing register the plan carries. When acceptance crite
 
 ## Code exploration when the surface is unfamiliar
 
-Inline `Read` / `Glob` / `Grep` is the default for small lookups — checking a function signature, finding a call site, confirming a file path the task names. A `code-explorer` dispatch earns its cost only when the surface is unfamiliar enough that planning would be guessing: an entry point the task names but does not bound, a refactor target whose call sites span modules, a layer the task touches whose shape the task file does not describe.
+Inline `Read` / `Glob` / `Grep` is the default for small lookups. A `code-explorer` dispatch earns its cost only when the surface is unfamiliar enough that planning would be guessing — an entry point the task names but does not bound, a refactor target whose call sites span modules, a layer the task touches whose shape the task file does not describe.
 
-When dispatching, scope the question tightly to what the next plan step turns on. *"What does `process_webhook` actually call, and which of those touch the dedup ledger?"* is a question; *"how does the webhook layer work?"* is a tour. Pass the framing — which step of the plan the answer informs — so the report does not over-deliver.
-
-The report's file:line refs land in the plan's *Expected file changes* section. When a surprise comes back — a side effect the task framing missed, an existing handler that already does part of the work — surface it as an upstream flag against the task file rather than absorbing it into the plan. A task whose framing is wrong is a task that should be amended; planning around the wrongness is the silent-drift register.
+The report's file:line refs land in the plan's *Expected file changes* section. When a surprise comes back — a side effect the task framing missed, an existing handler that already does part of the work — surface it as an upstream flag against the task file rather than absorbing it into the plan. A task whose framing is wrong should be amended; planning around the wrongness is the silent-drift register.
 
 ## Research, when the corpus does not cover it
 
-When a plan step would have to commit to a technical choice the task and its source docs do not cover — a specific library, an algorithm, a pattern — dispatch the `domain-researcher` subagent automatically to fill the gap, then plan against the result. No user gate; surfacing as a flagged ambiguity is for things research cannot resolve, not for things research could.
-
-Before dispatching, check `docs/research/INDEX.md`. If a recent note already answers the question, cite the existing note rather than commissioning a new one. If the existing note is older than 60 days and the source landscape may have shifted, dispatch a refresh.
-
-Cite each research note inline in the step it informs — e.g., `(see docs/research/<slug>-<date>.md)`. The plan's commitment is the note's *Recommendation*; the rest of the note is the audit trail. If the cited note is older than 60 days, surface that beside the citation — `(see docs/research/<slug>-<date>.md; past 60-day staleness window)` — so the implementer verifies before committing.
+When a plan step would have to commit to a technical choice the task and its source docs do not cover, dispatch `domain-researcher` and plan against the result. The cite lands in the step it informs.
 
 ## Sizing as feedback
 

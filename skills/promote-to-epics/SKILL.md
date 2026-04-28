@@ -58,9 +58,7 @@ If the grouping surfaces a `BUILD.md` gap (capability the tasks cover but `BUILD
 
 ## Invocation prompt
 
-The command may carry a trailing free-text prompt. Follow the command-prompts convention in `.metis/conventions/command-prompts.md`. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
-
-The prompt is ephemeral — do not persist it into any `EPIC.md` or task frontmatter.
+Trailing prompt: see `.metis/conventions/command-prompts.md`.
 
 ## Return
 

@@ -28,13 +28,11 @@ The test for which register fits: how much does each candidate answer lean on wh
 
 ## Research, when a question is technically researchable
 
-Some questions in `docs/QUESTIONS.md` cannot be resolved from the corpus alone but are not preference calls either — they are factual gaps the open web can settle. Examples: which library handles the case the docs assume, what the standard pattern is for the integration the docs name, what the published benchmarks say about an option the docs propose. When a question is technically researchable, dispatch the `domain-researcher` subagent automatically rather than punting to the user. No user gate; resolving the question with research is the walk's job.
+Some questions in `docs/QUESTIONS.md` are factual gaps the open web can settle, not preference calls. When the question is technically researchable, dispatch `domain-researcher` rather than punting to the user.
 
-The judgment for *researchable* vs. *user-only*: if the answer would be the same regardless of who you asked (a fact, a benchmark, a published recommendation), it is researchable. If the answer depends on the project's preferences, business constraints, or values the corpus has not stated, it is the user's to make. A library comparison is researchable; *which library do we want* is the user's call.
+The judgment for *researchable* vs. *user-only*: if the answer would be the same regardless of who you asked (a fact, a benchmark, a published recommendation), it is researchable. If the answer depends on project preferences, business constraints, or values the corpus has not stated, it is the user's to make. A library comparison is researchable; *which library do we want* is the user's call.
 
-Before dispatching, check `docs/research/INDEX.md`. If a recent note already answers the question, cite it in the source-doc update. Dispatch a refresh only when the existing note is older than 60 days and the source landscape may have shifted.
-
-When research lands, the source-doc update cites the research note inline — e.g., `(see docs/research/<slug>-<date>.md)` — and the `docs/RESOLVED.md` pointer notes that the resolution turned on research. The substance of the answer goes into the source doc; the research note is the audit trail.
+When research lands, the source-doc update cites the note inline and the `docs/RESOLVED.md` pointer notes that the resolution turned on research. The substance of the answer goes into the source doc.
 
 ## Asking the user vs. deciding
 
@@ -69,7 +67,3 @@ The resolution's substance lives in the updated source doc, not the pointer. The
 ## Follow-ups from a walk
 
 A walk can produce new captures, not just close old ones. When a resolution answers the item at hand but exposes a downstream uncertainty — a new term introduced, a consequence that wasn't specified, a sibling question the chosen answer raises — append a fresh item to `docs/QUESTIONS.md` or `docs/CONTRADICTIONS.md` for a later pass. Closing one item by quietly hiding the follow-up it spawned is a form of over-resolving.
-
-## Examples
-
-- `examples/walked-item.md` — one walked `C` entry and one walked `Q` entry, showing the doc update each walk wrote, the `docs/RESOLVED.md` pointer it appended, and the alternatives-or-ask the walk actually offered. **Read this before your first walk in a session.**

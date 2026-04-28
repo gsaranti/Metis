@@ -75,7 +75,3 @@ For contradictions: quote both sides with their paths (`docs/auth.md §Sessions`
 ## Batch-level check
 
 Glance at the output set as a whole before handing off. Zero items is usually a miss, not a clean bill — most multi-author doc sets carry drifts and silences. Fifty is often one or two underlying disagreements spawning surface items; merge where the same root question has been surfaced twice in different words, and let the merged item carry both citations.
-
-## Examples
-
-- `examples/good-open-items.md` — a `CONTRADICTIONS.md` and a `QUESTIONS.md` fragment side by side, showing the different framings each artifact wants and the minimum content that lets a later walk work from them. **Read this before your first reconcile in a session.**

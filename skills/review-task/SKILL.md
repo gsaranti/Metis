@@ -38,7 +38,7 @@ This command writes nothing.
 
 ## Invocation prompt
 
-The trailing prompt is forwarded to the subagent verbatim. The four discipline rules live canonically in `.metis/conventions/command-prompts.md` and are enforced inside `task-reviewer.md`.
+Trailing prompt: forwarded verbatim to the subagent.
 
 ## Return
 

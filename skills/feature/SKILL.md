@@ -57,9 +57,7 @@ Run `.metis/scripts/feature-preflight.sh`. It exits non-zero if `BUILD.md` is mi
 
 ## Invocation prompt
 
-Follow the command-prompts convention in `.metis/conventions/command-prompts.md`. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
-
-The prompt is ephemeral — do not persist it into the new epic or any task file.
+Trailing prompt: see `.metis/conventions/command-prompts.md`.
 
 ## Return
 

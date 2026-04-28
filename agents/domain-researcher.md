@@ -42,13 +42,10 @@ Two files:
 - `scratch/`, other note files in `docs/research/` (INDEX.md is appended, not other notes).
 - `.metis/`, `.claude/`.
 
-Reaching for any of these means the research has crossed into commitment. Stop and return the finding.
 
 ## Invocation prompt
 
-Follow the command-prompts convention in `.metis/conventions/command-prompts.md`. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
-
-The prompt is ephemeral — do not copy it into the research note's body (the note's *Question* block carries the substance; the prompt was a turn-shaping aid).
+Trailing prompt: see `.metis/conventions/command-prompts.md`.
 
 ## Return
 

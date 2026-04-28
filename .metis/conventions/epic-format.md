@@ -20,8 +20,16 @@ The epic directory also contains:
 name: 001-authentication
 goal: Users can sign up, log in, and stay logged in across sessions.
 status: pending
+priority: 1
 exit_criterion: A new user can sign up with email/password, log in, log out, and a protected endpoint returns their identity.
 depends_on: []
+docs_refs:
+  - docs/auth.md
+  - docs/security.md#sessions
+doc_hashes:
+  docs/auth.md: 4f8c1e9b2a3d
+  docs/security.md: 7b2e4481f0ac
+spec_version: 1
 ---
 ```
 
@@ -30,8 +38,12 @@ Fields:
 - **`name`** — required. Matches the directory name. Stable by default: other artifacts (task frontmatter `epic:`, decisions, `depends_on`) reference it. Renames require a resync.
 - **`goal`** — required. One sentence. Outcome-framed; states what users or the system can do when this epic is done.
 - **`status`** — required. Enum: `pending`, `in-progress`, `done`. Simpler than task status; epics have no review gate in v0.1, and blockers live on the individual tasks.
+- **`priority`** — optional. Integer (1 = highest). Used by `/metis:pick-task` and similar surface ordering. Default unset.
 - **`exit_criterion`** — required. One sentence. A single testable condition that marks the epic complete. See the Exit-criterion discipline section below.
 - **`depends_on`** — optional. List of epic names (e.g., `[001-authentication]`) that must be `done` before this epic starts. Default `[]`.
+- **`docs_refs`** — optional. List of source-doc paths (with optional `#section`) that the epic's commitments turn on. Same shape as on tasks — see `frontmatter-schema.md`.
+- **`doc_hashes`** — optional. Map from `docs_refs` path to the short hash of that doc at last sync. Drift detection compares the live hash against this baseline. Maintained by `/metis:rebaseline` and `/metis:sync`.
+- **`spec_version`** — optional. Integer. The `BUILD.md` `spec_version` this epic is reconciled against. Bumped by `/metis:sync` when the epic absorbs a substantive `BUILD.md` shift.
 
 ## Section order
 

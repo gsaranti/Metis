@@ -67,3 +67,12 @@ The report has these sections, in order, returned inline as the tool result:
 ## Sizing as feedback
 
 A useful report is short — usually under a page of prose plus the file:line refs. More than that is usually scope creep — a question that wanted to be split. If the report is past a page and the answer is still hedged, the question was too broad. Split it and dispatch again.
+
+## Dispatching from a calling skill
+
+Calling skills dispatch this subagent when a commitment turns on what the existing code looks like. The protocol:
+
+1. **One question per dispatch.** A bulk question gets a tour; a focused question gets a finding. Dispatch per architectural seam, per candidate task, or per unfamiliar surface — not for the codebase as a whole.
+2. **Pass the framing.** What the caller is about to commit to, and why. Without it the report can be technically correct and operationally useless.
+3. **Cite file:line refs.** The refs land in the calling artifact (BUILD.md section, task Context excerpt, plan step). The cite is what makes the commitment auditable.
+4. **Surface surprises upstream.** When the report contradicts the question's framing, re-decide before writing through. Absorbing the surprise into a footnote hides the seam.

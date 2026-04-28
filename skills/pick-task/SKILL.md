@@ -14,4 +14,4 @@ None. The script writes nothing.
 
 ## Invocation prompt
 
-Silently accept and ignore any trailing free-text prompt. Per-invocation tuning does not apply to this mechanical command.
+Silently accept and ignore any trailing free-text prompt.

@@ -14,4 +14,4 @@ None. The script writes.
 
 ## Invocation prompt
 
-Silently accept and ignore any trailing free-text prompt. Per-invocation behavior is controlled by the script's flags, not by the command-prompts convention.
+Silently accept and ignore any trailing free-text prompt.

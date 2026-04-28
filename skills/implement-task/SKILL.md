@@ -66,9 +66,7 @@ Reaching for any of these means the implementation has grown past its scope. Sto
 
 ## Invocation prompt
 
-Follow the command-prompts convention in `.metis/conventions/command-prompts.md`. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
-
-The prompt is ephemeral — only its rule-3 acknowledgment (in the Notes append) persists.
+Trailing prompt: see `.metis/conventions/command-prompts.md`.
 
 ## Closing the implementation
 

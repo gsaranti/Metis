@@ -46,7 +46,3 @@ The check: every entry should read as a fact the parent will act on. If a senten
 ## Sizing as feedback
 
 A scope report is short by default — a few lines, occasionally a paragraph. A report that runs long is usually narrating the fixes the parent will make or defending the reductions, both of which belong upstream. If every unit of work yields a long report, the upstream sizing or decomposition call is off — surface that observation rather than absorbing it into longer reports.
-
-## Examples
-
-- `examples/good-scope-report.md` — a Notes-block scope report for a finished task with three reductions across `Deferred`, `Stubbed`, and `Handled differently`, including one delta spelled out in one line. **Read this before your first scope report in a session.**
