@@ -18,8 +18,6 @@ doc_hashes:
 spec_version: 3
 ---
 
-# Stripe webhook signature verification
-
 ## Goal
 
 A POST to `/webhooks/stripe` from Stripe's servers is verified against the configured signing secret before any business logic runs. Requests without a valid `Stripe-Signature` header are rejected with `400` and never reach downstream handlers.

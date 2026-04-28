@@ -21,6 +21,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 cd "$PROJECT_ROOT"
 
+# shellcheck source=lib/common.sh
+source "${SCRIPT_DIR}/lib/common.sh"
+
 if [[ -f "BUILD.md" ]]; then
   printf 'error: BUILD.md already exists at %s/BUILD.md — /metis:build-spec only creates the initial brief. Use /metis:sync to propagate doc-layer changes through it, or delete BUILD.md manually if a fresh rewrite is intended.\n' "$(pwd)" >&2
   exit 1
@@ -49,18 +52,11 @@ if [[ -d "$DOCS_DIR" ]]; then
   [[ $source_count -gt 0 ]] && DOCS_PRESENT=yes
   [[ -f "$DOCS_DIR/SYNTHESIS.md" ]] && RECONCILE_DONE=yes
 
-  count_status() {
-    local file="$1" value="$2" n
-    [[ -f "$file" ]] || { printf '0'; return; }
-    n=$(grep -c "^Status: ${value}" "$file" 2>/dev/null) || n=0
-    printf '%d' "$n"
-  }
-
   pending=$((
-    $(count_status "$DOCS_DIR/CONTRADICTIONS.md" open) +
-    $(count_status "$DOCS_DIR/QUESTIONS.md" open) +
-    $(count_status "$DOCS_DIR/CONTRADICTIONS.md" stale) +
-    $(count_status "$DOCS_DIR/QUESTIONS.md" stale)
+    $(metis_count_status "$DOCS_DIR/CONTRADICTIONS.md" open) +
+    $(metis_count_status "$DOCS_DIR/QUESTIONS.md" open) +
+    $(metis_count_status "$DOCS_DIR/CONTRADICTIONS.md" stale) +
+    $(metis_count_status "$DOCS_DIR/QUESTIONS.md" stale)
   ))
   [[ $pending -gt 0 ]] && WALK_PENDING=yes
 fi

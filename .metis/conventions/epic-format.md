@@ -47,6 +47,8 @@ Fields:
 
 ## Section order
 
+The body opens with an H1 — the capability's display title (e.g., `# Billing webhooks`), distinct from the kebab-case `name:` in frontmatter. Then:
+
 1. **Goal** — one paragraph expanding the frontmatter `goal`. Why this epic exists, who benefits, where it sits in the product.
 2. **Scope** — bullet list of capabilities in scope. Capability-level, not task-level. "Email/password signup and login" not "write a POST /signup handler."
 3. **Out of scope** — bullet list of things a reader might assume are in scope but aren't, with one-line reasons. Deferred work goes here with a pointer (e.g., "SSO — deferred to 007-sso").

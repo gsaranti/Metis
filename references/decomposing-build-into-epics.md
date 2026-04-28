@@ -16,7 +16,7 @@ The test: can the candidate be stated as one sentence a human could run in a sho
 
 ## Where the seams are
 
-When unsure where to slice, look for seams the product exposes: a user-visible capability that can be demo'd on its own, an integration boundary whose internals are self-contained, a lifecycle for one entity that begins and ends inside the candidate. Cuts along these seams tend to produce epics whose exit criteria write themselves and whose task sets have naturally disjoint surfaces. Cuts along technical-layer seams — an "API epic," a "database epic" — produce candidates that cannot be demo'd without another epic, which is the tell that a category, not a capability, was doing the cutting.
+When unsure where to slice, look for seams the product exposes: a user-visible capability that can be demo'd on its own, an integration boundary whose internals are self-contained, a lifecycle for one entity that begins and ends inside the candidate. Cuts along these seams tend to produce epics whose exit criteria write themselves and whose task sets have naturally disjoint surfaces. Cuts along technical-layer seams — an "API epic," a "database epic" — produce candidates that cannot be demo'd without another epic.
 
 ## Is this epic-shaped?
 
@@ -51,7 +51,7 @@ Epic-level merges are rarer than task-level merges because epics are already the
 
 Epic dependencies are sparser and coarser than task dependencies. Most capability ordering is real but soft — a second epic reads more naturally after a first but could technically start earlier against stubs. Encode only the hard blocks: an epic whose exit criterion literally cannot pass until another epic's exit criterion has. Soft ordering is better expressed in the sequence the epics are picked up rather than as frontmatter claims later tooling has to respect.
 
-An epic dependency is also a hint to re-examine decomposition: when several epics all `depends_on` one of them, some of that upstream's scope may have belonged in the downstream siblings in the first place. A hub with many dependents usually has a piece that wanted to move.
+An epic dependency is also a hint to re-examine decomposition: when several epics all `depends_on` one of them, some of that upstream's scope likely belonged in the downstream siblings.
 
 ## Flagging structural ambiguity
 

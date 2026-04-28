@@ -18,21 +18,17 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 cd "$PROJECT_ROOT"
 
-# -- BUILD.md ---------------------------------------------------------------
+# shellcheck source=lib/common.sh
+source "${SCRIPT_DIR}/lib/common.sh"
 
 if [[ ! -f "BUILD.md" ]]; then
   printf 'error: BUILD.md not found — run /metis:init or /metis:build-spec first.\n' >&2
   exit 1
 fi
 
-# -- flat tasks/ check -------------------------------------------------------
+metis_detect_layout
 
-flat_count=0
-if [[ -d "tasks" ]]; then
-  flat_count=$(find tasks -maxdepth 1 -name "*.md" 2>/dev/null | wc -l | tr -d ' ')
-fi
-
-if [[ $flat_count -eq 0 ]]; then
+if [[ $FLAT_CONTENT -eq 0 ]]; then
   cat >&2 <<'ERR'
 error: /metis:promote-to-epics graduates a flat tasks/ layout into epics.
 This project has no flat tasks/ directory with content.
@@ -43,14 +39,8 @@ ERR
   exit 1
 fi
 
-# -- epics/ check ------------------------------------------------------------
-
-epic_count=0
-if [[ -d "epics" ]]; then
+if [[ $EPIC_CONTENT -eq 1 ]]; then
   epic_count=$(find epics -maxdepth 2 -name "EPIC.md" 2>/dev/null | wc -l | tr -d ' ')
-fi
-
-if [[ $epic_count -gt 0 ]]; then
   cat >&2 <<ERR
 error: This project already has an epics/ directory with content (${epic_count} epic(s)).
 /metis:promote-to-epics only applies to flat-layout projects.
@@ -61,15 +51,12 @@ ERR
   exit 1
 fi
 
-# -- spec_version -----------------------------------------------------------
+# Recount tasks now that flat layout is confirmed.
+TASK_COUNT=$(find tasks -maxdepth 1 -name "*.md" 2>/dev/null | wc -l | tr -d ' ')
 
-SPEC_VERSION="1"
-if [[ -f ".metis/config.yaml" ]]; then
-  v=$(awk -F': *' '/^spec_version:/{print $2; exit}' .metis/config.yaml | tr -d '[:space:]')
-  [[ -n "$v" ]] && SPEC_VERSION="$v"
-fi
+metis_read_spec_version
 
 cat <<EOF
-TASK_COUNT=$flat_count
+TASK_COUNT=$TASK_COUNT
 SPEC_VERSION=$SPEC_VERSION
 EOF

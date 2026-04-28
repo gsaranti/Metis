@@ -23,6 +23,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 cd "$PROJECT_ROOT"
 
+# shellcheck source=lib/common.sh
+source "${SCRIPT_DIR}/lib/common.sh"
+
 DOCS_DIR="docs"
 [[ -d "$DOCS_DIR" ]] || {
   printf 'error: docs/ not found at %s\n' "$(pwd)" >&2
@@ -38,26 +41,18 @@ if [[ ! -f "$CONTRADICTIONS" && ! -f "$QUESTIONS" ]]; then
   exit 1
 fi
 
-count_status() {
-  # count "^Status: <value>" lines in a file; 0 if file is absent
-  local file="$1" value="$2" n
-  [[ -f "$file" ]] || { printf '0'; return; }
-  n=$(grep -c "^Status: ${value}" "$file" 2>/dev/null) || n=0
-  printf '%d' "$n"
-}
-
-OPEN_CONTRADICTIONS=$(count_status "$CONTRADICTIONS" open)
-OPEN_QUESTIONS=$(count_status "$QUESTIONS" open)
+OPEN_CONTRADICTIONS=$(metis_count_status "$CONTRADICTIONS" open)
+OPEN_QUESTIONS=$(metis_count_status "$QUESTIONS" open)
 OPEN=$(( OPEN_CONTRADICTIONS + OPEN_QUESTIONS ))
 
 DEFERRED=$((
-  $(count_status "$CONTRADICTIONS" deferred) +
-  $(count_status "$QUESTIONS" deferred)
+  $(metis_count_status "$CONTRADICTIONS" deferred) +
+  $(metis_count_status "$QUESTIONS" deferred)
 ))
 
 STALE=$((
-  $(count_status "$CONTRADICTIONS" stale) +
-  $(count_status "$QUESTIONS" stale)
+  $(metis_count_status "$CONTRADICTIONS" stale) +
+  $(metis_count_status "$QUESTIONS" stale)
 ))
 
 # RESOLVED.md entries are top-level "## " headings (one per resolved item)

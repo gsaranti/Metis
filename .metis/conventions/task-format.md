@@ -17,7 +17,7 @@ The two are not alternate configurations of a single project — a given project
 
 ## Frontmatter
 
-Per `frontmatter-schema.md`. The frontmatter block is always first in the file.
+Per `frontmatter-schema.md`. The frontmatter block is always first in the file. The body has no H1 — the human-readable title lives in the frontmatter `title:` field.
 
 ## Section order
 
@@ -65,8 +65,6 @@ From `docs/security.md#webhook-verification`:
 > Do not parse the body as JSON before verification — the signature
 > is computed against the exact bytes received.
 ```
-
-Why: readers often work in fresh context. If the task file only links to docs, the reader must load the whole doc to see a single paragraph. Excerpting keeps the reader's context tight and keeps the task file a stable record of what was intended, even if the source doc later changes.
 
 When an excerpt would run beyond ~250 words, summarize in the task's own words and retain one or two key quotes. Do not paste whole sections wholesale.
 

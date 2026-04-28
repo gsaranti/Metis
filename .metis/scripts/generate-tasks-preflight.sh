@@ -24,29 +24,24 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 cd "$PROJECT_ROOT"
 
+# shellcheck source=lib/common.sh
+source "${SCRIPT_DIR}/lib/common.sh"
+
 EPIC_ARG="${1:-}"
 
-# -- detect layout state ------------------------------------------------------
+metis_detect_layout
 
-flat_has_content=0
-if [[ -d "tasks" ]]; then
-  count=$(find tasks -maxdepth 1 -name "*.md" 2>/dev/null | wc -l | tr -d ' ')
-  [[ $count -gt 0 ]] && flat_has_content=1
-fi
-
-epic_layout=0
+# Build epic name list when in epic layout, for error messages.
 epics_list=""
-if [[ -d "epics" ]]; then
+if [[ $EPIC_CONTENT -eq 1 ]]; then
   while IFS= read -r d; do
     name="${d%/EPIC.md}"
     name="${name#epics/}"
     epics_list+="$name "
   done < <(find epics -maxdepth 2 -name "EPIC.md" 2>/dev/null | sort)
-  [[ -n "$epics_list" ]] && epic_layout=1
 fi
 
-# Ambiguous layout: both populated
-if [[ $flat_has_content -eq 1 && $epic_layout -eq 1 ]]; then
+if [[ $FLAT_CONTENT -eq 1 && $EPIC_CONTENT -eq 1 ]]; then
   printf 'error: ambiguous layout — both tasks/ has content and epics/ has EPIC.md files. Resolve manually before running this command.\n' >&2
   exit 1
 fi
@@ -54,7 +49,7 @@ fi
 # -- resolve TARGET against the layout ---------------------------------------
 
 if [[ -n "$EPIC_ARG" ]]; then
-  if [[ $epic_layout -eq 0 ]]; then
+  if [[ $EPIC_CONTENT -eq 0 ]]; then
     printf 'error: epic name "%s" supplied, but this project has no epics/ directory. Run /metis:epic-breakdown to create epics, or /metis:generate-tasks (no argument) to generate into a flat tasks/ directory.\n' "$EPIC_ARG" >&2
     exit 1
   fi
@@ -64,7 +59,7 @@ if [[ -n "$EPIC_ARG" ]]; then
   fi
   TARGET="epics/${EPIC_ARG}/tasks"
 else
-  if [[ $epic_layout -eq 1 ]]; then
+  if [[ $EPIC_CONTENT -eq 1 ]]; then
     printf 'error: this project has an epics/ directory; /metis:generate-tasks requires an epic name. Existing epics: %s\n' "${epics_list% }" >&2
     exit 1
   fi
@@ -85,15 +80,7 @@ if [[ -d "$TARGET" ]]; then
   fi
 fi
 
-# -- read spec_version --------------------------------------------------------
-
-SPEC_VERSION="1"
-if [[ -f ".metis/config.yaml" ]]; then
-  v=$(awk -F': *' '/^spec_version:/{print $2; exit}' .metis/config.yaml | tr -d '[:space:]')
-  [[ -n "$v" ]] && SPEC_VERSION="$v"
-fi
-
-# -- emit report --------------------------------------------------------------
+metis_read_spec_version
 
 cat <<EOF
 STATUS=ready

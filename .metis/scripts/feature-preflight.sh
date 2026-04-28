@@ -22,40 +22,25 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 cd "$PROJECT_ROOT"
 
+# shellcheck source=lib/common.sh
+source "${SCRIPT_DIR}/lib/common.sh"
+
 if [[ ! -f "BUILD.md" ]]; then
   printf 'error: BUILD.md not found — run /metis:build-spec first, including this feature in the seed.\n' >&2
   exit 1
 fi
 
-# -- detect layout state -----------------------------------------------------
+metis_detect_layout
 
-flat_content=0
-if [[ -d "tasks" ]]; then
-  count=$(find tasks -maxdepth 1 -name "*.md" 2>/dev/null | wc -l | tr -d ' ')
-  [[ $count -gt 0 ]] && flat_content=1
-fi
-
-epic_content=0
-if [[ -d "epics" ]]; then
-  count=$(find epics -maxdepth 2 -name "EPIC.md" 2>/dev/null | wc -l | tr -d ' ')
-  [[ $count -gt 0 ]] && epic_content=1
-fi
-
-if [[ $flat_content -eq 1 && $epic_content -eq 1 ]]; then
+if [[ $FLAT_CONTENT -eq 1 && $EPIC_CONTENT -eq 1 ]]; then
   printf 'error: ambiguous layout — both tasks/ and epics/ contain content. Resolve manually before running this command.\n' >&2
   exit 1
 fi
 
 MODE=flat
-[[ $epic_content -eq 1 ]] && MODE=epic
+[[ $EPIC_CONTENT -eq 1 ]] && MODE=epic
 
-# -- read spec_version -------------------------------------------------------
-
-SPEC_VERSION="1"
-if [[ -f ".metis/config.yaml" ]]; then
-  v=$(awk -F': *' '/^spec_version:/{print $2; exit}' .metis/config.yaml | tr -d '[:space:]')
-  [[ -n "$v" ]] && SPEC_VERSION="$v"
-fi
+metis_read_spec_version
 
 cat <<EOF
 MODE=$MODE

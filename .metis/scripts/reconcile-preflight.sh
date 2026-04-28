@@ -25,6 +25,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 cd "$PROJECT_ROOT"
 
+# shellcheck source=lib/common.sh
+source "${SCRIPT_DIR}/lib/common.sh"
+
 DOCS_DIR="docs"
 [[ -d "$DOCS_DIR" ]] || {
   printf 'error: docs/ not found at %s\n' "$(pwd)" >&2
@@ -104,18 +107,10 @@ PRIOR_OPEN=0
 PRIOR_DEFERRED=0
 PRIOR_STALE=0
 
-count_status() {
-  # count lines matching "^Status: <value>" in a file, tolerant of missing file
-  local file="$1" value="$2" n
-  [[ -f "$file" ]] || { printf '0'; return; }
-  n=$(grep -c "^Status: ${value}" "$file" 2>/dev/null) || n=0
-  printf '%d' "$n"
-}
-
 for f in "$DOCS_DIR/CONTRADICTIONS.md" "$DOCS_DIR/QUESTIONS.md"; do
-  PRIOR_OPEN=$((     PRIOR_OPEN     + $(count_status "$f" open) ))
-  PRIOR_DEFERRED=$(( PRIOR_DEFERRED + $(count_status "$f" deferred) ))
-  PRIOR_STALE=$((    PRIOR_STALE    + $(count_status "$f" stale) ))
+  PRIOR_OPEN=$((     PRIOR_OPEN     + $(metis_count_status "$f" open) ))
+  PRIOR_DEFERRED=$(( PRIOR_DEFERRED + $(metis_count_status "$f" deferred) ))
+  PRIOR_STALE=$((    PRIOR_STALE    + $(metis_count_status "$f" stale) ))
 done
 
 # -- emit report -------------------------------------------------------------
