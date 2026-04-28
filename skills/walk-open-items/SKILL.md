@@ -12,19 +12,7 @@ Walk open items — contradictions and gray areas — one at a time, resolving e
 
 Run `.metis/scripts/walk-open-items-preflight.sh` before starting. It exits non-zero if `docs/` is missing or if neither `CONTRADICTIONS.md` nor `QUESTIONS.md` exists (surface the error, point the user at `/metis:reconcile`, and stop). Otherwise it reports `OPEN`, `OPEN_CONTRADICTIONS`, `OPEN_QUESTIONS`, `DEFERRED`, `STALE`, and `RESOLVED_PRIOR`.
 
-If `OPEN + DEFERRED + STALE == 0`, report the empty set and suggest `/metis:build-spec`. Otherwise show the user the counts and offer the navigation choice:
-
-```
-You have N open items remaining (C contradictions, Q questions).
-R were resolved in previous sessions.
-
-  [C] continue from the next open item
-  [L] list all open items
-  [N] pick by number
-  [Q] quit the walk (resume later)
-```
-
-Non-sequential navigation is first-class — after resolving an out-of-order item, ask "continue to next open, or pick another?" rather than forcing linearity.
+If `OPEN + DEFERRED + STALE == 0`, report the empty set and suggest `/metis:build-spec`. Otherwise show the counts and offer four navigation choices: continue from next, list all, pick by number, quit. After resolving an out-of-order item, ask whether to continue or pick another.
 
 ## Load (per item)
 

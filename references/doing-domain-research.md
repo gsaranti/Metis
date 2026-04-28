@@ -63,7 +63,7 @@ When the constraints make the globally-best answer unworkable, say so explicitly
 A research note has these sections, in order:
 
 - **Question** — verbatim from the parent (or the subagent's restatement if the parent passed it bare).
-- **Why** — the originating context. One paragraph.
+- **Originating context** — why the question is being asked. One paragraph.
 - **Sub-questions** — the decomposition the investigation worked from.
 - **Findings** — per sub-question, what the evidence says, with citations.
 - **Options** — the alternatives considered, each with what it costs and what it forecloses.

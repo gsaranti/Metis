@@ -9,8 +9,6 @@ Two failure modes pull against each other. Silent drift leaves downstream artifa
 - `.metis/conventions/decision-format.md` — every accepted cascading change produces a decision.
 - `.metis/conventions/task-format.md` — the structural target for downstream task-file edits.
 
-Load `.metis/conventions/frontmatter-schema.md` on demand for `doc_hashes`, `spec_version`, and `status` field semantics, and `.metis/conventions/epic-format.md` on demand when the cascade proposes to edit an `EPIC.md`.
-
 ## What the change reaches
 
 Detection is a scan, not a walk. `docs_refs` on task and epic frontmatter names the candidate set — artifacts that cite the changed file. `doc_hashes` and `spec_version` narrow it: a task whose `doc_hashes` entry for the changed path no longer matches was baselined before the change and deserves a look; a task whose `spec_version` trails the project's and whose `docs_refs` overlap the moved `BUILD.md` sections does too.
@@ -36,11 +34,7 @@ Each task's `status` determines the rule the cascade applies to it:
 
 ## Cascade by epic state
 
-Epic `status` is a three-state enum and the rules mirror the task treatment:
-
-- `pending` — edit in place with approval.
-- `in-progress` — explicit confirmation for scope or exit-criterion shifts; bundle any in-flight tasks the shift invalidates into the same cascade pass.
-- `done` — never rewritten; drift becomes a new epic, a task under a later epic, or a superseding decision, per the same logic as `done` tasks.
+Epic states mirror task states. The one nuance: `in-progress` epics bundle any in-flight tasks the shift invalidates into the same cascade pass.
 
 ## `done` tasks: new task or superseding decision
 
@@ -68,7 +62,7 @@ When a task absorbs a substantive edit, bump its `doc_hashes` entry for the chan
 
 A cascade can propose more work than it can honestly absorb. Dozens of substantive edits spawning from one upstream change, the candidate set running into every epic, the decision log ballooning to track it — signals the upstream change was too large for a cascade to hold.
 
-The move is to stop and surface upstream, not to push through. A partial `BUILD.md` rewrite, a fresh reconcile pass over the affected slice, or a scoped-down upstream edit each produces a smaller, honest cascade. A cascade that is rewriting more than it is propagating has left its register; naming that is rarely a mistake.
+The move is to stop and surface upstream. A partial `BUILD.md` rewrite, a fresh reconcile pass over the affected slice, or a scoped-down upstream edit each produces a smaller, honest cascade.
 
 ## Examples
 

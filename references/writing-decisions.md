@@ -7,11 +7,11 @@ A decision file is a standing record of a choice that spans epics and sessions. 
 - `.metis/conventions/decision-format.md` — the structural spec (filename, section order, sizing). The format is not restated here; read it.
 - `.metis/templates/decision.md` — the skeleton to start from.
 
-## Permanence and preview
+## Preview before landing
 
-Decisions are append-only. A silently bad framing lives in the log forever or requires a superseder to correct — and upstream approval of the substance (a sync confirmation, a log-work description) does not cover the framing produced here: the Context narrative, the Consequences named, the slug picked. This is the artifact where the preview step owned by the calling command most needs to run; skipping it is what turns a wrong phrasing into a permanent one.
+Upstream approval of the substance (a sync confirmation, a log-work description) does not cover the framing produced here — the Context narrative, the Consequences named, the slug picked. Preview each before writing; decisions are append-only and a wrong phrasing requires a superseder to correct.
 
-If prior art on the topic is suspected but cannot be confirmed, surface that uncertainty during preview rather than hoping a filename or content search will catch it — the user is the backstop for duplicates, since semantically equivalent topics routinely take slightly different slugs (`auth-session-duration` vs `auth-session-lifetime` vs `refresh-token-policy`) and prose keywords are brittle across synonyms.
+If prior art on the topic is suspected but cannot be confirmed, surface the uncertainty during preview — the user is the backstop. Semantically equivalent topics routinely take slightly different slugs (`auth-session-duration` vs `auth-session-lifetime` vs `refresh-token-policy`) and keyword search is brittle across synonyms.
 
 ## When a decision is actually warranted
 
@@ -47,10 +47,6 @@ The date is the date the decision was *made*, not the date a related task was co
 ## Sizing as feedback
 
 When the file is running long, it is almost always two decisions — split it. A common failure pattern is bundling a primary choice (e.g., session duration) with an adjacent choice (e.g., refresh-token storage mechanism) because they came up in the same conversation. The right move is two files, each with its own Context focused on one choice, cross-referenced in Evidence.
-
-## Cross-referencing
-
-When a decision rests on a source doc passage or a prior decision, put the pointer in Evidence (or inline in Context if the pointer is what forced the choice). Use paths, not prose: `` `docs/auth.md §Sessions` `` beats "per the auth doc." This keeps Decision and Consequences readable at a glance, and makes the pointers greppable by the next reader.
 
 ## Examples
 

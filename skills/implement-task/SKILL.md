@@ -62,8 +62,6 @@ If the brief is not enough to implement the task, surface the gap rather than wi
 - `scratch/plans/<id>.md`.
 - `.metis/`, `.claude/`.
 
-Reaching for any of these means the implementation has grown past its scope. Stop and surface the finding.
-
 ## Invocation prompt
 
 Trailing prompt: see `.metis/conventions/command-prompts.md`.

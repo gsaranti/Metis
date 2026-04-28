@@ -8,8 +8,6 @@ Two failure modes pull against each other: resolving too eagerly, so the agent p
 
 - The one open item being walked, and the source-doc passages it cites. Re-open the source at the cited section so the walk is not working off a paraphrase that has since drifted.
 
-`docs/RESOLVED.md` is archive-only and is not read during a walk. Load it on demand if the user asks whether a related topic has been resolved before.
-
 ## Reading the item before proposing anything
 
 An open item arrives pre-framed by the reconcile pass: quoted passages, a neutral sentence naming the disagreement or gap. Start from the captured framing, but verify the cited passages still say what the item claims. When the quoted text has been rewritten, renamed, or dropped since capture, the item is **stale** — the walk cannot honestly resolve a framing the docs no longer make. Mark the status, note what changed, and leave re-capture to the next reconcile.
@@ -21,8 +19,6 @@ For each open item, pick one of three registers. The pick is the core judgment t
 - **Two genuine alternatives.** The corpus supports more than one honest reading, each defensible from the cited passages. Surface both with the trade-offs they imply and let the user choose. A genuine alternative is one a careful reader could pick without being pushed; if the second option is weaker on every axis and only exists to make the first look chosen, drop it. A user who accepts the "recommendation" against a straw man has not really chosen.
 - **One recommendation.** The corpus implies a single answer the user is very likely to confirm. Surface that read with its reasoning and let the user redirect. A recommendation is honest when inventing a second option would require reaching outside what the docs actually say.
 - **Ask.** The corpus genuinely does not imply an answer. Name the gap and ask rather than fabricating options. An invented alternative dressed as a choice is worse than an honest "I don't have a good read here."
-
-Across all three registers, the user is free to supply an answer the agent did not surface — the registers shape what the agent contributes, not what the user can say back.
 
 The test for which register fits: how much does each candidate answer lean on what the docs say vs. on invention? Heavily on docs → recommendation. Evenly between two doc-supported reads → alternatives. On invention → ask.
 

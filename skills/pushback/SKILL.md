@@ -20,13 +20,11 @@ Force the agent to defend its most recent substantive choice — or concede it i
 
 ## What counts as a substantive choice
 
-The most recent non-trivial call in this session — not a variable name, a commit message, or a line break, but one of these:
-
 - An architectural move in a plan.
 - A scope call in an implementation (a criterion judged met, scope reduced a specific way).
 - A verdict in a review.
 - A resolution or deferral of an open item.
-- A decomposition call (this belongs in one epic vs. two).
+- A decomposition call.
 - A draft phrasing in a build spec, an epic, a task, a decision, or a retro.
 
 ## Load
@@ -46,13 +44,13 @@ The most recent non-trivial call in this session — not a variable name, a comm
 
 ## The defense register
 
-The agent's response has three beats, in this order:
+Three beats:
 
-1. **State the call plainly.** Restate what was chosen in one sentence, without hedging. "I approved task 0007 despite the retry test failing." "I sequenced the migration before the endpoint because the endpoint depends on the column." If the restatement itself sounds thin, that is already a finding.
-2. **Name the alternatives.** What else could have been chosen, and what tipped the call this way. A defense with no alternatives is a preference, not a defense. If no real alternatives existed, say so and name why.
-3. **Surface the weakness.** Every real choice has one. What would change the call? What evidence would tip it the other way?
+1. **State the call plainly.** Restate what was chosen in one sentence, without hedging.
+2. **Name the alternatives.** What else could have been chosen, and what tipped the call this way.
+3. **Surface the weakness.** What would change the call? What evidence would tip it the other way?
 
-If the agent cannot do all three from the artifact alone, concede — the choice was under-justified. A concession is a successful pushback; the user reopens the choice with a follow-up command.
+If the agent cannot do all three from the artifact alone, concede — name which beat could not be rendered.
 
 ## Invocation prompt
 

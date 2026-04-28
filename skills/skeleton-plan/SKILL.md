@@ -10,16 +10,7 @@ Plan how to build the first end-to-end slice: one route, one screen, one databas
 
 ## Preconditions
 
-- `BUILD.md` must exist and must name a first vertical slice. If it does not, stop and name the gap:
-
-  ```
-  /metis:skeleton-plan needs BUILD.md to name a concrete first
-  vertical slice. If BUILD.md is missing, run /metis:build-spec.
-  If it exists but skips the "first vertical slice" section, the
-  architecture has not committed enough to plan a skeleton against
-  yet — amend BUILD.md with a concrete slice first.
-  ```
-
+- `BUILD.md` must exist and must name a first vertical slice. If `BUILD.md` is missing, stop and point at `/metis:build-spec`. If it exists but the slice section is missing or categorical, stop and ask the user to amend `BUILD.md` with a concrete slice first.
 - If task files exist for the work the skeleton plans, fold the plan against them rather than duplicating their acceptance criteria.
 
 ## Load

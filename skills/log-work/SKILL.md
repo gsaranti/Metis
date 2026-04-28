@@ -10,7 +10,7 @@ Absorb work the user did outside the Metis loop — a hotfix, a spike, a refacto
 
 ## Argument
 
-- **`<description>`** — required. Free-text describing what happened and what the user claims about it. Task ids (`0007`) and epic ids (`002-billing`) referenced anywhere in the description are extracted as the attributed artifacts; if none are found, the work is treated as unattributed and produces a retroactive task. Passed verbatim to the reconcile step — never paraphrased.
+- **`<description>`** — required. Free-text describing what happened. Task ids (`0007`) and epic ids (`002-billing`) anywhere in the text are extracted as attributed artifacts; if none, the work is unattributed and produces a retroactive task. Passed verbatim to the reconcile step.
 
 Example shapes:
 
@@ -29,7 +29,7 @@ Example shapes:
 ## Load
 
 - The user's description, verbatim.
-- The `git diff` for the relevant range. Default: uncommitted working-tree changes plus all commits on the current branch since it diverged from main — i.e., every change the branch contains that main does not. On main itself (or any branch with no divergence), this collapses to uncommitted changes only. The description can scope the range broader (e.g., "since commit abc123" for trunk-based workflows) or narrower (e.g., "in commit abc123" to limit to one commit).
+- The `git diff` for the relevant range — see `references/logging-external-work.md` for the default range and how the description can override it.
 - Each named task file in full — Goal, Context, Scope boundaries, Acceptance criteria, Expected file changes, Notes, frontmatter.
 - When any named task lives under an epic, the parent `EPIC.md`.
 - Source-doc passages behind the tasks' `docs_refs`, only when a criterion under verification turns on a passage the task abbreviated.
@@ -45,7 +45,7 @@ Example shapes:
 ## Read first
 
 - `references/logging-external-work.md` — read before reconciling.
-- `../../references/writing-decisions.md` — invoked only when an architecture-level trigger fires. Not every log-work produces a decision.
+- `../../references/writing-decisions.md` — invoked only when an architecture-level trigger fires.
 
 ## Flow
 
@@ -64,11 +64,9 @@ Example shapes:
 - `BUILD.md` and source docs.
 - `scratch/`.
 
-If the diff shifts a `BUILD.md` commitment, that is a finding for the decision entry.
-
 ## Invocation prompt
 
-The `<description>` argument is both primary input and a command prompt under `.metis/conventions/command-prompts.md`. Unlike most prompts, it is durable — appended to a task's Notes (named work) or written into Context (unnamed work).
+The `<description>` argument is both primary input and a command prompt under `.metis/conventions/command-prompts.md`. Durable — see Write scope for where it lands.
 
 ## Return
 

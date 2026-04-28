@@ -7,7 +7,7 @@ Two failure modes pull against each other. Trusting the description and skipping
 ## Read first
 
 - The user's description, verbatim. It is the intent record and is not paraphrased before it informs the updates.
-- The `git diff` for the relevant range. The record of what changed in code; everything else is claim.
+- The `git diff` for the relevant range. Default: uncommitted changes plus all commits on the current branch since it diverged from main. On main itself, this collapses to uncommitted changes only. The description can override — *"since commit abc123"* widens, *"in commit abc123"* narrows.
 
 Load `.metis/conventions/task-format.md` on demand when shaping a Notes append or a retroactive task, `.metis/conventions/frontmatter-schema.md` on demand for `status` transitions, and `.metis/conventions/decision-format.md` on demand only when the diff triggers a decision.
 

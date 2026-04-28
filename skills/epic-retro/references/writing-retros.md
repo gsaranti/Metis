@@ -2,7 +2,7 @@
 
 An epic retro is the record of what the next epic should do differently — written to `epics/<name>/retro.md` at epic close. The job of this skill is to render that record as signal — per-task estimation, replans with the lesson named, assumption failures against the starting docs — rather than as a narrative of the epic's arc or an overall verdict on how it went.
 
-Two failure modes pull against each other. Reassurance absorbs per-task misses into gestalt lines — "most tasks landed close to estimate" tells the next breakdown nothing because it hides which tasks slipped, by how much, and what shape they shared. Self-flagellation mirrors the same error from the opposite side — every surprise narrated as a miss, every replan phrased as an apology — and buries the handful of entries that would actually change the next epic under noise. Both leave the next retro's reader where they started.
+Two failure modes pull against each other. Reassurance absorbs per-task misses into gestalt lines — "most tasks landed close to estimate" tells the next breakdown nothing because it hides which tasks slipped, by how much, and what shape they shared. Self-blame mirrors it from the opposite side — every surprise narrated as a miss, every replan phrased as an apology — and buries the handful of entries that would actually change the next epic under noise. Both leave the next retro's reader where they started.
 
 ## Read first
 
@@ -20,7 +20,7 @@ There is no convention file for a retro. Four blocks, each with its own judgment
 - **Assumption failures** — starting positions (in `BUILD.md`, in the `EPIC.md`, in a starting decision) that the epic's work proved wrong. One line per, naming the assumption verbatim and the shape the code settled on.
 - **Task-breakdown lessons** — patterns across the epic's tasks: splits that were too large, splits that were too small, dependencies that did not land. Absent when no pattern emerged.
 
-An empty block is fine. Manufacturing entries to fill each one is the mirror image of absorbing them into gestalt.
+An empty block is fine. Manufacturing entries to fill it is the inverse failure of absorbing them into gestalt.
 
 ## Per-task, not gestalt
 
@@ -44,7 +44,7 @@ No self-congratulation; no self-flagellation. "The team pushed hard on this one"
 
 ## Sizing as feedback
 
-Short by default — one to two pages. A retro that runs longer is usually narrating the epic's story rather than naming the deltas against starting assumptions. Push the narrative back to the task Notes and decisions that already hold it; the retro is only what changed between the starting docs and what shipped. If retros are routinely running long across epics, the upstream assumption-setting — in `BUILD.md` or in epic scope — is drifting loose, and that itself is signal worth surfacing.
+Short by default — one to two pages. A retro that runs longer is usually narrating the epic's story rather than naming the deltas against starting assumptions. Push the narrative back to the task Notes and decisions that already hold it; the retro is only what changed between the starting docs and what shipped.
 
 ## Examples
 

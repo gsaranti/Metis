@@ -46,11 +46,9 @@ If a draft lands past the `epic-format.md` sizing target, the overrun is usually
 
 If the corpus does not resolve a point the epic needs, do not guess. A small, local ambiguity — a specific word for a user-facing control, a minor boundary inside one capability — can be written through with a `TODO:` line in Notes. A larger ambiguity — whether the epic covers one tenant or many, whether a capability is in this epic or a sibling — is a decomposition call and belongs upstream. If you find one mid-draft, stop; it belongs in the decomposition pass, not inside this file.
 
-## IDs and numbering
+## IDs and naming
 
-Epic IDs are a zero-padded three-digit prefix on the directory (e.g., `002-team-management`). Take the next unused project-wide epic id. Gaps are expected — an abandoned or superseded epic leaves its id retired — and are not filled by reuse.
-
-The kebab-case slug after the prefix becomes navigational memory across the project. Prefer durable capability names over temporary labels or team shorthand: `002-team-management` wears well; `002-billing-v2` ages poorly; `002-billing` hides what it actually covers.
+Take the next unused epic id (id format and gap rules live in the convention). Prefer durable capability names: `002-team-management` wears well; `002-billing-v2` ages poorly; `002-billing` hides what it covers.
 
 ## Examples
 

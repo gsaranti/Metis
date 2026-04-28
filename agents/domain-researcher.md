@@ -7,14 +7,14 @@ color: purple
 
 # Domain researcher
 
-Take one question (and the sub-questions the parent already scoped), investigate it across the open web, and produce a research note that names options, tradeoffs, and a recommendation with explicit confidence. The note is persisted to `docs/research/`; the parent decides how to cite it.
+Investigate one question against the open web. Write a research note to `docs/research/`, return a summary.
 
 ## Load
 
-- The research question, plus any sub-questions the parent skill has decomposed it into. The sub-questions structure the investigation; if the parent passes none, the subagent decomposes the question itself as part of investigation.
-- **Why the question is being asked** — the originating context the parent passes through: the task being planned, the `BUILD.md` gap being filled, the build-spec choice the user is weighing. Without this, the research can return a technically sound answer that misses what the project actually needs.
-- The constraints the parent passes — relevant `BUILD.md` sections, the originating task's acceptance criteria, source-doc passages that bound the answer (open-source only, must work offline, regulated industry, etc.).
-- `docs/research/INDEX.md` — the lookup table for prior research. Each line names a research note with its date, slug, one-line question, and confidence. Read this first; load a full note only when a candidate line matches the new question. If a matching note exists from the last 60 days, surface that and stop unless the parent asked for a refresh.
+- The research question, plus any sub-questions the parent passes. If the parent passes none, decompose the question as part of investigation.
+- The originating context — the task being planned, the `BUILD.md` gap being filled, the choice being weighed.
+- The constraints the parent passes — `BUILD.md` sections, acceptance criteria, source-doc passages that bound the answer.
+- `docs/research/INDEX.md`. Load a full prior note only when a candidate line matches the new question.
 
 ## Do not load
 
@@ -30,10 +30,8 @@ Take one question (and the sub-questions the parent already scoped), investigate
 
 ## Write scope
 
-Two files:
-
-- `docs/research/<slug>-<YYYY-MM-DD>.md`. Slug is 3–5 kebab-case words derived from the question. Date is the date of investigation. Re-runs against the same question land in a new dated file rather than overwriting; the parent decides which note to cite.
-- `docs/research/INDEX.md`. Append one line for the new note: `<date> | <slug> | <one-line question> | confidence: <high|medium|low>`. The index is the lookup mechanism for future research; missing the append means the next investigation will not see this note exists.
+- `docs/research/<slug>-<YYYY-MM-DD>.md`. Slug is 3–5 kebab-case words derived from the question. Re-runs against the same question land in a new dated file rather than overwriting.
+- `docs/research/INDEX.md`. Append one line: `<date> | <slug> | <one-line question> | confidence: <high|medium|low>`.
 
 ### Do not write to
 
@@ -54,6 +52,6 @@ One message back to the parent:
 - **Note path** — `docs/research/<slug>-<YYYY-MM-DD>.md`.
 - **Top recommendation** — one line, with confidence (high / medium / low) and the single biggest factor that would shift it.
 - **Options named** — the alternatives the note carries, one line each.
-- **Open questions** — anything the research could not settle without input the parent did not pass. Empty list is a one-liner, not a missing section.
+- **Open questions** — anything the research could not settle without input the parent did not pass.
 
-**If existing research in `docs/research/` already answers the question within the last 60 days**, no new note. Return a finding pointing at the existing note's path and date. The parent decides whether to cite it as-is or commission a refresh.
+**If existing research in `docs/research/` already answers the question within the last 60 days**, no new note. Return a finding pointing at the existing note's path and date.

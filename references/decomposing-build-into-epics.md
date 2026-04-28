@@ -64,5 +64,5 @@ Stop and surface the ambiguity. A product-shape call is resolved by an amendment
 A decomposition is the set of epics that come out together. Three batch-level checks before handing off:
 
 - **Coverage.** Every capability the build spec commits to belongs to exactly one epic, is explicitly deferred (noted as out of scope with a one-line reason), or is resolved as not epic-shaped above. Silent gaps — a capability the build spec named that no epic owns — are the common "missing feature" found months later.
-- **Rough count.** A typical build lands around eight to fifteen epics. Far fewer usually means capability-bundling; far more usually means layer-slicing or task-level units escaping into the epic layer. The number is a diagnostic, not a quota; a genuinely small build can honestly have four, a genuinely large one can honestly have twenty.
+- **Rough count.** Typical builds land around 8–15 epics. Far fewer suggests capability-bundling; far more suggests layer-slicing or task-level units escaping into the epic layer.
 - **Coherence.** Read the epic names as a list. If two sit next to each other and are hard to tell apart, or if one's name is a subset of the other's, re-check the merge signals above before handing off.

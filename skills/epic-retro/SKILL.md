@@ -14,20 +14,10 @@ Write the retro at `epics/<name>/retro.md` after an epic has closed.
 
 ## Preconditions
 
-- The project must use an epic layout. If `epics/` does not exist, stop:
-
-  ```
-  /metis:epic-retro is an epic-layout command, and this project
-  has no epics/ directory. Retros for flat-layout projects happen
-  informally at convenient boundaries; there is no dedicated command
-  in v0.1.
-  ```
-
+- The project must use an epic layout. If `epics/` does not exist, stop and report that this is an epic-layout-only command.
 - `epics/<name>/EPIC.md` must exist. If the name does not resolve, list the epics on disk.
-
-- The epic's `status` should be `done`. If it is `pending` or `in-progress`, stop and ask the user to confirm — a retro against an unfinished epic is usually premature unless the epic is being closed under done-equivalent conditions (abandoned, superseded, folded).
-
-- `epics/<name>/retro.md` should not already exist. If it does, stop and surface; the user can delete or rename it before a rewrite.
+- The epic's `status` should be `done`. If it is `pending` or `in-progress`, stop and ask the user to confirm.
+- `epics/<name>/retro.md` should not already exist. If it does, stop and surface.
 
 ## Load
 
@@ -57,8 +47,6 @@ Write the retro at `epics/<name>/retro.md` after an epic has closed.
 - `BUILD.md`.
 - `decisions/`.
 - `scratch/`.
-
-If the retro surfaces an assumption worth recording as a standing decision, flag it; the decision entry is its own act. Scratch files flagged for promotion are named in the retro, not moved.
 
 ## Invocation prompt
 

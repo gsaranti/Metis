@@ -14,9 +14,7 @@ Read one task file. Produce one plan. Return a summary plus any ambiguities the 
 - The assigned task file (`tasks/<id>-*.md` flat layout, or `epics/<name>/tasks/<id>-*.md` epic layout).
 - When the task lives under an epic, the parent `EPIC.md`.
 - Only the docs listed in the task's `docs_refs` frontmatter, at the cited sections.
-- `docs/research/INDEX.md` if it exists. Load a full research note only when a candidate line matches a technical gap this task turns on.
-
-If the brief is not enough to plan, flag the task file as underspecified rather than widening the read.
+- `docs/research/INDEX.md` if it exists. Load a full note only when a candidate line matches a technical gap this task turns on.
 
 ## Do not load
 
@@ -32,8 +30,6 @@ If the brief is not enough to plan, flag the task file as underspecified rather 
 `../references/planning-a-task.md` — read before drafting the plan.
 
 ## Write scope
-
-Exactly one file:
 
 - `scratch/plans/<id>.md`, where `<id>` is the zero-padded task id. Re-plans overwrite.
 
@@ -55,6 +51,6 @@ One message back to the parent:
 
 - **Plan path** — `scratch/plans/<id>.md`.
 - **Plan summary** — a short paragraph naming the sequencing at a high level, plus the verification command the plan commits to.
-- **Flagged ambiguities** — items the plan could not settle without guessing. Task-file gaps, source-doc silences, acceptance criteria that cannot be made testable without an additional call. One line per item. Empty list is a one-liner, not a missing section.
+- **Flagged ambiguities** — items the plan could not settle without guessing. One line per item.
 
-**If the precondition check in `../references/planning-a-task.md` reveals the task appears already done**, no plan file. Return a finding stating the evidence seen — which files already exist, which criteria are visibly met. The parent triages from there. Do not plan against work that is already in the tree.
+If the task appears already done, return the evidence finding instead of a plan.

@@ -4,10 +4,6 @@ Code exploration is reading the existing source tree to answer one question that
 
 Two failure modes pull against each other. Underdelivering — three greps, a confident-sounding "the code does X," no file refs — leaves the caller making a commitment on vibes. Overcommitting — reading half the repo, returning an architectural tour, pretending the question was bigger than it was — burns context and buries the answer. The first underdelivers; the second oversells.
 
-## Read first
-
-(none — this is the entry point for code-exploration work)
-
 ## Scoping the question
 
 A good code-exploration question is concrete and bounded. *"Where does subscription state get persisted, and what writes to it?"* is a question. *"How does billing work?"* is not — it has no observable answer.

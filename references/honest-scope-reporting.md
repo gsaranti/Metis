@@ -1,6 +1,6 @@
 # Honest scope reporting
 
-A scope report is the block that names the places where the shipped work is less than what was asked for. The job of this skill is to take one unit of work — a task that has just finished, a set of changes submitted for review — and render that block: four categories for what was reduced, one-line entries per reduction, and no defense of any of them. Without that block, reductions that land in the surrounding narrative are invisible to the reader who receives the result; the list is what makes a reduction visible enough to act on.
+A scope report is the block that names the places where the shipped work is less than what was asked for. The job of this skill is to take one unit of work — a task that has just finished, a set of changes submitted for review — and render that block: four categories for what was reduced, one-line entries per reduction, and no defense of any of them.
 
 Two failure modes pull against each other. Under-reporting absorbs reductions into the surrounding narrative — "the signature check is in place, edge cases pending" reads as progress when the entry belongs in the scope list as a deferred item. The parent cannot triage what it cannot see. Over-reporting pads the list with reasoning that drifts into defending the reduction — "stubbed the retry logic because the underlying HTTP client is being replaced next sprint" gives the parent a narrative to respond to rather than a reduction to act on. The list gets longer and less useful the more it argues.
 

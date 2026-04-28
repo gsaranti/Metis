@@ -44,7 +44,7 @@ Take the next unused project-wide id — not per-epic. Gaps are expected (a dele
 
 ## Tasks under an epic: do not duplicate the parent
 
-When a task lives under an epic (`epics/<name>/tasks/<id>-*.md`), every reader — planner, implementer, reviewer — implicitly loads the parent `EPIC.md` alongside the task file. Do not duplicate the epic-level goal, scope, or exit criterion inside the task file. Quote from `EPIC.md` only when the task turns on a specific clause — and then only that clause. The parent is part of the load already; duplicating it taxes every read and breeds drift when the epic's scope shifts and only some tasks are updated.
+When a task lives under an epic, every reader implicitly loads the parent `EPIC.md`. Do not duplicate epic-level goal, scope, or exit criterion. Quote a specific clause from `EPIC.md` only when the task turns on it.
 
 ## Examples
 

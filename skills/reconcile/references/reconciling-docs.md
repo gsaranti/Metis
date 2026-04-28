@@ -4,10 +4,6 @@ A reconcile pass produces a set of files that together make a docs corpus review
 
 Two failure modes pull against each other: surfacing too little, so contradictions and silences live on as silent assumptions that compound once code starts; and surfacing too much, so the walk drowns in items that were never really issues — a term used two ways inside a paragraph, a wording drift with no implementation consequence.
 
-## Read first
-
-There is no convention file for the reconcile artifacts; the on-disk shape is defined in *Artifact shape* below. The source docs themselves are the input — read them as described in *Reading the corpus well*.
-
 ## Artifact shape
 
 A reconcile pass produces four files in `docs/`:
