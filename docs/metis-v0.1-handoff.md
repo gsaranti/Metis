@@ -1396,16 +1396,44 @@ The dropped alternative: keeping the teaching skills as first-class but adding a
 
 Net manifest impact: skills drop from 38 (22 command-register + 16 teaching-register) to 21 (just the primary skills, after the various drops in Refinements 13–14). References (16 markdown docs) become a new layer in the Manifest table.
 
+### Refinement 15 — Code exploration as an internal capability
+
+The build-spec, generate-tasks, and plan-task flows routinely encounter a parallel gap to the one Refinement 13 addressed for the open web: when the project has an existing codebase, the calling skill needs to know what is in the source tree to make a commitment, and inline `Read` / `Glob` / `Grep` either over-reads (filling the calling skill's context with grep noise) or under-reads (forcing a commitment on vibes). The research subagent solved the open-web case; the same shape solves the code case.
+
+Resolution: code exploration becomes a capability the relevant skills dispatch, parallel to research, with three intentional differences from `domain-researcher`.
+
+The shape:
+
+- **`code-explorer` subagent.** Read-only tools (`Read`, `Glob`, `Grep`); no `Write`, no web tools. Returns a compressed report inline as the tool result — answer, file:line evidence, seams, surprises, boundary. Nothing persists; the report is consumed in the same turn.
+- **`exploring-code` reference.** Plugin-root reference (`references/exploring-code.md`) carrying the universal *how* — scoping the question, source order inside a repo, citation discipline (`path/to/file.py:42`), surprise-first synthesis, boundary discipline. Read by the subagent only. Calling skills carry the *when* in their own per-primary reference (see the integration-points table).
+- **Three integration points.** Each carries the *when* in its own reference; the action layer just dispatches.
+
+| Action layer | Reference (carries the *when*) | Dispatches |
+|---|---|---|
+| `/metis:build-spec` (skill) | `writing-build-spec` | `code-explorer` (eagerly, per architectural seam in existing-codebase mode) |
+| `/metis:generate-tasks` (skill) | `decomposing-work-into-tasks` | `code-explorer` (per task whose surface is not fully named in the spec) |
+| `task-planner` (subagent) | `planning-a-task` | `code-explorer` (sparingly, only when the task's surface is unfamiliar enough that planning would be guessing) |
+
+Why the differences from `domain-researcher`:
+
+- **No persistence.** Research findings are durable across sessions because external knowledge is reusable; code findings are tied to a specific commitment in a specific turn, and the underlying code changes. Persisting them creates stale artifacts. `code-explorer` writes nothing; the report returns inline and is cited where the calling skill commits (in `BUILD.md`, in a task's Context excerpt, in a plan step).
+- **No INDEX.** Nothing to index; nothing to dedupe across sessions. A re-run is the right behavior — the code may have changed.
+- **Aggressiveness controlled by the invoker, not the subagent.** The subagent always answers when dispatched; the dispatch policy lives in each calling skill's per-primary reference. Build-spec is eager, generate-tasks is per-task, task-planner is sparing. `exploring-code.md` carries the universal *how* (question-shape, citation discipline, report shape); the *when* lives with the caller.
+
+What did not change: drift detection treats `BUILD.md`'s file:line citations the same as any other commitment — if the underlying code moves, `/metis:rebaseline` and `/metis:sync` catch the drift through the normal cascade. The docs-first property holds because nothing the code-explorer produces is durable; the durable artifacts (BUILD.md, tasks, plans) carry the cited refs and stand on their own.
+
+The dropped alternative: persisting code-exploration reports to `docs/exploration/` parallel to `docs/research/`. The case for it was symmetry with research; the case against was that the artifacts go stale (research notes age more gracefully than code-shape descriptions), and the user already removed `scratch/exploration/` for the same reason — exploration that wants to live longer belongs in BUILD.md or a task file, not in its own directory.
+
 ### Manifest impact of all refinements
 
 | Layer | Before refinements | After refinements |
 |---|---|---|
 | Skills (primary commands) | 20 | 21 (+`/metis:sync`, +`/metis:log-work`, renamed walk-contradictions → walk-open-items; later audit drops removed `/metis:scratch-cleanup` and `/metis:research`) |
-| References | 0 | 16 (added in Refinement 14 from the dropped teaching-register layer: 7 per-primary + 9 plugin-root) |
+| References | 0 | 17 (added in Refinement 14 from the dropped teaching-register layer: 7 per-primary + 9 plugin-root; Refinement 15 adds `references/exploring-code.md` at the plugin root) |
 | Conventions | 5 | 5 (`frontmatter-schema` adds `doc_hashes` + `spec_version`; `write-rules` relocated to `docs/metis-write-rules.md`; `command-prompts.md` added in Refinement 12) |
-| Subagents | 3 | 3 (Refinement 10 retires `task-implementer`, leaving `task-planner` and `task-reviewer`; Refinement 13 adds `domain-researcher`. `task-planner` gains the `Task` tool to dispatch `domain-researcher` mid-plan.) |
+| Subagents | 3 | 4 (Refinement 10 retires `task-implementer`, leaving `task-planner` and `task-reviewer`; Refinement 13 adds `domain-researcher`. `task-planner` gains the `Task` tool to dispatch `domain-researcher` and `code-explorer` mid-plan. Refinement 15 adds `code-explorer`.) |
 
-Refinement 11 (mode removal) makes no change to the file counts above; its effect is on command-level behavior and the removal of the `mode:` field from `.metis/config.yaml`. Refinement 12 (commands merge into SKILL.md format) collapsed the commands-layer and teaching-skills-layer into one on-disk directory under `.claude/skills/metis/`. Refinement 13 (research as internal capability) added the `domain-researcher` subagent and the `doing-domain-research` reference (originally a teaching skill, demoted in Refinement 14), plus `docs/research/` as a new on-disk surface scaffolded by `/metis:init`. Refinement 14 (teaching skills become references) drops the teaching-register skill layer entirely; its 16 documents become reference markdown files (7 per-primary, 9 plugin-root).
+Refinement 11 (mode removal) makes no change to the file counts above; its effect is on command-level behavior and the removal of the `mode:` field from `.metis/config.yaml`. Refinement 12 (commands merge into SKILL.md format) collapsed the commands-layer and teaching-skills-layer into one on-disk directory under `.claude/skills/metis/`. Refinement 13 (research as internal capability) added the `domain-researcher` subagent and the `doing-domain-research` reference (originally a teaching skill, demoted in Refinement 14), plus `docs/research/` as a new on-disk surface scaffolded by `/metis:init`. Refinement 14 (teaching skills become references) drops the teaching-register skill layer entirely; its 16 documents become reference markdown files (7 per-primary, 9 plugin-root). Refinement 15 (code exploration as internal capability) adds the `code-explorer` subagent and the `references/exploring-code.md` plugin-root reference; nothing on disk gets a new persistent surface.
 
 ---
 

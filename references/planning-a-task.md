@@ -57,6 +57,14 @@ The bar is *is there evidence the work is substantially done*, not *is every cri
 
 This is the one upstream-facing register the plan carries. When acceptance criteria cannot be made testable without an extra call, when two honest plans could be written depending on a scope detail the task did not fix, when `depends_on` is missing a real blocking prerequisite, when the task bundles two unrelated outcomes, or when making the plan honest would require changes outside the task's scope, the plan's job is to surface the gap upstream — not to widen itself until the ambiguity is hidden inside the steps. A plan that silently resolves a task-file ambiguity is where silent drift starts.
 
+## Code exploration when the surface is unfamiliar
+
+Inline `Read` / `Glob` / `Grep` is the default for small lookups — checking a function signature, finding a call site, confirming a file path the task names. A `code-explorer` dispatch earns its cost only when the surface is unfamiliar enough that planning would be guessing: an entry point the task names but does not bound, a refactor target whose call sites span modules, a layer the task touches whose shape the task file does not describe.
+
+When dispatching, scope the question tightly to what the next plan step turns on. *"What does `process_webhook` actually call, and which of those touch the dedup ledger?"* is a question; *"how does the webhook layer work?"* is a tour. Pass the framing — which step of the plan the answer informs — so the report does not over-deliver.
+
+The report's file:line refs land in the plan's *Expected file changes* section. When a surprise comes back — a side effect the task framing missed, an existing handler that already does part of the work — surface it as an upstream flag against the task file rather than absorbing it into the plan. A task whose framing is wrong is a task that should be amended; planning around the wrongness is the silent-drift register.
+
 ## Research, when the corpus does not cover it
 
 When a plan step would have to commit to a technical choice the task and its source docs do not cover — a specific library, an algorithm, a pattern — dispatch the `domain-researcher` subagent automatically to fill the gap, then plan against the result. No user gate; surfacing as a flagged ambiguity is for things research cannot resolve, not for things research could.

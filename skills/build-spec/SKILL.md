@@ -23,7 +23,7 @@ Determined from the preflight + the trailing prompt:
 ## Load
 
 - For docs-first: `docs/SYNTHESIS.md`, `docs/INDEX.md`, and the source docs under `docs/` at the cited passages.
-- For existing-codebase: the relevant code, on demand.
+- For existing-codebase: code from the source tree, via `code-explorer` dispatches.
 - Any `decisions/` entries that exist. Grep by slug; do not bulk-read.
 - `docs/research/INDEX.md` and the research notes it points at — for technical commitments the corpus alone does not settle.
 

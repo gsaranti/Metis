@@ -16,6 +16,7 @@ Run `.metis/scripts/generate-tasks-preflight.sh <epic-name>` (omit the argument 
 
 - `BUILD.md` (flat layout) or `epics/<name>/EPIC.md` plus the `BUILD.md` sections it cites (epic layout).
 - Source-doc passages on demand when a candidate task needs an excerpt.
+- For tasks touching existing code: code from the source tree, via `code-explorer` dispatches.
 
 ## Do not load
 

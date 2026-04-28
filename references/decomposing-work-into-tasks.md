@@ -52,6 +52,14 @@ A decomposition is the set of units that come out together. Two batch-level chec
 - **Coverage.** Every piece of the input body of work belongs to exactly one unit, is explicitly deferred (noted as out of scope with a one-line reason), or is resolved as not task-shaped above. Gaps that were neither split out nor deferred are the most common source of "missing work" found later.
 - **Independence.** Take any two units in the batch. Could one ship without the other and still make sense? If the honest answer is "no, they're really one piece of work," merge them.
 
+## Code exploration when decomposing against existing code
+
+When the body of work touches code already in the repo, the right cuts often follow seams the existing code already exposes — modules, route boundaries, persistence layers. Dispatch `code-explorer` for any candidate unit whose surface is not fully named in the spec: ask where the relevant code lives, what calls it, what tests cover it. The report's file:line refs become the candidate task's eventual Context excerpt and shape the file paths the task names.
+
+Dispatch per candidate unit, not for the whole batch. A bulk "look at the existing billing code" produces a tour; a per-unit question — *"where does subscription state get written, and what writes to it?"* — produces a finding the decomposition can act on.
+
+When a report surfaces a surprise — the surface is not where the spec implied, or two units the spec treated as separate share a hot path — re-decide the cut before adding to the batch. A decomposition that absorbs the surprise into a footnote is a decomposition that has hidden the seam.
+
 ## Examples
 
 - `examples/good-decomposition.md` — a short body of work and the resulting list of task-shaped units, with one-line rationale per cut and per merge. **Read this before your first decomposition in a session.**
