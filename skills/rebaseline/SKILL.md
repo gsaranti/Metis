@@ -10,7 +10,7 @@ Compare each task and epic's stored baseline against the current state of `docs/
 
 ## Run the scan
 
-Invoke `.metis/scripts/drift-scan.sh` and render its output as the Return.
+Invoke `${CLAUDE_PLUGIN_ROOT}/.metis/scripts/drift-scan.sh` and render its output as the Return.
 
 If the script exits non-zero, surface its stderr verbatim and stop.
 

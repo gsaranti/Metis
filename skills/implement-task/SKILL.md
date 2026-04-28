@@ -15,7 +15,7 @@ Implement one task and close with a scope report.
 
 ## Preflight
 
-Run `.metis/scripts/implement-task-preflight.sh <task-id>`. It exits non-zero if the id is missing, malformed, or doesn't resolve to a task file (with nearest-match guidance). On success it reports `TASK_PATH`, `STATUS`, `EPIC`, `DEPS_PENDING`, and `PLAN_EXISTS`.
+Run `${CLAUDE_PLUGIN_ROOT}/.metis/scripts/implement-task-preflight.sh <task-id>`. It exits non-zero if the id is missing, malformed, or doesn't resolve to a task file (with nearest-match guidance). On success it reports `TASK_PATH`, `STATUS`, `EPIC`, `DEPS_PENDING`, and `PLAN_EXISTS`.
 
 Apply policy from the preflight output:
 

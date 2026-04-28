@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # /metis:pick-task
 
-Run `.metis/scripts/pick-task.sh` and relay its output verbatim. The script lists pickable tasks (sorted by priority + fan-out + id), in-flight work, blocked counts with the most common blocker, and a suggested next. It exits non-zero with a recovery pointer if no task surface exists.
+Run `${CLAUDE_PLUGIN_ROOT}/.metis/scripts/pick-task.sh` and relay its output verbatim. The script lists pickable tasks (sorted by priority + fan-out + id), in-flight work, blocked counts with the most common blocker, and a suggested next. It exits non-zero with a recovery pointer if no task surface exists.
 
 ## Write scope
 

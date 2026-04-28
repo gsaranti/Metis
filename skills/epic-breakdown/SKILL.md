@@ -10,7 +10,7 @@ Read `BUILD.md`. Propose a set of capability-sized epics; on approval, scaffold 
 
 ## Preflight
 
-Run `.metis/scripts/epic-breakdown-preflight.sh` before drafting. It exits non-zero with a specific error if `BUILD.md` is missing, a flat `tasks/` directory has content, or `epics/` already contains `EPIC.md` files. Surface the error and stop.
+Run `${CLAUDE_PLUGIN_ROOT}/.metis/scripts/epic-breakdown-preflight.sh` before drafting. It exits non-zero with a specific error if `BUILD.md` is missing, a flat `tasks/` directory has content, or `epics/` already contains `EPIC.md` files. Surface the error and stop.
 
 ## Load
 

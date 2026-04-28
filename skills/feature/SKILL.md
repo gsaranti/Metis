@@ -14,7 +14,7 @@ Absorb a net-new feature into the project mid-stream.
 
 ## Preflight
 
-Run `.metis/scripts/feature-preflight.sh`. It exits non-zero if `BUILD.md` is missing or the layout is ambiguous (both `tasks/` and `epics/` populated). On success it reports `MODE` (`flat` / `epic`) and `SPEC_VERSION`.
+Run `${CLAUDE_PLUGIN_ROOT}/.metis/scripts/feature-preflight.sh`. It exits non-zero if `BUILD.md` is missing or the layout is ambiguous (both `tasks/` and `epics/` populated). On success it reports `MODE` (`flat` / `epic`) and `SPEC_VERSION`.
 
 ## Load
 

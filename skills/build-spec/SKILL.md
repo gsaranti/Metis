@@ -10,7 +10,7 @@ Produce `BUILD.md` at the project root.
 
 ## Preflight
 
-Run `.metis/scripts/build-spec-preflight.sh` before drafting. It exits non-zero if `BUILD.md` already exists (surface the error, point the user at `/metis:sync`, and stop). Otherwise it reports `DOCS_PRESENT`, `RECONCILE_DONE`, and `WALK_PENDING`.
+Run `${CLAUDE_PLUGIN_ROOT}/.metis/scripts/build-spec-preflight.sh` before drafting. It exits non-zero if `BUILD.md` already exists (surface the error, point the user at `/metis:sync`, and stop). Otherwise it reports `DOCS_PRESENT`, `RECONCILE_DONE`, and `WALK_PENDING`.
 
 ## Input shape
 

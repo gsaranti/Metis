@@ -15,7 +15,7 @@ Dispatch the `task-reviewer` subagent to review one task's implementation agains
 
 ## Preflight
 
-Run `.metis/scripts/review-task-preflight.sh <task-id>`. It exits non-zero if the id is missing, malformed, doesn't resolve to a task file (with nearest-match guidance), or the working dir isn't a git repo. On success it reports `TASK_PATH`, `STATUS`, `EPIC`, and `DIFF_PRESENT`.
+Run `${CLAUDE_PLUGIN_ROOT}/.metis/scripts/review-task-preflight.sh <task-id>`. It exits non-zero if the id is missing, malformed, doesn't resolve to a task file (with nearest-match guidance), or the working dir isn't a git repo. On success it reports `TASK_PATH`, `STATUS`, `EPIC`, and `DIFF_PRESENT`.
 
 Apply policy from the preflight output:
 

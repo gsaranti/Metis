@@ -10,7 +10,7 @@ Cascade a detected upstream change through downstream tasks and epics one propos
 
 ## Run the preflight
 
-Invoke `.metis/scripts/sync-preflight.sh` first.
+Invoke `${CLAUDE_PLUGIN_ROOT}/.metis/scripts/sync-preflight.sh` first.
 
 - Exit non-zero: surface the script's stderr verbatim and stop.
 - Summary `status=no-artifacts`: stop and point at `/metis:generate-tasks` or `/metis:epic-breakdown` — there are no downstream artifacts to cascade against.

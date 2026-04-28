@@ -10,7 +10,7 @@ Graduate a flat-layout project to an epic layout.
 
 ## Preflight
 
-Invoke `.metis/scripts/promote-to-epics-preflight.sh` first. If it exits non-zero, surface its stderr verbatim and stop.
+Invoke `${CLAUDE_PLUGIN_ROOT}/.metis/scripts/promote-to-epics-preflight.sh` first. If it exits non-zero, surface its stderr verbatim and stop.
 
 ## Load
 

@@ -15,7 +15,7 @@ Dispatch the `task-planner` subagent to produce one implementation plan for the 
 
 ## Preflight
 
-Run `.metis/scripts/plan-task-preflight.sh <task-id>`. It exits non-zero if the id is missing, malformed, or doesn't resolve to a task file (with nearest-match guidance — surface and stop). On success it reports `TASK_PATH`, `STATUS`, `EPIC`, and `DEPS_PENDING`.
+Run `${CLAUDE_PLUGIN_ROOT}/.metis/scripts/plan-task-preflight.sh <task-id>`. It exits non-zero if the id is missing, malformed, or doesn't resolve to a task file (with nearest-match guidance — surface and stop). On success it reports `TASK_PATH`, `STATUS`, `EPIC`, and `DEPS_PENDING`.
 
 If `STATUS=done`, ask the user to confirm before dispatching. If `DEPS_PENDING > 0`, surface the count and ask whether to proceed.
 

@@ -26,10 +26,15 @@
 
 set -euo pipefail
 
-# -- locate project root ------------------------------------------------------
+# -- locate plugin root and project root --------------------------------------
+
+# PLUGIN_ROOT is the install directory of the Metis plugin (where this script
+# ships); PROJECT_ROOT is the user's project (where init writes outputs). When
+# Claude Code invokes this script, $PWD is the user's project.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+PROJECT_ROOT="${PWD}"
 cd "$PROJECT_ROOT"
 
 # -- arguments ----------------------------------------------------------------
@@ -134,18 +139,19 @@ splice_block() {
 
 # -- sanity checks ------------------------------------------------------------
 
-[[ -d ".metis" ]] || die ".metis/ not found in $(pwd). Is Metis installed? See the project README."
+CLAUDE_BLOCK_FILE="${PLUGIN_ROOT}/.metis/scripts/claude-block.md"
+GITIGNORE_BLOCK_FILE="${PLUGIN_ROOT}/.metis/scripts/gitignore-block.txt"
 
-CLAUDE_BLOCK_FILE=".metis/scripts/claude-block.md"
-GITIGNORE_BLOCK_FILE=".metis/scripts/gitignore-block.txt"
+[[ -f "$CLAUDE_BLOCK_FILE" ]]    || die "missing block template: $CLAUDE_BLOCK_FILE — Metis plugin install is incomplete."
+[[ -f "$GITIGNORE_BLOCK_FILE" ]] || die "missing block template: $GITIGNORE_BLOCK_FILE — Metis plugin install is incomplete."
 
-[[ -f "$CLAUDE_BLOCK_FILE" ]]    || die "missing block template: $CLAUDE_BLOCK_FILE"
-[[ -f "$GITIGNORE_BLOCK_FILE" ]] || die "missing block template: $GITIGNORE_BLOCK_FILE"
+# Scaffold the project-side .metis/ directory (idempotent).
+mkdir -p .metis
 
 # -- decide whether to populate .metis/config.yaml ---------------------------
 
 CONFIG=".metis/config.yaml"
-CONFIG_TEMPLATE=".metis/config.yaml.template"
+CONFIG_TEMPLATE="${PLUGIN_ROOT}/.metis/config.yaml.template"
 
 existing_name=""
 if [[ -f "$CONFIG" ]] && grep -qE '^name:[[:space:]]*\S' "$CONFIG" 2>/dev/null; then
@@ -172,10 +178,14 @@ fi
 
 # -- metis version + today ----------------------------------------------------
 
-[[ -f ".metis/version" ]] || die "missing .metis/version — Metis distribution is incomplete. Reinstall."
-METIS_VERSION="$(tr -d '[:space:]' < .metis/version)"
-[[ -n "$METIS_VERSION" ]] || die ".metis/version is empty."
+VERSION_FILE="${PLUGIN_ROOT}/.metis/version"
+[[ -f "$VERSION_FILE" ]] || die "missing $VERSION_FILE — Metis plugin install is incomplete."
+METIS_VERSION="$(tr -d '[:space:]' < "$VERSION_FILE")"
+[[ -n "$METIS_VERSION" ]] || die "$VERSION_FILE is empty."
 TODAY="$(date -u +%Y-%m-%d)"
+
+# Stamp the version into the project so .metis/ is self-describing.
+printf '%s\n' "$METIS_VERSION" > .metis/version
 
 # -- write .metis/config.yaml (only when populating) --------------------------
 
@@ -190,6 +200,25 @@ if [[ "$populate_config" -eq 1 ]]; then
   log "Wrote ${CONFIG}."
 else
   log "Preserved existing ${CONFIG}."
+fi
+
+# -- copy project-side framework content from the plugin install -------------
+
+# Skills load `.metis/conventions/X.md` and `.metis/templates/X.md` as
+# project-relative paths, so init copies these from the plugin into the
+# user's project. Idempotent: re-init overwrites with the plugin's current
+# version of each file.
+
+if [[ -d "${PLUGIN_ROOT}/.metis/conventions" ]]; then
+  mkdir -p .metis/conventions
+  cp "${PLUGIN_ROOT}"/.metis/conventions/*.md .metis/conventions/ 2>/dev/null || true
+  log "Updated .metis/conventions/ ($(find .metis/conventions -maxdepth 1 -name '*.md' | wc -l | tr -d ' ') files)."
+fi
+
+if [[ -d "${PLUGIN_ROOT}/.metis/templates" ]]; then
+  mkdir -p .metis/templates
+  cp "${PLUGIN_ROOT}"/.metis/templates/*.md .metis/templates/ 2>/dev/null || true
+  log "Updated .metis/templates/ ($(find .metis/templates -maxdepth 1 -name '*.md' | wc -l | tr -d ' ') files)."
 fi
 
 # -- splice the delimited blocks ---------------------------------------------

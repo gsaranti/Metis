@@ -1,12 +1,12 @@
 ---
 name: init
-description: Finalize project-specific Metis setup. Thin wrapper around .metis/scripts/init.sh — populates .metis/config.yaml, inserts delimited blocks in CLAUDE.md and .gitignore, creates scratch/ starters.
+description: Finalize project-specific Metis setup. Thin wrapper around the plugin's init.sh — populates .metis/config.yaml, copies conventions and templates, inserts delimited blocks in CLAUDE.md and .gitignore, creates scratch/ starters.
 disable-model-invocation: true
 ---
 
 # /metis:init
 
-Run `.metis/scripts/init.sh` and relay its output verbatim. The script handles arguments (`--name=<name>`, `--reinit`), preconditions, interactive prompts, and re-run idempotency; this skill does not intermediate.
+Run `${CLAUDE_PLUGIN_ROOT}/.metis/scripts/init.sh` and relay its output verbatim. The script handles arguments (`--name=<name>`, `--reinit`), preconditions, interactive prompts, and re-run idempotency; this skill does not intermediate.
 
 ## Write scope
 

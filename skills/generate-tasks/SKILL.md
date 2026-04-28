@@ -10,7 +10,7 @@ Generate task files from `BUILD.md` (flat layout) or `epics/<name>/EPIC.md` (epi
 
 ## Preflight
 
-Run `.metis/scripts/generate-tasks-preflight.sh <epic-name>` (omit the argument for flat layout). It exits non-zero on layout mismatch, missing epic, regeneration attempt, or ambiguous layout — surface and stop. On success it reports `TARGET` (where new tasks go) and `SPEC_VERSION` (stamp on each task's `spec_version` frontmatter).
+Run `${CLAUDE_PLUGIN_ROOT}/.metis/scripts/generate-tasks-preflight.sh <epic-name>` (omit the argument for flat layout). It exits non-zero on layout mismatch, missing epic, regeneration attempt, or ambiguous layout — surface and stop. On success it reports `TARGET` (where new tasks go) and `SPEC_VERSION` (stamp on each task's `spec_version` frontmatter).
 
 ## Load
 
