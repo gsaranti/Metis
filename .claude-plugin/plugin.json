@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "description": "Docs-first agentic development framework for Claude Code, targeting large doc-heavy projects where context management across many sessions is the hard problem.",
   "license": "MIT",
-  "author": "George Sarantinos",
+  "author": {
+    "name": "George Sarantinos"
+  },
   "homepage": "https://github.com/gsaranti/Metis",
   "repository": "https://github.com/gsaranti/Metis"
 }
