@@ -24,7 +24,3 @@ _Exit criterion passed: 2026-04-18. Retro written: 2026-04-19._
 ## Task-breakdown lessons
 
 - All three Stripe-integration tasks (`0007`, `0012`, `0014`) undershot because the task files treated "Stripe client is configured" as a precondition rather than part of the work. Next epic with a third-party integration should budget a first task for client plumbing explicitly.
-
-## Scratch promotions
-
-- `scratch/exploration/stripe-test-mode-matrix.md` — became load-bearing during `0014` and will be again for any future Stripe epic. Promote out of `scratch/` before the directory is cleaned.

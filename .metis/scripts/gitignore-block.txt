@@ -3,11 +3,5 @@ scratch/*
 !scratch/CURRENT.md
 !scratch/questions.md
 !scratch/plans/
-!scratch/exploration/
-!scratch/research/
 scratch/plans/*
 !scratch/plans/.gitkeep
-scratch/exploration/*
-!scratch/exploration/.gitkeep
-scratch/research/*
-!scratch/research/.gitkeep

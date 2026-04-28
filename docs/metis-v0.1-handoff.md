@@ -360,7 +360,6 @@ scratch/                   # ephemeral, mostly gitignored
   questions.md             # running Qs for human (committed)
   plans/                   # subagent-produced plans (gitignored)
     0007.md
-  exploration/             # spikes (gitignored)
 
 .metis/                    # framework scaffolding
   config.yaml              # project settings (spec_version, etc.)

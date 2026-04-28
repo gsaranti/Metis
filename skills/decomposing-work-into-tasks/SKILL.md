@@ -25,7 +25,7 @@ When unsure where to slice, look for seams the work already exposes: a module or
 Before adding a unit to the decomposition, check that it belongs in a task file at all. The failure mode on either side is real: fragmenting work that belongs inline, or promoting a question into a task that cannot be implemented.
 
 - **Task vs. checklist item.** A step with no independent acceptance criterion, sharing all its context with a sibling, and worked in the same sitting either way — that is a bullet in a larger task's Expected file changes, not a new task. The test: could this be picked up by a different person in a different session and still make sense?
-- **Task vs. spike.** Exploratory work without a testable outcome — "figure out whether library X meets our needs" — goes in `scratch/exploration/`. When the exploration concludes, it may spawn real tasks; that is how it enters the task system.
+- **Task vs. spike.** Exploratory work without a testable outcome — "figure out whether library X meets our needs" — does not belong in the task system. Spikes live outside Metis (a working branch, a notes file, the user's own conventions); when a spike's outcome justifies tracked work, surface it via `/metis:feature`.
 - **Task vs. decision.** A choice that must be made before work can proceed is a decision, not a task. If you catch yourself writing a unit whose acceptance criterion is "we have decided X," file it as a decision instead, via an open-item resolution or a direct `decisions/` entry.
 - **Task vs. epic.** One unit covering a whole capability ("Implement auth") is an epic in disguise. If the unit reads at capability level and would carry four unrelated surfaces, step back to epic-level decomposition first.
 

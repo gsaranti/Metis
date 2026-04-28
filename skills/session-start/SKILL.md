@@ -26,7 +26,7 @@ In this order:
 - Epics beyond the one the active task lives under.
 - Other task files.
 - `decisions/`, `docs/`.
-- `scratch/plans/`, `scratch/exploration/`.
+- `scratch/plans/`.
 
 ## Write scope
 

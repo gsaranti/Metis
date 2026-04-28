@@ -31,7 +31,7 @@ Before adding a candidate, check that it belongs in an epic at all. The capabili
 - **Epic vs. task cluster.** A candidate whose parts are sequential implementation steps for one narrow behavior — add the table, write the migration, wire the endpoint, tests — is one task or a small task set, not an epic. Epics cluster tasks serving a capability; they are not implementation checklists stretched upward.
 - **Epic vs. foundation.** An epic that exists only to prepare for later epics ("Core Infrastructure," "Shared Platform") becomes a sinkhole with no observable exit. Move the enabling work into the downstream epics that actually need it; a genuinely shared piece can live as a task inside the first epic that uses it.
 - **Epic vs. release window.** Names like "MVP" or "Polish" are time-ordering, not capabilities. A release-window label hides whatever capabilities actually live inside it; decompose those instead.
-- **Epic vs. decision or spike.** Work whose outcome is "we have decided X" or "we have learned whether Y is feasible" is not a capability. A decision belongs in `decisions/`, a spike in `scratch/exploration/` — neither is epic-shaped.
+- **Epic vs. decision or spike.** Work whose outcome is "we have decided X" or "we have learned whether Y is feasible" is not a capability. A decision belongs in `decisions/`; a spike lives outside Metis until its outcome justifies surfacing via `/metis:feature` — neither is epic-shaped.
 
 ## Splitting signals
 

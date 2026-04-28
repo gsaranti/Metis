@@ -72,5 +72,4 @@ The prompt is ephemeral — do not persist it into the retro or any task's Notes
 
 - **Path written** — `epics/<name>/retro.md`.
 - **Block summary** — one line per block noting whether it was populated or left empty.
-- **Scratch promotions flagged** — the inline list from the retro's Scratch promotions block.
 - **Pending follow-ups** — assumptions worth filing as decisions, task-breakdown lessons worth carrying into the next epic. Surfaced as flags, not written.

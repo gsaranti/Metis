@@ -107,12 +107,6 @@ The rules below describe who among Metis's own agents and commands writes to eac
 - **Lifecycle**: written by `/metis:plan-task`; consumed by `/metis:implement-task`; ignored after merge.
 - **User edits**: allowed between plan and implementation — hand-editing the plan is a supported way to redirect the implementer.
 
-### `scratch/exploration/` and `scratch/research/`
-
-- **Writes**: main session or subagents, ad hoc. Gitignored.
-- **Content**: spike code, web-fetch dumps, notes, anything ephemeral. Nothing in here is load-bearing.
-- **User edits**: allowed. `/metis:session-end` and `/metis:epic-retro` flag anything worth promoting out; the user moves it.
-
 ### `.metis/`
 
 - **Writes**: `/metis:init` (and future upgrade commands) writes `.metis/config.yaml`, `.metis/version`, `.metis/MANIFEST.md`, `.metis/conventions/*`, `.metis/templates/*`.

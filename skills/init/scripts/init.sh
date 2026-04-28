@@ -202,8 +202,8 @@ log "Updated .gitignore (delimited block)."
 
 # -- scratch/ scaffolding -----------------------------------------------------
 
-mkdir -p scratch/plans scratch/exploration
-touch scratch/plans/.gitkeep scratch/exploration/.gitkeep
+mkdir -p scratch/plans
+touch scratch/plans/.gitkeep
 
 mkdir -p docs/research
 if [[ ! -f "docs/research/INDEX.md" ]]; then

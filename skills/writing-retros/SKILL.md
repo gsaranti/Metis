@@ -19,13 +19,12 @@ Decisions made during the epic live in `decisions/` and are findable by slug; th
 
 ## Artifact shape
 
-There is no convention file for a retro. Five blocks, each with its own judgment:
+There is no convention file for a retro. Four blocks, each with its own judgment:
 
 - **Estimation accuracy** — per task, not gestalt. One line for every task in the epic, naming the actual-vs-planned shape (time, scope, or complexity) or "tracked as planned."
 - **Replans** — tasks that were rewritten or split mid-flight, each with the task id, the shift, and the signal that would have surfaced it at task-write time. Absent when the breakdown held.
 - **Assumption failures** — starting positions (in `BUILD.md`, in the `EPIC.md`, in a starting decision) that the epic's work proved wrong. One line per, naming the assumption verbatim and the shape the code settled on.
 - **Task-breakdown lessons** — patterns across the epic's tasks: splits that were too large, splits that were too small, dependencies that did not land. Absent when no pattern emerged.
-- **Scratch promotions** — scratch files that became load-bearing mid-epic and should be promoted out of `scratch/`. The retro flags; the user moves them. Absent when no promotions are due.
 
 An empty block is fine. Manufacturing entries to fill each one is the mirror image of absorbing them into gestalt.
 

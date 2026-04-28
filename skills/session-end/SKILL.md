@@ -1,12 +1,12 @@
 ---
 name: session-end
-description: Update scratch/CURRENT.md with the session handoff, prune scratch/questions.md, and flag scratch candidates for promotion.
+description: Update scratch/CURRENT.md with the session handoff and prune scratch/questions.md.
 disable-model-invocation: true
 ---
 
 # /metis:session-end
 
-Close out the session: rewrite `CURRENT.md`, prune `questions.md`, flag scratch promotions.
+Close out the session: rewrite `CURRENT.md`, prune `questions.md`.
 
 ## Preconditions
 
@@ -17,7 +17,6 @@ Close out the session: rewrite `CURRENT.md`, prune `questions.md`, flag scratch 
 - The current `scratch/CURRENT.md`.
 - `scratch/questions.md`.
 - The session's in-flight state from context — the active task, what just happened, what got decided, what is queued.
-- `scratch/exploration/` — filenames and first paragraphs only, to spot promotion candidates.
 
 ## Do not load
 
@@ -42,8 +41,6 @@ Close out the session: rewrite `CURRENT.md`, prune `questions.md`, flag scratch 
 - `decisions/`.
 - `docs/`.
 
-Do not move scratch files out of `scratch/`. Promotion is flagged in the handoff, not performed inline.
-
 ## Invocation prompt
 
 Follow the command-prompts convention in `.metis/conventions/command-prompts.md`. The four rules (augment / flag scope expansion / acknowledge use / resolve named skills) apply; acknowledge prompt usage in the return per rule 3.
@@ -54,6 +51,5 @@ The prompt is ephemeral — do not persist it into `CURRENT.md` or `questions.md
 
 - **Handoff summary** — the four blocks of the new `CURRENT.md`, rendered inline.
 - **Questions delta** — what was pruned from `questions.md`, what was added.
-- **Promotion candidates** — scratch files flagged in *Where to start*. One line per.
 - **Pending decisions** — any architectural choice made this session that has not yet been filed. Surfaced as a flag, not written.
 - **Next step** — typically the session ends here.
