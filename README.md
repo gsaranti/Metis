@@ -77,7 +77,7 @@ Metis ships as a Claude Code plugin:
 
 ```
 /plugin marketplace add gsaranti/Metis
-/plugin install metis@metis-marketplace
+/plugin install metis@metis-dev
 ```
 
 Then run `/metis:init` once per project to scaffold project-specific files (config, scratch starters, the `docs/research/` index, delimited blocks in `CLAUDE.md` and `.gitignore`). Init is non-destructive — existing files are only modified between Metis's delimiters.
