@@ -34,13 +34,13 @@ Otherwise, proceed with the Flow against the reported candidate set.
 ## Read first
 
 - `references/propagating-spec-changes.md` — read before proposing edits.
-- `../../references/writing-decisions.md` — invoked per accepted substantive change and per accepted upstream `BUILD.md` edit.
+- `${CLAUDE_PLUGIN_ROOT}/references/writing-decisions.md` — invoked per accepted substantive change and per accepted upstream `BUILD.md` edit.
 
 ## Flow
 
 1. **Classify.** For each candidate in the scan output, classify the upstream change as cosmetic or substantive. Cosmetic changes propagate via a single bulk-approval prompt; substantive changes walk one at a time. When unsure, err substantive.
 2. **Walk the substantive set.** For each substantive candidate: show the user the upstream change, the artifact, and the proposed edit. Apply status rules — `done` tasks get a new task or a superseding decision, never in-place; `in-progress` needs explicit confirmation; `pending` / `in-review` edits land with approval. Collect any `BUILD.md` surfaces for step 5.
-3. **Record.** Per accepted substantive change (and per accepted cosmetic *batch*), write a `decisions/` entry via `../../references/writing-decisions.md` naming the upstream change, the downstream artifacts edited, and the consequences.
+3. **Record.** Per accepted substantive change (and per accepted cosmetic *batch*), write a `decisions/` entry via `${CLAUDE_PLUGIN_ROOT}/references/writing-decisions.md` naming the upstream change, the downstream artifacts edited, and the consequences.
 4. **Bump baselines.** When a task absorbs a substantive edit (or is inspected and judged non-edit), bump its `doc_hashes` and, when the upstream change was a `BUILD.md` shift, its `spec_version`.
 5. **Upstream pass.** If the walk collected any `BUILD.md` surfaces, propose each as a `BUILD.md` edit with explicit user approval. Per accepted edit: write the edit, file a `decisions/` entry, and bump the project `spec_version` in `.metis/config.yaml` when the edit was substantive. If the surface is a wholesale `BUILD.md` rewrite rather than a targeted edit, stop and point at `/metis:build-spec` instead.
 6. **Terminate if runaway.** When the cascade would walk an unreasonable number of items, stop and surface upstream.
@@ -61,7 +61,7 @@ Otherwise, proceed with the Flow against the reported candidate set.
 
 ## Invocation prompt
 
-Trailing prompt: see `.metis/conventions/command-prompts.md`.
+Trailing prompt: see `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/command-prompts.md`.
 
 ## Return
 

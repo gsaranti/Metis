@@ -9,7 +9,7 @@ Two failure modes pull against each other. Trusting the description and skipping
 - The user's description, verbatim. It is the intent record and is not paraphrased before it informs the updates.
 - The `git diff` for the relevant range. Default: uncommitted changes plus all commits on the current branch since it diverged from main. On main itself, this collapses to uncommitted changes only. The description can override — *"since commit abc123"* widens, *"in commit abc123"* narrows.
 
-Load `.metis/conventions/task-format.md` on demand when shaping a Notes append or a retroactive task, `.metis/conventions/frontmatter-schema.md` on demand for `status` transitions, and `.metis/conventions/decision-format.md` on demand only when the diff triggers a decision.
+Load `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/task-format.md` on demand when shaping a Notes append or a retroactive task, `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/frontmatter-schema.md` on demand for `status` transitions, and `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/decision-format.md` on demand only when the diff triggers a decision.
 
 ## Reading the description and the diff
 
@@ -37,7 +37,7 @@ When the check finds daylight, the proposal names each criterion's state — evi
 
 Split, merge, and add are description-driven, but each is checked against the diff before it lands.
 
-- **Split.** The user names the split ("0024 I split into 0024 and 0027 — the HTML template grew bigger than expected"). Confirm the diff's surfaces cluster into the claimed halves; if the second half has no diff signal, the split is a plan rather than a fact, and the new task is written at `pending`. The existing task is rescoped per `.metis/conventions/task-format.md`; its id stays.
+- **Split.** The user names the split ("0024 I split into 0024 and 0027 — the HTML template grew bigger than expected"). Confirm the diff's surfaces cluster into the claimed halves; if the second half has no diff signal, the split is a plan rather than a fact, and the new task is written at `pending`. The existing task is rescoped per `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/task-format.md`; its id stays.
 - **Merge.** Uncommon. Two tasks collapsing into one usually means one supersedes the other — write the superseder, preserve both ids in its Notes so the merged history is recoverable, and do not delete the originals.
 - **Add.** Work named in the description that has no existing task. Written per the retroactive-task shape below; `status` reflects whether the diff evidences completion.
 
@@ -45,7 +45,7 @@ A CRUD call the diff does not support is surfaced upstream rather than landed si
 
 ## Retroactive task when no existing task matches
 
-When the description attributes work to no existing task — either because the invocation named no tasks at all, or because the description mentions unplanned work alongside named tasks — the artifact is one new task, shaped per `.metis/conventions/task-format.md`. What the retroactive case adds on top of the convention is three honesty constraints:
+When the description attributes work to no existing task — either because the invocation named no tasks at all, or because the description mentions unplanned work alongside named tasks — the artifact is one new task, shaped per `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/task-format.md`. What the retroactive case adds on top of the convention is three honesty constraints:
 
 - **Context carries provenance.** The description sits in Context verbatim, prefaced with a one-line note that the work was logged after the fact. Without the preface, a later reader cannot tell a retroactive task from a pre-planned one.
 - **Do not invent what the description did not supply.** Goal restates the description's outcome framing rather than a prospective goal derived from the diff. Acceptance criteria use the description's testable conditions if named; otherwise one placeholder — *"the changes listed below are the intended changes"* — and `### Out of scope` restates the diff's surface boundary rather than inventing new constraints.
@@ -57,4 +57,4 @@ A thin retroactive task told honestly beats a padded one. Inventing a richer Goa
 
 Some diffs touch a structural commitment the task Notes cannot hold. Signals: a boundary crossed (service call turned into a library import, or the inverse); a new component introduced (queue, cache, scheduler, background worker); a schema migration; a removed constraint or relaxed invariant; a cross-module contract changed. When one of those fires, the update proposal includes a decision in addition to the task updates.
 
-The decision's Context pins the upstream trigger — the description passage that named the move and the diff's specific surfaces — and Evidence links the diff range and the task ids that absorbed the work. Decision and Consequences follow `.metis/conventions/decision-format.md`; the judgment this skill carries is the trigger, not the shape of the file.
+The decision's Context pins the upstream trigger — the description passage that named the move and the diff's specific surfaces — and Evidence links the diff range and the task ids that absorbed the work. Decision and Consequences follow `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/decision-format.md`; the judgment this skill carries is the trigger, not the shape of the file.

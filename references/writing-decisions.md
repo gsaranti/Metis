@@ -4,8 +4,8 @@ A decision file is a standing record of a choice that spans epics and sessions. 
 
 ## Read first
 
-- `.metis/conventions/decision-format.md` — the structural spec (filename, section order, sizing). The format is not restated here; read it.
-- `.metis/templates/decision.md` — the skeleton to start from.
+- `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/decision-format.md` — the structural spec (filename, section order, sizing). The format is not restated here; read it.
+- `${CLAUDE_PLUGIN_ROOT}/.metis/templates/decision.md` — the skeleton to start from.
 
 ## Preview before landing
 
@@ -52,5 +52,5 @@ When the file is running long, it is almost always two decisions — split it. A
 
 Two files, both demonstrating shapes the skill wants you to produce. Failure modes are described in the prose above, not kept as separate counter-example files.
 
-- `examples/good-decision.md` — a clean decision. Tight Context naming the options, imperative Decision, concrete Consequences, no Evidence section because it is not needed. **Read this before writing your first decision in a session.**
-- `examples/good-decision-superseding.md` — supersedes the above. Demonstrates the supersede-Context pattern and an Evidence section that earns its keep.
+- `${CLAUDE_PLUGIN_ROOT}/references/examples/good-decision.md` — a clean decision. Tight Context naming the options, imperative Decision, concrete Consequences, no Evidence section because it is not needed. **Read this before writing your first decision in a session.**
+- `${CLAUDE_PLUGIN_ROOT}/references/examples/good-decision-superseding.md` — supersedes the above. Demonstrates the supersede-Context pattern and an Evidence section that earns its keep.

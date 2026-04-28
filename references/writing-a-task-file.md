@@ -4,10 +4,10 @@ A task file is the self-sufficient brief a reader works from. The job of this sk
 
 ## Read first
 
-- `.metis/conventions/task-format.md` — the structural spec (section order, excerpting rule, sizing). Not restated here.
-- `.metis/templates/task.md` — the skeleton.
+- `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/task-format.md` — the structural spec (section order, excerpting rule, sizing). Not restated here.
+- `${CLAUDE_PLUGIN_ROOT}/.metis/templates/task.md` — the skeleton.
 
-Load `.metis/conventions/frontmatter-schema.md` on demand when populating frontmatter or resolving a field question. Use it as a lookup, not required reading.
+Load `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/frontmatter-schema.md` on demand when populating frontmatter or resolving a field question. Use it as a lookup, not required reading.
 
 ## Frontmatter quality
 
@@ -48,4 +48,4 @@ When a task lives under an epic, every reader implicitly loads the parent `EPIC.
 
 ## Examples
 
-- `examples/good-task.md` — a clean mid-sized task that lives under an epic: outcome-framed Goal, excerpted Context with attribution, specific scope boundaries, testable acceptance criteria with evidence, Notes empty. **Read this before writing your first task in a session.**
+- `${CLAUDE_PLUGIN_ROOT}/references/examples/good-task.md` — a clean mid-sized task that lives under an epic: outcome-framed Goal, excerpted Context with attribution, specific scope boundaries, testable acceptance criteria with evidence, Notes empty. **Read this before writing your first task in a session.**

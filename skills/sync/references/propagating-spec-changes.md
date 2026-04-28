@@ -6,8 +6,8 @@ Two failure modes pull against each other. Silent drift leaves downstream artifa
 
 ## Read first
 
-- `.metis/conventions/decision-format.md` — every accepted cascading change produces a decision.
-- `.metis/conventions/task-format.md` — the structural target for downstream task-file edits.
+- `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/decision-format.md` — every accepted cascading change produces a decision.
+- `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/task-format.md` — the structural target for downstream task-file edits.
 
 ## What the change reaches
 
@@ -52,7 +52,7 @@ One decision per accepted cascading change, not one per cascade. The unit is one
 
 Context pins the upstream change to a specific path and passage, or to the `BUILD.md` section that shifted. Decision names the downstream edits the cascade landed — which task files were edited, which `done` tasks spawned superseders or follow-ups, which epic scopes narrowed — as a concrete list, not a summary. Consequences names what this commits the project to that the upstream change alone did not.
 
-The file's shape lives in `.metis/conventions/decision-format.md`; what this skill names is what Context must make legible for a later reader — the upstream change, the candidate set, the classification call, and the specific downstream artifacts that absorbed it.
+The file's shape lives in `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/decision-format.md`; what this skill names is what Context must make legible for a later reader — the upstream change, the candidate set, the classification call, and the specific downstream artifacts that absorbed it.
 
 ## Baseline after edits land
 
@@ -66,4 +66,4 @@ The move is to stop and surface upstream. A partial `BUILD.md` rewrite, a fresh 
 
 ## Examples
 
-- `examples/good-cascade.md` — one doc change propagating across a small mixed batch: a cosmetic batch, a `pending` walked edit, an `in-progress` confirmed edit, a `done` task spawning a superseding decision, and the full decision file the cascade wrote. **Read this before your first cascade in a session.**
+- `${CLAUDE_PLUGIN_ROOT}/skills/sync/references/examples/good-cascade.md` — one doc change propagating across a small mixed batch: a cosmetic batch, a `pending` walked edit, an `in-progress` confirmed edit, a `done` task spawning a superseding decision, and the full decision file the cascade wrote. **Read this before your first cascade in a session.**

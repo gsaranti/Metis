@@ -64,4 +64,4 @@ Short by default — most reviews fit in a page. A review that outgrows the task
 
 ## Examples
 
-- `examples/good-review.md` — a review block for a mid-sized task: per-criterion evidence, one scope-reduction finding, one code-quality nit kept separate, a `reject-with-reasons` verdict. **Read this before your first review in a session.**
+- `${CLAUDE_PLUGIN_ROOT}/references/examples/good-review.md` — a review block for a mid-sized task: per-criterion evidence, one scope-reduction finding, one code-quality nit kept separate, a `reject-with-reasons` verdict. **Read this before your first review in a session.**

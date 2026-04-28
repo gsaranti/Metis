@@ -6,7 +6,7 @@ Two failure modes pull against each other: cutting too fine, so an epic's exit c
 
 ## Read first
 
-- `.metis/conventions/epic-format.md` — what "epic-shaped" means structurally: a single testable exit criterion, capability-level scope, ~300–600 word target per file. The exit-criterion rule is the constraint decomposition has to respect.
+- `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/epic-format.md` — what "epic-shaped" means structurally: a single testable exit criterion, capability-level scope, ~300–600 word target per file. The exit-criterion rule is the constraint decomposition has to respect.
 
 ## Capability, not category
 

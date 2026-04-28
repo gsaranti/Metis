@@ -50,7 +50,7 @@ Write the retro at `epics/<name>/retro.md` after an epic has closed.
 
 ## Invocation prompt
 
-Trailing prompt: see `.metis/conventions/command-prompts.md`.
+Trailing prompt: see `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/command-prompts.md`.
 
 ## Return
 

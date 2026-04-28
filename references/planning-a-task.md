@@ -9,7 +9,7 @@ Two failure modes pull against each other. Over-planning prescribes every keystr
 - The task file being planned, and the source-doc passages behind its `docs_refs`. Re-open the cited sections when a step turns on a passage the task abbreviated.
 - When the task lives under an epic, the parent `EPIC.md`. The plan stays inside the epic's exit criterion; a plan that reaches past it has crossed a task boundary, not a step boundary.
 
-Load `.metis/conventions/task-format.md` on demand when a task-file field question arises. Use it as a lookup, not required reading.
+Load `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/task-format.md` on demand when a task-file field question arises. Use it as a lookup, not required reading.
 
 ## Artifact shape
 
@@ -73,4 +73,4 @@ Short by default — a page or two for a normal task. The diagnostic is whether 
 
 ## Examples
 
-- `examples/good-plan.md` — a clean plan for a mid-sized task: numbered steps with their file changes, a specific verification command, test approach chosen per step, and one named assumption. **Read this before writing your first plan in a session.**
+- `${CLAUDE_PLUGIN_ROOT}/references/examples/good-plan.md` — a clean plan for a mid-sized task: numbered steps with their file changes, a specific verification command, test approach chosen per step, and one named assumption. **Read this before writing your first plan in a session.**

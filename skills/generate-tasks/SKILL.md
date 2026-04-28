@@ -26,8 +26,8 @@ Run `${CLAUDE_PLUGIN_ROOT}/.metis/scripts/generate-tasks-preflight.sh <epic-name
 
 ## Read first
 
-- `../../references/decomposing-work-into-tasks.md` — read before proposing the decomposition.
-- `../../references/writing-a-task-file.md` — read before writing task files.
+- `${CLAUDE_PLUGIN_ROOT}/references/decomposing-work-into-tasks.md` — read before proposing the decomposition.
+- `${CLAUDE_PLUGIN_ROOT}/references/writing-a-task-file.md` — read before writing task files.
 
 ## Two-phase flow
 
@@ -43,7 +43,7 @@ Do not write to `BUILD.md`, `EPIC.md`, `decisions/`, `docs/`, or `scratch/` beyo
 
 ## Invocation prompt
 
-Trailing prompt: see `.metis/conventions/command-prompts.md`.
+Trailing prompt: see `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/command-prompts.md`.
 
 ## Return
 

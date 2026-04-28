@@ -44,7 +44,7 @@ Do not write to `BUILD.md`, `decisions/`, `tasks/`, `epics/`, or `scratch/`.
 
 ## Invocation prompt
 
-Trailing prompt: see `.metis/conventions/command-prompts.md`.
+Trailing prompt: see `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/command-prompts.md`.
 
 ## Return
 

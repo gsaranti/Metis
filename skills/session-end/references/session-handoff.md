@@ -30,4 +30,4 @@ An empty block is fine when there is nothing to report. Manufacturing entries to
 
 ## Examples
 
-- `examples/good-session-handoff.md` — a post-session `CURRENT.md` with the four blocks populated, a pruned open-questions list, and a directive *Where to start*. **Read this before your first handoff in a session.**
+- `${CLAUDE_PLUGIN_ROOT}/skills/session-end/references/examples/good-session-handoff.md` — a post-session `CURRENT.md` with the four blocks populated, a pruned open-questions list, and a directive *Where to start*. **Read this before your first handoff in a session.**

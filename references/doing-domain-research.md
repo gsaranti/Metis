@@ -6,7 +6,7 @@ Two failure modes pull against each other. Underdelivering — three sources, su
 
 ## Read first
 
-- `.metis/conventions/decision-format.md` — when a research finding becomes a project commitment, the decision entry that records it follows this shape. The research note itself does not.
+- `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/decision-format.md` — when a research finding becomes a project commitment, the decision entry that records it follows this shape. The research note itself does not.
 
 ## Scoping the question
 

@@ -28,7 +28,7 @@ Review one diff against one task file's acceptance criteria. Return a verdict wi
 
 ## Read first
 
-`../references/reviewing-against-criteria.md` — read before writing the review.
+`${CLAUDE_PLUGIN_ROOT}/references/reviewing-against-criteria.md` — read before writing the review.
 
 ## Write scope
 
@@ -44,7 +44,7 @@ Review one diff against one task file's acceptance criteria. Return a verdict wi
 
 ## Invocation prompt
 
-Trailing prompt: see `.metis/conventions/command-prompts.md`.
+Trailing prompt: see `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/command-prompts.md`.
 
 ## Return
 

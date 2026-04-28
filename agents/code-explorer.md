@@ -22,7 +22,7 @@ Investigate one question against the repo's source tree. Return a compressed rep
 
 ## Read first
 
-`../references/exploring-code.md` — read before investigating.
+`${CLAUDE_PLUGIN_ROOT}/references/exploring-code.md` — read before investigating.
 
 ## Write scope
 

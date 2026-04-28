@@ -6,9 +6,9 @@ Two failure modes pull against each other: cutting too fine, so sibling tasks sh
 
 ## Read first
 
-- `.metis/conventions/task-format.md` — what "task-shaped" means structurally: single testable outcome, ~400–1200 word target per file, excerpted source context. The sizing target is the constraint decomposition has to respect.
+- `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/task-format.md` — what "task-shaped" means structurally: single testable outcome, ~400–1200 word target per file, excerpted source context. The sizing target is the constraint decomposition has to respect.
 
-Load `.metis/conventions/epic-format.md` on demand when the body of work being decomposed lives inside an epic — the epic's scope and exit criterion bound what belongs in this batch and what belongs elsewhere.
+Load `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/epic-format.md` on demand when the body of work being decomposed lives inside an epic — the epic's scope and exit criterion bound what belongs in this batch and what belongs elsewhere.
 
 ## Where to cut
 

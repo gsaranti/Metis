@@ -26,7 +26,7 @@ Investigate one question against the open web. Write a research note to `docs/re
 
 ## Read first
 
-`../references/doing-domain-research.md` — read before investigating.
+`${CLAUDE_PLUGIN_ROOT}/references/doing-domain-research.md` — read before investigating.
 
 ## Write scope
 
@@ -43,7 +43,7 @@ Investigate one question against the open web. Write a research note to `docs/re
 
 ## Invocation prompt
 
-Trailing prompt: see `.metis/conventions/command-prompts.md`.
+Trailing prompt: see `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/command-prompts.md`.
 
 ## Return
 

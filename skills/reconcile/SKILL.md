@@ -42,7 +42,7 @@ Do not write to `docs/RESOLVED.md`, any source doc under `docs/`, `decisions/`, 
 
 ## Invocation prompt
 
-Trailing prompt: see `.metis/conventions/command-prompts.md`.
+Trailing prompt: see `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/command-prompts.md`.
 
 ## Return
 

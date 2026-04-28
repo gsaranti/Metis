@@ -31,10 +31,10 @@ Run `${CLAUDE_PLUGIN_ROOT}/.metis/scripts/feature-preflight.sh`. It exits non-ze
 
 ## Read first
 
-- `../../references/decomposing-build-into-epics.md` — epic mode, before proposing the new epic.
-- `../../references/writing-an-epic-file.md` — epic mode, before scaffolding the epic.
-- `../../references/decomposing-work-into-tasks.md` — before proposing tasks.
-- `../../references/writing-a-task-file.md` — before writing tasks.
+- `${CLAUDE_PLUGIN_ROOT}/references/decomposing-build-into-epics.md` — epic mode, before proposing the new epic.
+- `${CLAUDE_PLUGIN_ROOT}/references/writing-an-epic-file.md` — epic mode, before scaffolding the epic.
+- `${CLAUDE_PLUGIN_ROOT}/references/decomposing-work-into-tasks.md` — before proposing tasks.
+- `${CLAUDE_PLUGIN_ROOT}/references/writing-a-task-file.md` — before writing tasks.
 
 ## Two-phase flow
 
@@ -57,7 +57,7 @@ Run `${CLAUDE_PLUGIN_ROOT}/.metis/scripts/feature-preflight.sh`. It exits non-ze
 
 ## Invocation prompt
 
-Trailing prompt: see `.metis/conventions/command-prompts.md`.
+Trailing prompt: see `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/command-prompts.md`.
 
 ## Return
 

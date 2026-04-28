@@ -45,7 +45,7 @@ Example shapes:
 ## Read first
 
 - `references/logging-external-work.md` — read before reconciling.
-- `../../references/writing-decisions.md` — invoked only when an architecture-level trigger fires.
+- `${CLAUDE_PLUGIN_ROOT}/references/writing-decisions.md` — invoked only when an architecture-level trigger fires.
 
 ## Flow
 
@@ -66,7 +66,7 @@ Example shapes:
 
 ## Invocation prompt
 
-The `<description>` argument is both primary input and a command prompt under `.metis/conventions/command-prompts.md`. Durable — see Write scope for where it lands.
+The `<description>` argument is both primary input and a command prompt under `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/command-prompts.md`. Durable — see Write scope for where it lands.
 
 ## Return
 

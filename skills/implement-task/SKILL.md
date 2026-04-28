@@ -45,8 +45,8 @@ If the brief is not enough to implement the task, surface the gap rather than wi
 
 ## Read first
 
-- `../../references/planning-a-task.md` — load when `PLAN_EXISTS=no`.
-- `../../references/honest-scope-reporting.md` — read before writing the closing Notes block.
+- `${CLAUDE_PLUGIN_ROOT}/references/planning-a-task.md` — load when `PLAN_EXISTS=no`.
+- `${CLAUDE_PLUGIN_ROOT}/references/honest-scope-reporting.md` — read before writing the closing Notes block.
 
 ## Write scope
 
@@ -64,14 +64,14 @@ If the brief is not enough to implement the task, surface the gap rather than wi
 
 ## Invocation prompt
 
-Trailing prompt: see `.metis/conventions/command-prompts.md`.
+Trailing prompt: see `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/command-prompts.md`.
 
 ## Closing the implementation
 
 Before returning:
 
 1. Run the task's verification command (or the plan's, if one was produced). Paste the actual output into Notes — not a claim of what it said.
-2. Append a Notes block: what was built, the scope report (per `../../references/honest-scope-reporting.md`), any divergence from the plan, and the rule-3 prompt-usage acknowledgment if applicable.
+2. Append a Notes block: what was built, the scope report (per `${CLAUDE_PLUGIN_ROOT}/references/honest-scope-reporting.md`), any divergence from the plan, and the rule-3 prompt-usage acknowledgment if applicable.
 3. Transition `status` to `in-review`. Do not set `done`; that's the reviewer's call.
 
 ## Return

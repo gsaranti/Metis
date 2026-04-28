@@ -2,6 +2,27 @@
 
 All notable changes to Metis are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/), versioning follows [SemVer](https://semver.org/).
 
+## [0.1.2] — 2026-04-28
+
+Hotfix release. Plugin-root references, conventions, templates, and examples didn't load under Claude Code's plugin distribution because `../../references/X.md`, `../references/X.md`, and `.metis/conventions/X.md` were resolving against the user's project (where they don't exist) instead of the plugin install.
+
+### Fixed
+
+- All plugin-side content paths in skills, subagents, and references now use `${CLAUDE_PLUGIN_ROOT}/...` so they resolve against the plugin install:
+  - SKILL → reference loads
+  - Subagent → reference loads
+  - Reference → convention loads
+  - Reference → template loads
+  - Reference → example loads
+- `init.sh` no longer copies conventions, templates, or references into the user's project — that content stays in the plugin install and is referenced by absolute path. The user's `.metis/` is now minimal: `config.yaml`, `version`, `MANIFEST.md`.
+
+### Changed
+
+- `walk-open-items` auto-land threshold tightened. The previous "agent lands local items" rule was generalizing too liberally to API contracts, validation behavior, and cache strategies. Default is now "ask"; auto-land is reserved for filling in a specific value within a shape the corpus has already committed to.
+- `walk-open-items` SKILL gained an explicit "Pacing" section requiring per-item user input rather than chaining items together.
+
+[0.1.2]: https://github.com/gsaranti/Metis/releases/tag/v0.1.2
+
 ## [0.1.1] — 2026-04-28
 
 Hotfix release. v0.1.0 didn't actually work post-install; v0.1.1 does.

@@ -36,7 +36,7 @@ Render a scope report against recent work — what was skipped, deferred, stubbe
 
 ## Read first
 
-- `../../references/honest-scope-reporting.md` — read before rendering the list.
+- `${CLAUDE_PLUGIN_ROOT}/references/honest-scope-reporting.md` — read before rendering the list.
 
 ## Write scope
 
@@ -52,11 +52,11 @@ Render a scope report against recent work — what was skipped, deferred, stubbe
 
 ## Invocation prompt
 
-Trailing prompt: see `.metis/conventions/command-prompts.md`.
+Trailing prompt: see `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/command-prompts.md`.
 
 ## Return
 
-- **Report** per `../../references/honest-scope-reporting.md`.
+- **Report** per `${CLAUDE_PLUGIN_ROOT}/references/honest-scope-reporting.md`.
 - **Notes append** — path when a report was appended to a task's Notes.
 - **Next step** — depends on findings:
   - Empty report — `/metis:review-task <id>` or merge.

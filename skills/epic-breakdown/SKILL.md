@@ -24,13 +24,13 @@ Run `${CLAUDE_PLUGIN_ROOT}/.metis/scripts/epic-breakdown-preflight.sh` before dr
 
 ## Read first
 
-- `../../references/decomposing-build-into-epics.md` — read before proposing the epic set.
-- `../../references/writing-an-epic-file.md` — read before scaffolding files.
+- `${CLAUDE_PLUGIN_ROOT}/references/decomposing-build-into-epics.md` — read before proposing the epic set.
+- `${CLAUDE_PLUGIN_ROOT}/references/writing-an-epic-file.md` — read before scaffolding files.
 
 ## Two-phase flow
 
 1. **Propose.** Surface the proposed epic list with name, one-line capability, one-line exit criterion, and `depends_on` where applicable. Wait for user approval or redirection before writing anything.
-2. **Scaffold.** On approval, create `epics/NNN-kebab-name/` for each, with `EPIC.md` populated per `../../references/writing-an-epic-file.md`. Do not create `tasks/` subdirectories.
+2. **Scaffold.** On approval, create `epics/NNN-kebab-name/` for each, with `EPIC.md` populated per `${CLAUDE_PLUGIN_ROOT}/references/writing-an-epic-file.md`. Do not create `tasks/` subdirectories.
 
 ## Write scope
 
@@ -40,7 +40,7 @@ Do not write to `BUILD.md`, `decisions/`, `docs/`, `tasks/`, or `scratch/`.
 
 ## Invocation prompt
 
-Trailing prompt: see `.metis/conventions/command-prompts.md`.
+Trailing prompt: see `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/command-prompts.md`.
 
 ## Return
 

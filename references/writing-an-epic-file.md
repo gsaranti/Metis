@@ -6,10 +6,10 @@ Two failure modes pull against each other: an epic that reads like a task list, 
 
 ## Read first
 
-- `.metis/conventions/epic-format.md` — the structural spec (section order, sizing target, exit-criterion discipline). Not restated here.
-- `.metis/templates/epic.md` — the skeleton.
+- `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/epic-format.md` — the structural spec (section order, sizing target, exit-criterion discipline). Not restated here.
+- `${CLAUDE_PLUGIN_ROOT}/.metis/templates/epic.md` — the skeleton.
 
-Load `.metis/conventions/frontmatter-schema.md` on demand when populating frontmatter or resolving a field question. Use it as a lookup, not required reading.
+Load `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/frontmatter-schema.md` on demand when populating frontmatter or resolving a field question. Use it as a lookup, not required reading.
 
 ## Frontmatter quality
 
@@ -52,4 +52,4 @@ Take the next unused epic id (id format and gap rules live in the convention). P
 
 ## Examples
 
-- `examples/good-epic.md` — a clean mid-sized epic: outcome-framed goal, capability-level scope, one testable exit criterion, Notes empty. **Read this before writing your first epic in a session.**
+- `${CLAUDE_PLUGIN_ROOT}/references/examples/good-epic.md` — a clean mid-sized epic: outcome-framed goal, capability-level scope, one testable exit criterion, Notes empty. **Read this before writing your first epic in a session.**

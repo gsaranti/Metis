@@ -27,7 +27,7 @@ Read one task file. Produce one plan. Return a summary plus any ambiguities the 
 
 ## Read first
 
-`../references/planning-a-task.md` — read before drafting the plan.
+`${CLAUDE_PLUGIN_ROOT}/references/planning-a-task.md` — read before drafting the plan.
 
 ## Write scope
 
@@ -43,7 +43,7 @@ Read one task file. Produce one plan. Return a summary plus any ambiguities the 
 
 ## Invocation prompt
 
-Trailing prompt: see `.metis/conventions/command-prompts.md`.
+Trailing prompt: see `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/command-prompts.md`.
 
 ## Return
 
