@@ -16,4 +16,4 @@ This project uses Metis — a docs-first toolset for keeping a project's intent,
 - Subagents write only to their assigned task file.
 - Decisions go in `decisions/` (append-only, never edited in place).
 
-**Conventions** (on-disk formats) live in `.metis/conventions/`. **Command-register skills** live at `.claude/skills/metis/metis-<name>/SKILL.md`; type `/metis:` to see the set.
+**Conventions** (on-disk formats) live in `.metis/conventions/`. Type `/metis:` to see the available commands.
