@@ -73,19 +73,11 @@ The load-bearing opinions. Everything else is convention that can flex.
 
 ## Installation
 
-Metis ships as a Claude Code plugin. Two install paths:
-
-**Via the marketplace** (recommended if you might want other plugins from the same author):
+Metis ships as a Claude Code plugin:
 
 ```
 /plugin marketplace add gsaranti/Metis
 /plugin install metis@metis-marketplace
-```
-
-**Direct install:**
-
-```
-/plugin install gsaranti/Metis
 ```
 
 Then run `/metis:init` once per project to scaffold project-specific files (config, scratch starters, the `docs/research/` index, delimited blocks in `CLAUDE.md` and `.gitignore`). Init is non-destructive — existing files are only modified between Metis's delimiters.
