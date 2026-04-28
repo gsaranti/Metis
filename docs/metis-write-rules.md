@@ -10,19 +10,25 @@ Metis's value is that a fresh agent can read on-disk state and know where the pr
 
 ## Layer responsibilities
 
-Metis is built in three conceptual layers — skills, commands, and conventions — with a strict one-way dependency: **command → skill → convention**. Subagents are a variant of the command layer. Each layer has a distinct kind of content; keeping them separate is what lets the framework scale without drift.
+Metis is built in three conceptual layers — skills, references, and conventions — with a strict one-way dependency: **skill → reference → convention**. Subagents are a variant of the skill layer. Each layer has a distinct kind of content; keeping them separate is what lets the framework scale without drift.
 
-**File layout as of the skills-format migration.** Both layers live as SKILL.md files under `.claude/skills/metis/<name>/`. Command-register skills sit at `.claude/skills/metis/metis-<name>/SKILL.md` — the `metis-` prefix on the directory makes the top-level commands visually distinct from the teaching skills they call — and carry `name: metis:<name>` in frontmatter (so `/metis:plan-task` resolves against `.claude/skills/metis/metis-plan-task/SKILL.md`). Teaching-register skills sit at `.claude/skills/metis/<skill-name>/SKILL.md` with no prefix, and carry a bare `name:` (e.g. `name: planning-a-task`). Both set `disable-model-invocation: true` — command-register skills because the user is the one who types the slash form; teaching-register skills because they are a library dispatched by commands, not ambient helpers that auto-trigger on conversation cues. The distinction between the two registers is content; the `metis-` directory prefix is a filesystem-readable hint to the same distinction. See Refinement 12 in the handoff for the reasoning; `.claude/commands/` is accepted but no longer used by Metis itself.
+**File layout.** Skills are the user-invokable commands at `.claude/skills/metis/<name>/SKILL.md` with `name: <name>` in frontmatter (Claude Code's plugin namespace prepends `metis:`, so `/metis:plan-task` resolves against `.claude/skills/metis/plan-task/SKILL.md`). References are markdown documents skills load at runtime by file path; they are not first-class skills. Single-caller references live at `.claude/skills/metis/<primary>/references/<name>.md`; multi-caller and subagent-only references live at the plugin-root `references/<name>.md`. Subagents live at `.claude/agents/metis/<name>.md` in Claude Code's subagent format. See Refinement 14 in the handoff for the reasoning behind dropping the teaching-register skill layer.
 
-**Skills own the artifact.** A teaching-register skill is artifact-shaped teaching — what makes a good X, when to split, how sections should read, which conventions to consult. The register is descriptive. A skill names the *kinds* of inputs the artifact requires ("a body of work plus the source docs it references") but does not prescribe specific files, loading sequence, or session orchestration. Skills reference conventions; skills do not reference other skills; skills do not carry routing metadata.
+**Skills own the turn.** A skill's SKILL.md is invocation-shaped orchestration — argument parsing, filesystem-state checks (does the project have an `epics/` directory? a flat `tasks/`? neither?), error messages on mismatch, the specific load list for this invocation, subagent dispatch if any, invocation-prompt handling, write scope and confirmation/preview flows, and the output format back to the user. The register is directive. Skills load references by file path rather than inlining their content.
 
-**Commands own the turn.** A command-register skill is invocation-shaped orchestration — argument parsing, filesystem-state checks (does the project have an `epics/` directory? a flat `tasks/`? neither?), error messages on mismatch, the specific load list for this invocation, subagent dispatch if any, invocation-prompt handling, write scope and confirmation/preview flows, and the output format back to the user. The register is directive. Commands invoke teaching-register skills by reference rather than inlining their content.
+**References own the artifact.** A reference is artifact-shaped teaching — what makes a good X, when to split, how sections should read, which conventions to consult. The register is descriptive. A reference names the *kinds* of inputs the artifact requires ("a body of work plus the source docs it references") but does not prescribe specific files, loading sequence, or session orchestration. References cite conventions; references do not reference other references; references do not carry routing metadata.
 
-**Subagents are scoped commands.** A subagent's system prompt is a command that runs in a fresh context window with restricted tools. Same layer, same rules: invoke skills by reference; name specific inputs and flow; do not teach artifact shape. Subagents live at `.claude/agents/metis/<name>.md` rather than under the skills tree; their file format is the Claude Code subagent format, not SKILL.md.
+**Subagents are scoped skills.** A subagent's system prompt is the skill equivalent that runs in a fresh context window with restricted tools. Same layer, same rules: load references by path; name specific inputs and flow; do not teach artifact shape. Subagents live at `.claude/agents/metis/<name>.md`; their file format is the Claude Code subagent format, not SKILL.md.
 
-**Conventions own the on-disk format.** Section order, filename rules, frontmatter schema. Conventions are static reference; they do not reach upward into skill or command behavior.
+**Conventions own the on-disk format.** Section order, filename rules, frontmatter schema. Conventions are static reference; they do not reach upward into skill or reference behavior.
 
-The one-way rule is what keeps the split honest: a teaching skill that starts naming specific files is drifting into command territory; a command that starts teaching section structure is drifting into skill territory. When content fits none of the layers cleanly, it usually belongs in a command prompt — which is allowed to be directive about a specific turn.
+**Path conventions for loading references:**
+
+- From a skill at `skills/<primary>/SKILL.md` to its own per-primary reference: `references/<name>.md`
+- From a skill at `skills/<primary>/SKILL.md` to a plugin-root reference: `../../references/<name>.md`
+- From a subagent at `agents/<name>.md` to a plugin-root reference: `../references/<name>.md`
+
+The one-way rule is what keeps the split honest: a reference that starts naming specific files is drifting into skill territory; a skill that starts teaching section structure is drifting into reference territory. When content fits none of the layers cleanly, it usually belongs inline in the skill — which is allowed to be directive about a specific turn.
 
 ## File-by-file write permissions
 
@@ -115,7 +121,7 @@ The rules below describe who among Metis's own agents and commands writes to eac
 
 ### `.claude/`
 
-- **Writes**: `/metis:init` (and future upgrade commands) writes `.claude/skills/metis/*/SKILL.md` (both command-register and teaching-register skills) and `.claude/agents/metis/*`.
+- **Writes**: `/metis:init` (and future upgrade commands) writes `.claude/skills/metis/*/SKILL.md` (the 21 primary skills, some with `references/` subdirs containing per-primary references) and `.claude/agents/metis/*`. The plugin-root `references/` directory (multi-caller and subagent-only references) is also created.
 - **Subagents**: never.
 - **User edits**: allowed — customizing a command or skill prompt for a specific project is supported. The same "diverges from upstream" caveat applies.
 - **`.claude/commands/`**: Metis writes nothing here as of the skills-format migration. Claude Code still accepts command files there, but Metis's own commands live as command-register SKILL.md files under `.claude/skills/metis/`. See Refinement 12 in the handoff.
@@ -150,12 +156,12 @@ Metis's other load-bearing property is that a fresh session can get oriented wit
 - **Per-command starter** (a command's prompt + the one skill it triggers + any convention that skill references): ≤5k tokens. Under this budget a command is cheap to invoke; over it, every downstream read is taxed.
 - **Any single `SKILL.md`**: ≤~2500 words / ~3k tokens. A longer skill is almost always two skills, or is restating rules that belong in a convention.
 
-### Skill and command reading diet
+### Skill reading diet
 
-- A `SKILL.md` names at most two "read first" files. Anything else is described (with a pointer) and loaded only if the agent decides it needs to.
-- Skills cite conventions, not other skills. Cross-skill knowledge duplication is preferred to cross-skill loading — it keeps each skill's cost predictable.
-- Convention files that run long (`frontmatter-schema.md` in particular) are **never bulk-loaded at runtime**. Skills that need a rule from them quote the specific rule inline.
-- Counter-examples in `examples/` directories are *described* in the parent `SKILL.md`, not prescribed as reads. The one-liner about *what's wrong* carries the educational value; loading the bad file just spends context.
+- A `SKILL.md` names at most two "read first" files (typically references). Anything else is described (with a pointer) and loaded only if the agent decides it needs to.
+- References cite conventions, not other references. Cross-reference knowledge duplication is preferred to cross-reference loading — it keeps each reference's cost predictable.
+- Convention files that run long (`frontmatter-schema.md` in particular) are **never bulk-loaded at runtime**. References that need a rule from them quote the specific rule inline.
+- Counter-examples in `examples/` directories are *described* in the parent skill or reference, not prescribed as reads. The one-liner about *what's wrong* carries the educational value; loading the bad file just spends context.
 
 ### Corpus access patterns
 

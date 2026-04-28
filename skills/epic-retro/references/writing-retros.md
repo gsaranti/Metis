@@ -48,4 +48,4 @@ Short by default — one to two pages. A retro that runs longer is usually narra
 
 ## Examples
 
-- `examples/good-retro.md` — a post-epic retro with per-task estimation entries, one replan with its prevention signal named, one assumption failure against a `BUILD.md` line, one task-breakdown lesson, and one scratch promotion flagged. **Read this before your first retro in a session.**
+- `examples/good-retro.md` — a post-epic retro with per-task estimation entries, one replan with its prevention signal named, one assumption failure against a `BUILD.md` line, and one task-breakdown lesson. **Read this before your first retro in a session.**

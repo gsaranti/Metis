@@ -382,29 +382,32 @@ scratch/                   # ephemeral, mostly gitignored
       task-reviewer.md
   skills/
     metis/
-      # command-register skills (22) — slash-command-invoked, 'name: metis:<x>',
-      # directory prefixed 'metis-' so top-level commands are visually distinct
-      # from the teaching skills they call
-      metis-plan-task/
+      # primary skills (21) — slash-command-invoked, 'name: <command>'.
+      # Single-caller references live in each primary's references/ subdir.
+      plan-task/
         SKILL.md
-      metis-reconcile/
+      build-spec/
         SKILL.md
-      metis-init/
+        references/
+          writing-build-spec.md
+      sync/
         SKILL.md
-      ... (22 command-register skills, all 'metis-<name>/')
-      # teaching-register skills (15) — referenced from commands, no directory prefix
-      writing-a-task-file/
-        SKILL.md
-        examples/
-      reconciling-docs/
-        SKILL.md
-      planning-a-task/
-        SKILL.md
-        examples/
-      ... (15 teaching-register skills)
+        references/
+          propagating-spec-changes.md
+      ... (21 primary skills; 7 carry a references/ subdir)
+
+# Plugin-root references (9) — multi-caller and subagent-only.
+# Lives outside .claude/, at the plugin root.
+references/
+  decomposing-build-into-epics.md
+  writing-a-task-file.md
+  writing-decisions.md
+  planning-a-task.md
+  doing-domain-research.md
+  ... (9 plugin-root references)
 ```
 
-As of Refinement 12, Metis does not populate `.claude/commands/`. Claude Code still supports that directory (and treats a file at `.claude/commands/deploy.md` as equivalent to `.claude/skills/deploy/SKILL.md`), but Metis's commands live as command-register SKILL.md files alongside the teaching skills.
+As of Refinement 12, Metis does not populate `.claude/commands/`. Claude Code still supports that directory (and treats a file at `.claude/commands/deploy.md` as equivalent to `.claude/skills/deploy/SKILL.md`), but Metis's commands live as SKILL.md files. As of Refinement 14, the teaching-register skill layer was dropped — its content became reference markdown documents (per-primary or plugin-root), not skills. Only primary skills register under `.claude/skills/metis/`.
 
 ### Flat-layout variation
 
@@ -431,7 +434,7 @@ Test for placement: *would a user care about this if Metis didn't exist?* If yes
 
 ### Files Metis creates vs modifies
 
-**Creates fresh**: `BUILD.md`, `decisions/`, `tasks/` or `epics/`, `scratch/`, `.metis/`, `.claude/agents/metis/`, `.claude/skills/metis/` (both command-register and teaching-register skills), `docs/SYNTHESIS.md`, `docs/INDEX.md`, `docs/CONTRADICTIONS.md`, `docs/QUESTIONS.md`, `docs/RESOLVED.md`, `docs/research/` (with `INDEX.md`).
+**Creates fresh**: `BUILD.md`, `decisions/`, `tasks/` or `epics/`, `scratch/`, `.metis/`, `.claude/agents/metis/`, `.claude/skills/metis/` (the 21 primary skills, some with `references/` subdirs), the plugin-root `references/` directory (9 multi-caller and subagent-only references), `docs/SYNTHESIS.md`, `docs/INDEX.md`, `docs/CONTRADICTIONS.md`, `docs/QUESTIONS.md`, `docs/RESOLVED.md`, `docs/research/` (with `INDEX.md`).
 
 **Modifies with delimited sections**: `CLAUDE.md`, `.gitignore`.
 
@@ -535,7 +538,7 @@ Twenty-two commands total. All namespaced as `/metis:<name>` to avoid collisions
 | `/metis:epic-retro` | `writing-retros` | — |
 | `/metis:promote-to-epics` | `decomposing-build-into-epics`, `writing-an-epic-file` | — |
 
-Commands are thin wrappers. Skills carry the substance. Subagents provide clean context + tool restrictions for task-level execution. As of Refinement 12, commands and teaching skills share a file format (`.claude/skills/metis/<name>/SKILL.md`); they remain distinct *content registers* — commands own the turn, teaching skills own the artifact — with the invoke-by-reference pattern unchanged.
+Skills are thin wrappers around the references they load. References carry the artifact-shape teaching. Subagents provide clean context + tool restrictions for task-level execution. As of Refinement 14, the teaching-register skill layer was dropped — references are markdown documents loaded by file path, not first-class skills.
 
 ### Error messages on layout mismatch
 
@@ -639,178 +642,42 @@ It also defines the **command-prompts convention** (an optional trailing free-te
 
 ---
 
-## Skills
-
-Fifteen skills at `.claude/skills/metis/<name>/SKILL.md`. Each is focused know-how that embeds judgment, not just rules. Ten of them own their artifact's shape inline (under an `## Artifact shape` H2); the other five point at `.metis/conventions/*.md` for formats shared across multiple skills and commands.
-
-The task-authoring and epic-authoring responsibilities are each split across two skills: one for **decomposition** (how to cut a body of work into the right number of right-sized units) and one for **writing a single artifact** (given one unit, produce the file). The split lets callers load only the half they need — a command that decomposes a BUILD.md and writes twenty task files loads both; a manual user prompt to add a single task loads only the write-half — and keeps each skill's register tight around one kind of judgment.
-
-### `decomposing-work-into-tasks`
-
-**Purpose**: Cut a body of work into the right number of task-shaped units.
-
-**Covers**: Task-shape judgment (task vs. checklist-item / spike / decision / epic), split and merge signals, `depends_on` discipline, flagging structural ambiguity before it bakes into files, batch-level coverage and independence checks.
-
-**Used by**: `/metis:generate-tasks`, `/metis:feature`.
-
-**References**: `.metis/conventions/task-format.md`, `.metis/conventions/epic-format.md`.
-
-### `writing-a-task-file`
-
-**Purpose**: Given one decomposed unit of work, produce a well-formed task file.
-
-**Covers**: Outcome-framed goals, excerpting from source docs (quote rather than link), scope-boundary articulation (explicitly listing what's out), testable acceptance criteria, sizing (~400–1200 words), id assignment, no-duplicating-the-parent discipline when the task lives under an epic, flagging local ambiguity.
-
-**Used by**: `/metis:generate-tasks`, `/metis:feature`.
-
-**References**: `.metis/conventions/task-format.md`, `.metis/conventions/frontmatter-schema.md`.
-
-### `reconciling-docs`
-
-**Purpose**: How to spot contradictions and gray areas across documents and surface them for later resolution.
-
-**Covers**:
-- *Detection*: cross-doc pattern matching (same term used differently), implicit assumption detection, terminology drift, "what the docs don't say" (gaps). Distinguishes contradictions (two specified things disagreeing) from gray areas (one thing underspecified).
-- *Surfacing*: how to populate `docs/CONTRADICTIONS.md` and `docs/QUESTIONS.md` without resolving; citing both sides for contradictions; articulating what's unclear for questions.
-- *Stale detection on re-reconcile*: detect when a captured item's referenced doc has drifted since capture (via `doc_hash`); flag for re-consideration rather than silent drop.
-
-**Used by**: `/metis:reconcile`.
-
-### `walking-open-items`
-
-**Purpose**: How to walk one captured contradiction or question through to resolution.
-
-**Covers**:
-- *Registers*: three ways to respond — two genuine alternatives, one recommendation, or an honest ask when the docs don't imply an answer. A straw-man second option is worse than an honest "I don't have a good read here."
-- *User-in-loop threshold*: architectural resolutions (BUILD.md-shaping, epic-spanning) need the user; local details (error codes, log field names) can be landed by the agent with the doc update and pointer making the choice legible.
-- *Source-doc update*: the resolution's substance lives in the updated source doc, not in the pointer.
-- *Pointer shape*: minimal `docs/RESOLVED.md` entry (title, date resolved, one-line summary of the answer written into the doc). `docs/RESOLVED.md` is not read during a walk unless explicitly requested.
-- *Status lifecycle*: `open` / `deferred` / `resolved` / `stale`. Not interchangeable — `deferred` stays open; `stale` means the cite has drifted since capture.
-
-**Used by**: `/metis:walk-open-items`.
-
-### `writing-build-spec`
-
-**Purpose**: How to produce `BUILD.md`.
-
-**Covers**: Scope (3–8 pages), risk-first framing (state the riskiest architectural decision before committing), own-words rule (don't copy-paste from docs), what to excerpt vs summarize, the "first vertical slice" section.
-
-**Used by**: `/metis:build-spec`.
-
-### `decomposing-build-into-epics`
-
-**Purpose**: Cut `BUILD.md` (or an existing flat `tasks/` backlog being promoted) into the right number of capability-sized epics.
-
-**Covers**: Capability-not-category framing ("Users can sign up and log in" not "Auth"), rough targets (~8–15 epics total, enough tasks per epic to justify the directory but no quota), dependency identification, "does this want to split?" heuristics, when to merge, flagging structural ambiguity.
-
-**Used by**: `/metis:epic-breakdown`, `/metis:feature`, `/metis:promote-to-epics`.
-
-**References**: `.metis/conventions/epic-format.md`.
-
-### `writing-an-epic-file`
-
-**Purpose**: Given one decomposed capability, produce a well-formed `EPIC.md`.
-
-**Covers**: Single testable exit criterion (the load-bearing constraint), one-page sizing (~300–600 words), scope vs. out-of-scope articulation, outcome-framed goals, epic naming and directory layout, what belongs in the epic file vs. in a decision vs. in task files.
-
-**Used by**: `/metis:epic-breakdown`, `/metis:feature`, `/metis:promote-to-epics`.
-
-### `planning-a-task`
-
-**Purpose**: How to plan implementation for one task.
-
-**Covers**: Ordered steps, file-level changes, test approach (not forced TDD — when tests-first fits), verification command, flagging ambiguity vs assumptions, when to push back on the task file itself.
-
-**Used by**: `task-planner` subagent.
-
-### `reviewing-against-criteria`
-
-**Purpose**: Reviewing a diff against acceptance criteria.
-
-**Covers**: Pass/fail per criterion with evidence, scope-reduction detection, separating code quality from spec compliance, verdict structure (approve / approve-with-nits / reject-with-reasons), reviewing without the plan (judgment against the task file, not the plan).
-
-**Used by**: `task-reviewer` subagent.
-
-### `writing-decisions`
-
-**Purpose**: Good ADR entries.
-
-**Covers**: Context → decision → consequences structure, when evidence is needed, keeping it one paragraph per section, making decisions findable (filenames, cross-references), when a decision supersedes another.
-
-**Used by**: `/metis:sync`, `/metis:log-work`, and the main session when a doc or `BUILD.md` change warrants a standing record. (Phase 0 walks do not write decisions — see Refinement 4.)
-
-**References**: `.metis/conventions/decision-format.md`.
-
-### `honest-scope-reporting`
-
-**Purpose**: Enumerating what was skipped or reduced.
-
-**Covers**: No-justification rule (just list, don't defend), categories (skipped, deferred, stubbed, handled differently), making it easy for the parent to triage.
-
-**Used by**: `/metis:scope-check`, `/metis:implement-task` (closing scope report).
-
-### `session-handoff`
-
-**Purpose**: Writing useful `CURRENT.md` updates.
-
-**Covers**: What happened (1 paragraph), current state (in-progress/blocked/queued), open questions (move resolved out of `questions.md`, add new), what the next session should start with, what's ready to promote out of `scratch/`.
-
-**Used by**: `/metis:session-end`.
-
-### `writing-retros`
-
-**Purpose**: Honest epic retros.
-
-**Covers**: Estimation accuracy (per-task, not gestalt), replanning reasons (what got replanned and why), assumption failures (Phase 1 assumptions that turned out wrong), task-breakdown lessons, scratch promotions. "For improvement, not reassurance."
-
-**Used by**: `/metis:epic-retro`.
-
-### `propagating-spec-changes`
-
-**Purpose**: How to cascade a source-doc or `BUILD.md` change through `BUILD.md` → epics → tasks without silent drift.
-
-**Covers**: Detecting which downstream artifacts reference a changed doc (via `doc_hash` / `spec_version` on task frontmatter and `docs_refs`); classifying changes as cosmetic/textual vs. substantive (batch cosmetic for bulk approval, walk substantive one at a time); cascade rules by task status (`done` → new task or superseding decision, never in-place; `pending`/`in-review` → edit in place; `in-progress` → confirm before editing); writing decision entries that link the upstream change to each downstream edit; termination rules when the cascade would walk an unreasonable number of items.
-
-**Used by**: `/metis:sync`.
-
-### `logging-external-work`
-
-**Purpose**: How to reconcile code the user wrote outside the Metis workflow against Metis state.
-
-**Covers**: Using `git diff` as the source of truth for what changed; using the user's natural-language description as the source of truth for intent; reconciling the two and flagging daylight; verifying "done" claims against the diff (lightweight review pass); handling task CRUD implied by the description (split/merge/add tasks); detecting architecture-level changes that warrant a decision entry; creating retroactive `done` tasks when no existing task matches.
-
-**Used by**: `/metis:log-work`.
-
-### `doing-domain-research`
-
-**Purpose**: How to investigate a technical question against the open web when the user's docs do not cover it.
-
-**Covers**: Scoping the question into 3–7 sub-questions with observable answers; the source-quality hierarchy (official docs > project source > tested examples > comparative benchmarks > long-form posts > forums > marketing); citation discipline (URL plus retrieval date); surfacing tradeoffs rather than preferences (recommendation goes last); confidence calibration (high / medium / low with calibration-error patterns); anchoring to the project's stated constraints rather than the topic in the abstract; the research note's nine-section shape; the 60-day staleness window.
-
-**Used by**: `domain-researcher` subagent.
-
-### Skill structure
-
-Each skill is a directory:
-
-```
-.claude/skills/metis/writing-a-task-file/
-  SKILL.md              # the skill itself
-  examples/
-    good-task.md        # example of a well-formed task file
-    bad-task-too-big.md # counter-example: task that should be split
-    bad-task-vague.md   # counter-example: task without concrete criteria
-```
-
-Examples earn their keep when prose alone would leave the reader writing a noticeably worse artifact — usually zero or one per skill, occasionally two when they demonstrate materially different structural patterns. Counter-examples live in the SKILL.md prose as one-line failure descriptions, not as files; the full-file version of a failure mode rarely teaches something the one-liner doesn't, and it pays storage and maintenance cost for content nobody should be loading at runtime.
-
-Examples are also the one place where register — terse, declarative, committal prose — transmits to Claude. That's legitimate because register is part of what makes the artifact work; it is not character dressing on top. The discipline: every register choice in an example should be traceable to a property the skill or convention names. A register choice that isn't artifact-justified is leaking character without warrant, and either the example should be revised or the skill should name the property the example was implicitly relying on.
-
-Each skill sets `disable-model-invocation: true` in its frontmatter. Metis skills are a library dispatched by commands (or by explicit user invocation like `/metis:writing-decisions` or an inline reference in the prompt), not ambient helpers that auto-trigger on conversation cues. Two corollaries for skill content: descriptions are a one-line summary of *what the skill teaches*, not an enumeration of who calls it or when to invoke it; and SKILL.md files do not carry a "Used by" section — by the time a reader is inside the file, they are using it, and the callers are already documented in the command prompts and in `docs/metis-write-rules.md`. This keeps the always-on context small, keeps control flow explicit, and keeps SKILL.md content focused on the teaching rather than on routing metadata.
-
-Skills teach what makes the artifact work, not how Claude should behave. Structural advice about the artifact belongs in skills ("a Decision that hedges is a question in disguise — readers can't tell what was decided"); character-shaping advice about Claude does not ("be more committal"). The two can sound adjacent but do different work. This does not rule out judgment content — what makes a good Context section, when to split a file, when something isn't decision-shaped are all load-bearing calls a skill should make — but the judgment is anchored to the artifact's function, not to Claude's voice. If a prospective skill cannot find a structural hook and its content only makes sense as advice about Claude's approach, that content belongs in a command prompt (which is allowed to be directive about a specific turn) or is not skill-shaped. The underlying bet: good user taste plus Claude's default behavior plus Metis structure produces better outputs than a framework that tries to rewrite Claude's character. Metis gives direction, order, and context; it does not adjust personality.
-
----
+## References
+
+References are markdown documents the skills load at runtime via file path. They are not first-class skills — they don't appear in the user's slash-command surface. The content is artifact-shaped teaching: how to write a task file, when to split, how to scope research, etc. See Refinement 14 for the restructure that produced this layer.
+
+Two locations:
+
+- **Per-primary references** (`.claude/skills/metis/<primary>/references/<name>.md`) — used by exactly one primary skill, lives next to it.
+- **Plugin-root references** (`references/<name>.md`) — used by multiple primary skills, or read by a subagent.
+
+### Per-primary references (7)
+
+| Reference | Belongs to | Covers |
+|---|---|---|
+| `writing-build-spec.md` | `/metis:build-spec` | The brief's shape — risk-first framing, own-words rule, first vertical slice, sizing, citing research findings |
+| `walking-open-items.md` | `/metis:walk-open-items` | Walking one item — alternatives/recommendation/ask register, asking-the-user threshold, source-doc update, lifecycle states, dispatching research for technically-researchable questions |
+| `writing-retros.md` | `/metis:epic-retro` | Four retro blocks (estimation, replans, assumption failures, task-breakdown lessons), per-task discipline, sizing |
+| `propagating-spec-changes.md` | `/metis:sync` | Cascade detection, cosmetic-vs-substantive, status-aware rules, decision-per-accepted-change, termination |
+| `reconciling-docs.md` | `/metis:reconcile` | Detection (contradictions vs gray areas), surfacing without resolving, stale detection on re-reconcile |
+| `logging-external-work.md` | `/metis:log-work` | git diff vs description as dual sources, per-task claim types (done/progress/CRUD), retroactive tasks, architecture-trigger heuristics |
+| `session-handoff.md` | `/metis:session-end` | The four blocks of `CURRENT.md`, pruning `questions.md`, sizing |
+
+### Plugin-root references (9)
+
+| Reference | Used by |
+|---|---|
+| `decomposing-build-into-epics.md` | `/metis:epic-breakdown`, `/metis:feature`, `/metis:promote-to-epics` |
+| `decomposing-work-into-tasks.md` | `/metis:generate-tasks`, `/metis:feature` |
+| `writing-a-task-file.md` | `/metis:generate-tasks`, `/metis:feature` |
+| `writing-an-epic-file.md` | `/metis:epic-breakdown`, `/metis:feature`, `/metis:promote-to-epics` |
+| `writing-decisions.md` | `/metis:sync`, `/metis:log-work` |
+| `honest-scope-reporting.md` | `/metis:implement-task`, `/metis:scope-check` |
+| `planning-a-task.md` | `task-planner` subagent, `/metis:implement-task` |
+| `reviewing-against-criteria.md` | `task-reviewer` subagent |
+| `doing-domain-research.md` | `domain-researcher` subagent |
+
+References are loaded by relative file path from the calling SKILL.md or subagent .md. Per-primary uses `references/<name>.md`; plugin-root from a primary skill uses `../../references/<name>.md`; plugin-root from a subagent uses `../references/<name>.md`. The path conventions are documented in `docs/metis-write-rules.md`.
 
 ## Subagents
 
@@ -822,7 +689,7 @@ Two subagents at `.claude/agents/metis/<name>.md`: `task-planner` and `task-revi
 
 **Tools**: `Read`, `Glob`, `Grep`, `Write` (restricted to `scratch/plans/`).
 
-**Uses skills**: `planning-a-task`.
+**Uses reference**: `references/planning-a-task.md` (loaded as `../references/planning-a-task.md` from agents/).
 
 **System prompt covers**:
 - Who they are (fresh context, no parent memory)
@@ -839,7 +706,7 @@ Two subagents at `.claude/agents/metis/<name>.md`: `task-planner` and `task-revi
 
 **Tools**: `Read`, `Glob`, `Grep`, `Bash` (for running `git diff` and tests only, no mutating commands).
 
-**Uses skills**: `reviewing-against-criteria`.
+**Uses reference**: `references/reviewing-against-criteria.md` (loaded as `../references/reviewing-against-criteria.md` from agents/).
 
 **System prompt covers**:
 - Fresh context — the reviewer didn't write the code, has no ego
@@ -857,7 +724,7 @@ Two subagents at `.claude/agents/metis/<name>.md`: `task-planner` and `task-revi
 
 **Tools**: `Read`, `Glob`, `Grep`, `WebSearch`, `WebFetch`, `Write` (restricted to `docs/research/`).
 
-**Uses skills**: `doing-domain-research`.
+**Uses reference**: `references/doing-domain-research.md` (loaded as `../references/doing-domain-research.md` from agents/).
 
 **System prompt covers**:
 - Fresh context with web tools and read-only access to project files passed in
@@ -1500,16 +1367,45 @@ What did not change: `domain-researcher` is the only subagent that dispatches no
 
 The dropped alternative: an early sketch had `/metis:research` as a primary user-invokable command with a Scope-Investigate-Synthesize phase structure and a four-choice menu of follow-ups (cite as-is / file decision / promote / discard). That shape made the user the gate for every research run. The integration-point pattern keeps the gate inside the dispatching skill where the gap was identified, which removes the round-trip and matches the docs-first principle that the framework owns the corpus's completeness.
 
+### Refinement 14 — Teaching skills become references; the secondary-skill layer drops
+
+Refinements 1, 2, and 9 introduced "teaching-register skills" — artifact-shape teaching (writing-a-task-file, planning-a-task, etc.) treated as first-class skills alongside the command-register skills. Refinement 12 then unified the file format: both registers became SKILL.md files under `.claude/skills/metis/<name>/`, distinguished by the `metis-` directory prefix on the command-register set. The conceptual layering held; the on-disk format collapsed cleanly.
+
+The breakage came at packaging time. When Metis is shipped as a Claude Code plugin (per the plugin restructure that preceded this refinement), Claude Code's plugin namespace prepends `metis:` to every skill in `.claude/skills/metis/`. The 16 teaching-register skills surfaced as `/metis:writing-build-spec`, `/metis:walking-open-items`, etc., in the user's slash-command autocomplete. They were invokable from the user's perspective but meaningless without their parent command's context — `disable-model-invocation: true` did not hide them. The framework had two registers of content, but the user-facing surface treated them all as commands.
+
+Resolution: drop the teaching-register skill layer entirely. The artifact-shape content moves into reference markdown documents that the calling skill loads by file path; nothing user-facing changes about the primary command set.
+
+The split:
+
+- **Single-caller references (7)** — moved into the calling primary's `references/` subdirectory at `.claude/skills/metis/<primary>/references/<name>.md`. Locality: the reference lives next to the one skill that uses it.
+- **Multi-caller references (7) + subagent-only references (2)** — moved to a plugin-root `references/<name>.md` directory that is not registered as skills.
+
+Subagent-only references live at the plugin root rather than inside `agents/<name>/` because subagents are single-file `.md` format, not directory format — restructuring `agents/` would risk breaking Claude Code's subagent loader.
+
+Caller updates: `metis:<teaching>` cross-references in 13 primary SKILL.md files and 3 subagent .md files swap for file-path references. The `## Skills` section header in each caller renames to `## Read first` since the section now lists reference docs, not invoked skills.
+
+Path conventions:
+
+- Per-primary, from skills/<primary>/SKILL.md: `references/<name>.md`
+- Plugin-root, from skills/<primary>/SKILL.md: `../../references/<name>.md`
+- Plugin-root, from agents/<name>.md: `../references/<name>.md`
+
+What did not change: the SKILL.md format for the 21 primary skills; the subagent format; the `.metis/conventions/` layer; the invocation-prompt convention; tool restrictions on subagents; the docs-first principle; the drift-detection mechanics.
+
+The dropped alternative: keeping the teaching skills as first-class but adding a Claude Code mechanism to hide them from slash-command autocomplete. No such mechanism is documented; `disable-model-invocation: true` only blocks the model from autonomously triggering, not the user-facing surface. Splitting at the file layer (skills vs. references) is the durable fix.
+
+Net manifest impact: skills drop from 38 (22 command-register + 16 teaching-register) to 21 (just the primary skills, after the various drops in Refinements 13–14). References (16 markdown docs) become a new layer in the Manifest table.
+
 ### Manifest impact of all refinements
 
 | Layer | Before refinements | After refinements |
 |---|---|---|
-| Commands | 20 | 22 (+`/metis:sync`, +`/metis:log-work`; renamed walk-contradictions → walk-open-items) |
-| Skills (teaching + command) | 10 | 38 (16 teaching-register: 15 from Refinements 1–2 and 9 plus `doing-domain-research` from Refinement 13; 22 command-register from Refinement 12 absorbing the commands layer) |
-| Conventions | 5 | 5 (`frontmatter-schema` adds `doc_hashes` + `spec_version`; `write-rules` was relocated to `docs/metis-write-rules.md` as a design-time reference; `command-prompts.md` added in Refinement 12 as the runtime-shipped canonical home for the four invocation-prompt rules) |
+| Skills (primary commands) | 20 | 21 (+`/metis:sync`, +`/metis:log-work`, renamed walk-contradictions → walk-open-items; later audit drops removed `/metis:scratch-cleanup` and `/metis:research`) |
+| References | 0 | 16 (added in Refinement 14 from the dropped teaching-register layer: 7 per-primary + 9 plugin-root) |
+| Conventions | 5 | 5 (`frontmatter-schema` adds `doc_hashes` + `spec_version`; `write-rules` relocated to `docs/metis-write-rules.md`; `command-prompts.md` added in Refinement 12) |
 | Subagents | 3 | 3 (Refinement 10 retires `task-implementer`, leaving `task-planner` and `task-reviewer`; Refinement 13 adds `domain-researcher`. `task-planner` gains the `Task` tool to dispatch `domain-researcher` mid-plan.) |
 
-Refinement 11 (mode removal) makes no change to the file counts above; its effect is on command-level behavior and the removal of the `mode:` field from `.metis/config.yaml`. Refinement 12 (commands merge into SKILL.md format) collapses the commands-layer and teaching-skills-layer into one on-disk directory under `.claude/skills/metis/` while preserving the content-register distinction, and adds `.metis/conventions/command-prompts.md` as the canonical runtime home for the invocation-prompt rules. Refinement 13 (research as internal capability) adds the `domain-researcher` subagent and the `doing-domain-research` teaching skill, plus `docs/research/` as a new on-disk surface scaffolded by `/metis:init`.
+Refinement 11 (mode removal) makes no change to the file counts above; its effect is on command-level behavior and the removal of the `mode:` field from `.metis/config.yaml`. Refinement 12 (commands merge into SKILL.md format) collapsed the commands-layer and teaching-skills-layer into one on-disk directory under `.claude/skills/metis/`. Refinement 13 (research as internal capability) added the `domain-researcher` subagent and the `doing-domain-research` reference (originally a teaching skill, demoted in Refinement 14), plus `docs/research/` as a new on-disk surface scaffolded by `/metis:init`. Refinement 14 (teaching skills become references) drops the teaching-register skill layer entirely; its 16 documents become reference markdown files (7 per-primary, 9 plugin-root).
 
 ---
 
