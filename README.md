@@ -88,7 +88,7 @@ Metis ships as a Claude Code plugin. Two install paths:
 /plugin install gsaranti/Metis
 ```
 
-Then run `/metis:init` once per project to scaffold project-specific files (config, scratch starters, delimited blocks in `CLAUDE.md` and `.gitignore`). Init is non-destructive — it only touches content between Metis's delimiters.
+Then run `/metis:init` once per project to scaffold project-specific files (config, scratch starters, the `docs/research/` index, delimited blocks in `CLAUDE.md` and `.gitignore`). Init is non-destructive — existing files are only modified between Metis's delimiters.
 
 After init, type `/metis:` in Claude Code to see the full skill set.
 
@@ -183,13 +183,16 @@ A project that runs `/metis:generate-tasks` (with no argument) becomes flat. One
 - **`/metis:build-spec`** — produce `BUILD.md` from the reconciled corpus (or from a prompt for prompt-seeded / existing-codebase projects). Risk-first framing, names a first vertical slice.
 - **`/metis:epic-breakdown`** — propose 8–15 epics from `BUILD.md` and scaffold `epics/`. Refuses if a flat `tasks/` already exists.
 - **`/metis:generate-tasks [epic]`** — generate task files. With an epic name, populates `epics/<name>/tasks/`. Without, populates flat `tasks/`. Errors if the argument shape doesn't match what's on disk.
+
+### Phase 2 — Skeleton
+
 - **`/metis:skeleton-plan`** — plan the thinnest end-to-end slice (one route, one screen, one DB write, one passing test). Read-only; you implement the skeleton directly.
 
-### Phase 2 — The engineering loop (optional)
+### Phase 3 — The engineering loop (optional)
 
 - **`/metis:pick-task`** — list unblocked, prioritized tasks with a suggested next.
 - **`/metis:plan-task <id>`** — dispatch the `task-planner` subagent. Produces `scratch/plans/<id>.md`. No code.
-- **`/metis:implement-task <id>`** — implement the task in the main session. Loads only the task file, parent `EPIC.md`, the approved plan if present, and the docs in `docs_refs`. Closes with a scope report.
+- **`/metis:implement-task <id>`** — implement the task in the main session. Loads only the task file, parent `EPIC.md`, the approved plan if present, the docs in `docs_refs`, and the code being changed. Closes with a scope report.
 - **`/metis:review-task <id>`** — dispatch the `task-reviewer` subagent. Reviews the diff against acceptance criteria. Returns `approve` / `approve-with-nits` / `reject-with-reasons` with per-criterion evidence.
 - **`/metis:scope-check`** — enumerate what was skipped, deferred, stubbed, or handled differently. No defenses. Optional probe before review or merge.
 
