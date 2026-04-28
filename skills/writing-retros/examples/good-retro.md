@@ -27,4 +27,4 @@ _Exit criterion passed: 2026-04-18. Retro written: 2026-04-19._
 
 ## Scratch promotions
 
-- `scratch/research/stripe-test-mode-matrix.md` — became load-bearing during `0014` and will be again for any future Stripe epic. Promote out of `scratch/` before the directory is cleaned.
+- `scratch/exploration/stripe-test-mode-matrix.md` — became load-bearing during `0014` and will be again for any future Stripe epic. Promote out of `scratch/` before the directory is cleaned.

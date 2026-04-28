@@ -17,7 +17,7 @@ Close out the session: rewrite `CURRENT.md`, prune `questions.md`, flag scratch 
 - The current `scratch/CURRENT.md`.
 - `scratch/questions.md`.
 - The session's in-flight state from context — the active task, what just happened, what got decided, what is queued.
-- `scratch/exploration/` and `scratch/research/` — filenames and first paragraphs only, to spot promotion candidates.
+- `scratch/exploration/` — filenames and first paragraphs only, to spot promotion candidates.
 
 ## Do not load
 

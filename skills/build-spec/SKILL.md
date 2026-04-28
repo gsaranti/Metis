@@ -25,6 +25,7 @@ Determined from the preflight + the trailing prompt:
 - For docs-first: `docs/SYNTHESIS.md`, `docs/INDEX.md`, and the source docs under `docs/` at the cited passages.
 - For existing-codebase: the relevant code, on demand.
 - Any `decisions/` entries that exist. Grep by slug; do not bulk-read.
+- `docs/research/INDEX.md` and the research notes it points at — for technical commitments the corpus alone does not settle.
 
 ## Do not load
 

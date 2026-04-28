@@ -30,7 +30,7 @@ There is no convention file for `CURRENT.md`. Four blocks, each with its own jud
 
 ## Flagging scratch for promotion
 
-Sessions accumulate scratch — spike notes, exploration logs, research dumps. Most of it is ephemeral and stays where it is. Occasionally a scratch note becomes something other sessions will benefit from — a pattern worth a decision entry, a gotcha worth a Notes append, a sketch that belongs in a doc. The handoff flags those candidates, usually inline in *Where to start* ("promote `scratch/research/webhook-retry-notes.md` before the next retry task"), so a later session can land the move separately. It does not do the move itself — that is a separate piece of work with its own write rules.
+Sessions accumulate scratch — spike notes, exploration logs. Most of it is ephemeral and stays where it is. Occasionally a scratch note becomes something other sessions will benefit from — a pattern worth a decision entry, a gotcha worth a Notes append, a sketch that belongs in a doc. The handoff flags those candidates, usually inline in *Where to start* ("promote `scratch/exploration/cache-strategy-spike.md` before the next cache task"), so a later session can land the move separately. It does not do the move itself — that is a separate piece of work with its own write rules.
 
 The signal: a scratch file that would change how a future session approaches its work, if that session knew to read it. If no future session needs it, it stays in scratch.
 

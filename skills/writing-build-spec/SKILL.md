@@ -49,6 +49,16 @@ A named section in `BUILD.md`. This is what the first implementation session bui
 
 The slice earns its own section because it is the architecture's first real test. Where it can, the slice exercises the risk the brief led with — the first runnable pass then doubles as the first check on the architecture's load-bearing bet. If it cannot be named, the architecture has not committed enough to be built against yet.
 
+## Research, when the corpus does not cover it
+
+Some `BUILD.md` commitments turn on technical choices the user's docs do not specify — a library, an algorithm class, a system pattern. When the synthesis would have to commit to such a choice and the corpus is silent, dispatch the `domain-researcher` subagent automatically to fill the gap. No user gate; the user already approved this style of work by reaching `/metis:build-spec`.
+
+Before dispatching, check `docs/research/INDEX.md`. If a recent note already answers the question, cite the existing note rather than commissioning a new one. If the existing note is older than 60 days and the source landscape may have shifted, dispatch a refresh.
+
+Cite each research note inline in the `BUILD.md` section that turns on it — e.g., `(see docs/research/<slug>-<date>.md)`. Cite once per commitment, not once per paragraph; if the same note backs three sections, each cites it once at the point of commitment. The note's *Recommendation* is what `BUILD.md` commits to.
+
+If the cited note is older than 60 days, surface that beside the citation — `(see docs/research/<slug>-<date>.md; past 60-day staleness window, verify before committing)`.
+
 ## Sizing as feedback
 
 The 3–8 page band fits most projects, but it is guidance, not a ceiling or a floor. A simple build honestly lands under 3 pages; a very large one honestly lands over 8. Padding a thin draft to hit the range, or cutting a necessary one, produces a worse brief, not a better-shaped one.

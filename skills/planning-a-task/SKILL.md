@@ -63,6 +63,14 @@ The bar is *is there evidence the work is substantially done*, not *is every cri
 
 This is the one upstream-facing register the plan carries. When acceptance criteria cannot be made testable without an extra call, when two honest plans could be written depending on a scope detail the task did not fix, when `depends_on` is missing a real blocking prerequisite, when the task bundles two unrelated outcomes, or when making the plan honest would require changes outside the task's scope, the plan's job is to surface the gap upstream — not to widen itself until the ambiguity is hidden inside the steps. A plan that silently resolves a task-file ambiguity is where silent drift starts.
 
+## Research, when the corpus does not cover it
+
+When a plan step would have to commit to a technical choice the task and its source docs do not cover — a specific library, an algorithm, a pattern — dispatch the `domain-researcher` subagent automatically to fill the gap, then plan against the result. No user gate; surfacing as a flagged ambiguity is for things research cannot resolve, not for things research could.
+
+Before dispatching, check `docs/research/INDEX.md`. If a recent note already answers the question, cite the existing note rather than commissioning a new one. If the existing note is older than 60 days and the source landscape may have shifted, dispatch a refresh.
+
+Cite each research note inline in the step it informs — e.g., `(see docs/research/<slug>-<date>.md)`. The plan's commitment is the note's *Recommendation*; the rest of the note is the audit trail. If the cited note is older than 60 days, surface that beside the citation — `(see docs/research/<slug>-<date>.md; past 60-day staleness window)` — so the implementer verifies before committing.
+
 ## Sizing as feedback
 
 Short by default — a page or two for a normal task. The diagnostic is whether each section still earns its place, not a word count. A plan that has outgrown its task file is usually two tasks wearing one plan (return it upstream), or a plan that has started narrating intent between steps rather than sequencing them (trim the prose, keep the steps). A plan that is a single paragraph is almost always missing the verification command or the flags section.

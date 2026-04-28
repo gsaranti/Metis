@@ -32,6 +32,16 @@ Across all three registers, the user is free to supply an answer the agent did n
 
 The test for which register fits: how much does each candidate answer lean on what the docs say vs. on invention? Heavily on docs → recommendation. Evenly between two doc-supported reads → alternatives. On invention → ask.
 
+## Research, when a question is technically researchable
+
+Some questions in `docs/QUESTIONS.md` cannot be resolved from the corpus alone but are not preference calls either — they are factual gaps the open web can settle. Examples: which library handles the case the docs assume, what the standard pattern is for the integration the docs name, what the published benchmarks say about an option the docs propose. When a question is technically researchable, dispatch the `domain-researcher` subagent automatically rather than punting to the user. No user gate; resolving the question with research is the walk's job.
+
+The judgment for *researchable* vs. *user-only*: if the answer would be the same regardless of who you asked (a fact, a benchmark, a published recommendation), it is researchable. If the answer depends on the project's preferences, business constraints, or values the corpus has not stated, it is the user's to make. A library comparison is researchable; *which library do we want* is the user's call.
+
+Before dispatching, check `docs/research/INDEX.md`. If a recent note already answers the question, cite it in the source-doc update. Dispatch a refresh only when the existing note is older than 60 days and the source landscape may have shifted.
+
+When research lands, the source-doc update cites the research note inline — e.g., `(see docs/research/<slug>-<date>.md)` — and the `docs/RESOLVED.md` pointer notes that the resolution turned on research. The substance of the answer goes into the source doc; the research note is the audit trail.
+
 ## Asking the user vs. deciding
 
 Even with a strong recommendation, some resolutions must be confirmed by the user rather than landed by the agent. The threshold is downstream reach: a resolution that shapes `BUILD.md`, spans epics, or forecloses future options is the user's to make. A resolution that specifies a local detail with no architectural spread — a specific error code, a log field name — can be landed by the agent, with the doc update and the `docs/RESOLVED.md` pointer making the choice legible for later review. The tiebreaker: a reader six months later wants the user's name on architectural resolutions; if the doc would read oddly without that fingerprint, ask.

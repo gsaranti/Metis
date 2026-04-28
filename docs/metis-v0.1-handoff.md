@@ -334,6 +334,9 @@ docs/                      # source material
   CONTRADICTIONS.md        # from /metis:reconcile (open + deferred items only)
   QUESTIONS.md             # from /metis:reconcile (open + deferred items only)
   RESOLVED.md              # archive of Phase 0 resolutions (one-line summary pointers)
+  research/                # research notes (auto-dispatched by walk-open-items, build-spec, plan-task)
+    INDEX.md               # lookup table for prior research; 60-day staleness window
+    <slug>-<YYYY-MM-DD>.md  # one note per investigation
   ... (user's existing docs)
 
 decisions/                 # append-only ADRs, span epics
@@ -358,7 +361,6 @@ scratch/                   # ephemeral, mostly gitignored
   plans/                   # subagent-produced plans (gitignored)
     0007.md
   exploration/             # spikes (gitignored)
-  research/                # web fetches (gitignored)
 
 .metis/                    # framework scaffolding
   config.yaml              # project settings (spec_version, etc.)
@@ -430,7 +432,7 @@ Test for placement: *would a user care about this if Metis didn't exist?* If yes
 
 ### Files Metis creates vs modifies
 
-**Creates fresh**: `BUILD.md`, `decisions/`, `tasks/` or `epics/`, `scratch/`, `.metis/`, `.claude/agents/metis/`, `.claude/skills/metis/` (both command-register and teaching-register skills), `docs/SYNTHESIS.md`, `docs/INDEX.md`, `docs/CONTRADICTIONS.md`, `docs/QUESTIONS.md`, `docs/RESOLVED.md`.
+**Creates fresh**: `BUILD.md`, `decisions/`, `tasks/` or `epics/`, `scratch/`, `.metis/`, `.claude/agents/metis/`, `.claude/skills/metis/` (both command-register and teaching-register skills), `docs/SYNTHESIS.md`, `docs/INDEX.md`, `docs/CONTRADICTIONS.md`, `docs/QUESTIONS.md`, `docs/RESOLVED.md`, `docs/research/` (with `INDEX.md`).
 
 **Modifies with delimited sections**: `CLAUDE.md`, `.gitignore`.
 
@@ -514,14 +516,14 @@ Twenty-two commands total. All namespaced as `/metis:<name>` to avoid collisions
 |---|---|---|
 | `/metis:init` | — | — |
 | `/metis:reconcile` | `reconciling-docs` | — |
-| `/metis:walk-open-items` | `walking-open-items` | — |
-| `/metis:build-spec` | `writing-build-spec` | — |
+| `/metis:walk-open-items` | `walking-open-items` | `domain-researcher` (when a question is researchable) |
+| `/metis:build-spec` | `writing-build-spec` | `domain-researcher` (when the corpus has technical gaps) |
 | `/metis:epic-breakdown` | `decomposing-build-into-epics`, `writing-an-epic-file` | — |
 | `/metis:generate-tasks` | `decomposing-work-into-tasks`, `writing-a-task-file` | — |
 | `/metis:feature` | `decomposing-work-into-tasks`, `writing-a-task-file`, `decomposing-build-into-epics`, `writing-an-epic-file` | — |
 | `/metis:skeleton-plan` | — | — |
 | `/metis:pick-task` | — | — |
-| `/metis:plan-task` | — | `task-planner` |
+| `/metis:plan-task` | — | `task-planner` (which dispatches `domain-researcher` when a plan-step gap surfaces) |
 | `/metis:implement-task` | `planning-a-task`, `writing-a-task-file`, `honest-scope-reporting` | — |
 | `/metis:review-task` | — | `task-reviewer` |
 | `/metis:scope-check` | `honest-scope-reporting` | — |
@@ -780,6 +782,14 @@ The task-authoring and epic-authoring responsibilities are each split across two
 
 **Used by**: `/metis:log-work`.
 
+### `doing-domain-research`
+
+**Purpose**: How to investigate a technical question against the open web when the user's docs do not cover it.
+
+**Covers**: Scoping the question into 3–7 sub-questions with observable answers; the source-quality hierarchy (official docs > project source > tested examples > comparative benchmarks > long-form posts > forums > marketing); citation discipline (URL plus retrieval date); surfacing tradeoffs rather than preferences (recommendation goes last); confidence calibration (high / medium / low with calibration-error patterns); anchoring to the project's stated constraints rather than the topic in the abstract; the research note's nine-section shape; the 60-day staleness window.
+
+**Used by**: `domain-researcher` subagent.
+
 ### Skill structure
 
 Each skill is a directory:
@@ -831,6 +841,34 @@ Two subagents at `.claude/agents/metis/<name>.md`: `task-planner` and `task-revi
 **Tools**: `Read`, `Glob`, `Grep`, `Bash` (for running `git diff` and tests only, no mutating commands).
 
 **Uses skills**: `reviewing-against-criteria`.
+
+**System prompt covers**:
+- Fresh context — the reviewer didn't write the code, has no ego
+- What to load (task file including acceptance criteria, parent `EPIC.md` when the task lives under one, git diff, implementer's return notes; `CLAUDE.md` is auto-loaded)
+- What NOT to load (the plan — we want judgment against the task file, not compliance with the plan)
+- Evaluation per acceptance criterion: pass/fail + evidence (file/line citations)
+- Separate code quality from spec compliance
+- Return: verdict (approve / approve-with-nits / reject-with-reasons) + findings
+
+**Why the tool restriction**: read-only means reviewer can't "helpfully fix" — must report findings. Prevents the reviewer from becoming a second implementer.
+
+### `domain-researcher`
+
+**Purpose**: Investigate one technical question against the open web; produce a research note in `docs/research/`.
+
+**Tools**: `Read`, `Glob`, `Grep`, `WebSearch`, `WebFetch`, `Write` (restricted to `docs/research/`).
+
+**Uses skills**: `doing-domain-research`.
+
+**System prompt covers**:
+- Fresh context with web tools and read-only access to project files passed in
+- What to load (the question, sub-questions, the *why* the parent passed through, project constraints, `docs/research/INDEX.md` for prior-art check)
+- What NOT to load (full source-doc corpus, decision entries wholesale, BUILD.md beyond cited section, scratch beyond what the parent passes)
+- Investigation discipline (time-box, cite every claim, surface tradeoffs not preferences, explicit confidence, anchor to the project not the technique)
+- Two write targets: the research note at `docs/research/<slug>-<YYYY-MM-DD>.md` and an append to `docs/research/INDEX.md`
+- Return: note path, top recommendation with confidence, options named, open questions
+
+**Why the subagent shape**: web research generates piles of intermediate noise (every search result, every fetched page). A subagent does the heavy reads in fresh context and returns a compressed note; the parent's context grows by the synthesized artifact, not by everything the agent read to make it. Tool restriction also matters — the researcher has web access but cannot mutate the project corpus.
 
 **System prompt covers**:
 - Fresh context — the reviewer didn't write the code, has no ego
@@ -1436,16 +1474,43 @@ The move also fixed one drift in the mapping: `/metis:implement-task` had listed
 
 Net manifest impact: conventions go from 4 to 5 (adding `.metis/conventions/command-prompts.md` — the canonical home for the four invocation-prompt rules, so runtime artifacts do not reach into `docs/`). Teaching skills and subagents unchanged. 22 command files move from `.claude/commands/metis/*.md` to `.claude/skills/metis/metis-<name>/SKILL.md`. One old skill reference fixed.
 
+### Refinement 13 — Research as an internal capability, not a primary command
+
+The build-spec, plan-task, and walk-open-items flows routinely encounter technical gaps the user's docs do not cover — what library handles a use case, what algorithm class fits, what the standard pattern is for an integration. Without a way to fill those gaps in-loop, three things happen: the agent stalls and asks the user for a technical call they may not know how to make; the agent guesses, producing a brittle commitment; or the brief / plan / question gets vague enough to defer the call ("auth: TBD"). None of those preserve the docs-first property — that the on-disk artifacts stay legible across sessions.
+
+Resolution: research becomes a capability the relevant skills dispatch automatically when needed, not a primary command the user invokes.
+
+The shape:
+
+- **`domain-researcher` subagent.** Heavy web research happens in fresh context with restricted tools (`WebSearch`, `WebFetch`, read-only project access, write restricted to `docs/research/`). Returns a research note with options, tradeoffs, and a recommendation tagged with confidence (high / medium / low).
+- **`doing-domain-research` teaching skill.** The universal *how* — scoping a question into sub-questions, source-quality hierarchy, citation discipline, confidence calibration, the 60-day staleness rule, the nine-section note shape. Read by the subagent.
+- **Three integration points.** Each carries the *when* in its own teaching skill; the action layer just dispatches.
+
+| Action layer | Teaching (carries the *when*) | Dispatches |
+|---|---|---|
+| `/metis:walk-open-items` (command skill) | `walking-open-items` | `domain-researcher` (for questions with factual answers the corpus does not settle) |
+| `/metis:build-spec` (command skill) | `writing-build-spec` | `domain-researcher` (for technical commitments the corpus is silent on) |
+| `task-planner` (subagent) | `planning-a-task` | `domain-researcher` (for plan-step commitments the task and source docs do not cover) |
+
+- **Storage in `docs/research/`, not `scratch/`.** Research becomes first-class source material rather than ephemeral scratch. The trade-off: research notes are subject to the same drift detection as other docs (a note that changes triggers `/metis:sync` cascade if cited downstream), and they survive `scratch/` cleanup unconditionally. `walk-open-items` writes here when resolving a researchable question; the resolution cites the note in `docs/QUESTIONS.md` / `docs/RESOLVED.md`. `build-spec` cites it inline in the relevant `BUILD.md` section. `task-planner` cites it inline at the plan step.
+- **No user gate.** The dispatching skill decides whether a question is research-worthy and dispatches automatically. Surfacing a gap as "ask the user" is reserved for things research cannot resolve — preference calls, business constraints, value judgments. A factual gap that the open web can settle is the dispatcher's job to settle.
+- **Layering discipline.** In each chain, the *teaching skill* owns the research-mechanism content (when to dispatch, what to cite, staleness); the action layer (command skill or subagent) just dispatches per the teaching's guidance. This avoids duplicating research rules across the chain.
+- **`docs/research/INDEX.md`.** Lookup table for prior research, scaffolded by `/metis:init`. One line per note with date, slug, one-line question, and confidence. The dispatching skills check it before dispatching to avoid commissioning a note that already exists; a note older than 60 days flags as a refresh candidate.
+
+What did not change: `domain-researcher` is the only subagent that dispatches no other subagents (`task-planner` adds the `Task` tool to its allowlist so it can dispatch `domain-researcher` mid-plan; `task-reviewer` does not dispatch and is unchanged). The drift-detection mechanics (`/metis:rebaseline`, `/metis:sync`, the `doc_hashes` / `spec_version` baseline fields) treat `docs/research/` notes the same as any other doc citation — research becomes part of the docs-first property rather than an exception to it.
+
+The dropped alternative: an early sketch had `/metis:research` as a primary user-invokable command with a Scope-Investigate-Synthesize phase structure and a four-choice menu of follow-ups (cite as-is / file decision / promote / discard). That shape made the user the gate for every research run. The integration-point pattern keeps the gate inside the dispatching skill where the gap was identified, which removes the round-trip and matches the docs-first principle that the framework owns the corpus's completeness.
+
 ### Manifest impact of all refinements
 
 | Layer | Before refinements | After refinements |
 |---|---|---|
 | Commands | 20 | 22 (+`/metis:sync`, +`/metis:log-work`; renamed walk-contradictions → walk-open-items) |
-| Skills (teaching + command) | 10 | 37 (15 teaching-register from Refinements 1–2 and 9; 22 command-register from Refinement 12 absorbing the commands layer) |
+| Skills (teaching + command) | 10 | 38 (16 teaching-register: 15 from Refinements 1–2 and 9 plus `doing-domain-research` from Refinement 13; 22 command-register from Refinement 12 absorbing the commands layer) |
 | Conventions | 5 | 5 (`frontmatter-schema` adds `doc_hashes` + `spec_version`; `write-rules` was relocated to `docs/metis-write-rules.md` as a design-time reference; `command-prompts.md` added in Refinement 12 as the runtime-shipped canonical home for the four invocation-prompt rules) |
-| Subagents | 3 | 2 (Refinement 10 retires `task-implementer`; `task-planner` and `task-reviewer` remain, both gaining invocation-prompt discipline and loading parent `EPIC.md` when the task lives under one) |
+| Subagents | 3 | 3 (Refinement 10 retires `task-implementer`, leaving `task-planner` and `task-reviewer`; Refinement 13 adds `domain-researcher`. `task-planner` gains the `Task` tool to dispatch `domain-researcher` mid-plan.) |
 
-Refinement 11 (mode removal) makes no change to the file counts above; its effect is on command-level behavior and the removal of the `mode:` field from `.metis/config.yaml`. Refinement 12 (commands merge into SKILL.md format) collapses the commands-layer and teaching-skills-layer into one on-disk directory under `.claude/skills/metis/` while preserving the content-register distinction, and adds `.metis/conventions/command-prompts.md` as the canonical runtime home for the invocation-prompt rules.
+Refinement 11 (mode removal) makes no change to the file counts above; its effect is on command-level behavior and the removal of the `mode:` field from `.metis/config.yaml`. Refinement 12 (commands merge into SKILL.md format) collapses the commands-layer and teaching-skills-layer into one on-disk directory under `.claude/skills/metis/` while preserving the content-register distinction, and adds `.metis/conventions/command-prompts.md` as the canonical runtime home for the invocation-prompt rules. Refinement 13 (research as internal capability) adds the `domain-researcher` subagent and the `doing-domain-research` teaching skill, plus `docs/research/` as a new on-disk surface scaffolded by `/metis:init`.
 
 ---
 

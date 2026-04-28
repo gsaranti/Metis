@@ -26,5 +26,5 @@ Landed task 0042 (signup endpoint, happy path + missing-field 400s). The stub fo
 ## Where to start
 
 1. Pick up `0043` — wire the key source to the env-var reader already in `config/env.py` and drop the hard-coded placeholder.
-2. Before planning `0044`, promote `scratch/research/cookie-attr-matrix.md` — it became load-bearing during review and the next session will want it in a stable place.
+2. Before planning `0044`, promote `scratch/exploration/cookie-attr-matrix.md` — it became load-bearing during review and the next session will want it in a stable place.
 3. If the SameSite question is still open by the time `0044` is planned, surface it for a decision entry; it will shape both tasks.

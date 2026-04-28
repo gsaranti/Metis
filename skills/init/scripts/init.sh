@@ -202,8 +202,26 @@ log "Updated .gitignore (delimited block)."
 
 # -- scratch/ scaffolding -----------------------------------------------------
 
-mkdir -p scratch/plans scratch/exploration scratch/research
-touch scratch/plans/.gitkeep scratch/exploration/.gitkeep scratch/research/.gitkeep
+mkdir -p scratch/plans scratch/exploration
+touch scratch/plans/.gitkeep scratch/exploration/.gitkeep
+
+mkdir -p docs/research
+if [[ ! -f "docs/research/INDEX.md" ]]; then
+  cat > docs/research/INDEX.md <<'EOF'
+# Research index
+
+One line per research note in `docs/research/`. Format:
+
+`<date> | <slug> | <one-line question> | confidence: <high|medium|low>`
+
+Used by the `domain-researcher` subagent (and the skills that dispatch it) to detect prior work on the same topic. The 60-day staleness window is checked against the date column.
+
+---
+
+(no entries yet)
+EOF
+  log "Created docs/research/INDEX.md."
+fi
 
 if [[ ! -f "scratch/CURRENT.md" ]]; then
   cat > scratch/CURRENT.md <<'EOF'
