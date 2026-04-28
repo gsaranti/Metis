@@ -1,14 +1,14 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "metis-marketplace",
-  "version": "0.1.0-dev",
+  "version": "0.1.0",
   "description": "Marketplace listing for the Metis plugin.",
   "homepage": "https://github.com/gsaranti/Metis",
   "plugins": [
     {
       "name": "metis",
       "source": "./",
-      "version": "0.1.0-dev",
+      "version": "0.1.0",
       "description": "Docs-first agentic development framework for Claude Code, targeting large doc-heavy projects where context management across many sessions is the hard problem.",
       "license": "MIT",
       "author": "George Sarantinos",
