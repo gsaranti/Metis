@@ -1,6 +1,5 @@
 {
-  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
-  "name": "metis-marketplace",
+  "name": "metis-dev",
   "version": "0.1.0",
   "description": "Marketplace listing for the Metis plugin.",
   "owner": {
@@ -10,14 +9,11 @@
     {
       "name": "metis",
       "source": "./",
-      "description": "Docs-first agentic development framework for Claude Code, targeting large doc-heavy projects where context management across many sessions is the hard problem.",
+      "description": "Docs-first agentic development framework for Claude Code. Structures the project, not the agent — so context survives across sessions.",
       "version": "0.1.0",
       "author": {
         "name": "George Sarantinos"
-      },
-      "homepage": "https://github.com/gsaranti/Metis",
-      "repository": "https://github.com/gsaranti/Metis",
-      "license": "MIT"
+      }
     }
   ]
 }
