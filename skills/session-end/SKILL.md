@@ -24,9 +24,9 @@ Close out the session: rewrite `CURRENT.md`, prune `questions.md`.
 - `BUILD.md`, `epics/`, `decisions/`.
 - Other plans in `scratch/plans/`.
 
-## Skills
+## Read first
 
-- `metis:session-handoff` — read before writing the handoff.
+- `references/session-handoff.md` — read before writing the handoff.
 
 ## Write scope
 

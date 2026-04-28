@@ -34,9 +34,9 @@ Render a scope report against recent work — what was skipped, deferred, stubbe
 - The plan at `scratch/plans/<id>.md`.
 - Other task files, `BUILD.md`, `decisions/`.
 
-## Skills
+## Read first
 
-- `metis:honest-scope-reporting` — read before rendering the list.
+- `../../references/honest-scope-reporting.md` — read before rendering the list.
 
 ## Write scope
 
@@ -58,7 +58,7 @@ The prompt is ephemeral — do not persist it into the report or the Notes appen
 
 ## Return
 
-- **Report** per `metis:honest-scope-reporting`.
+- **Report** per `../../references/honest-scope-reporting.md`.
 - **Notes append** — path when a report was appended to a task's Notes.
 - **Next step** — depends on findings:
   - Empty report — `/metis:review-task <id>` or merge.

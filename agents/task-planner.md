@@ -27,9 +27,9 @@ If the brief is not enough to plan, flag the task file as underspecified rather 
 - `scratch/CURRENT.md`, `scratch/questions.md`.
 - Other plans in `scratch/plans/`.
 
-## Skills
+## Read first
 
-Invoke `metis:planning-a-task` by reference — read the skill file before drafting the plan.
+`../references/planning-a-task.md` — read before drafting the plan.
 
 ## Write scope
 
@@ -60,4 +60,4 @@ One message back to the parent:
 - **Plan summary** — a short paragraph naming the sequencing at a high level, plus the verification command the plan commits to.
 - **Flagged ambiguities** — items the plan could not settle without guessing. Task-file gaps, source-doc silences, acceptance criteria that cannot be made testable without an additional call. One line per item. Empty list is a one-liner, not a missing section.
 
-**If the precondition check in `metis:planning-a-task` reveals the task appears already done**, no plan file. Return a finding stating the evidence seen — which files already exist, which criteria are visibly met. The parent triages from there. Do not plan against work that is already in the tree.
+**If the precondition check in `../references/planning-a-task.md` reveals the task appears already done**, no plan file. Return a finding stating the evidence seen — which files already exist, which criteria are visibly met. The parent triages from there. Do not plan against work that is already in the tree.

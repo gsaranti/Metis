@@ -42,12 +42,10 @@ Example shapes:
 - `scratch/CURRENT.md`, `scratch/questions.md`.
 - `decisions/` wholesale.
 
-## Skills
+## Read first
 
-Invoke by reference:
-
-- `metis:logging-external-work` — read before reconciling.
-- `metis:writing-decisions` — invoked only when an architecture-level trigger fires. Not every log-work produces a decision.
+- `references/logging-external-work.md` — read before reconciling.
+- `../../references/writing-decisions.md` — invoked only when an architecture-level trigger fires. Not every log-work produces a decision.
 
 ## Flow
 
@@ -56,9 +54,9 @@ Invoke by reference:
 
 ## Write scope
 
-- **Named task files.** Notes appends and `status` transitions per claim type (see `metis:logging-external-work`).
-- **Retroactive task files.** Per `metis:logging-external-work` shape.
-- **CRUD artifacts.** Split, merge, or add per `metis:logging-external-work`.
+- **Named task files.** Notes appends and `status` transitions per claim type (see `references/logging-external-work.md`).
+- **Retroactive task files.** Per `references/logging-external-work.md` shape.
+- **CRUD artifacts.** Split, merge, or add per `references/logging-external-work.md`.
 - **`decisions/YYYY-MM-DD-<slug>.md`** — only when an architecture trigger fires.
 
 ### Do not write to
@@ -70,7 +68,7 @@ If the diff shifts a `BUILD.md` commitment, that is a finding for the decision e
 
 ## Invocation prompt
 
-The `<description>` argument serves as both the command's primary input (passed verbatim to `metis:logging-external-work`) and a command prompt subject to the rules in `.metis/conventions/command-prompts.md` — augment / flag scope expansion / acknowledge use / resolve named skills. Acknowledge use in the return per rule 3.
+The `<description>` argument serves as both the command's primary input (passed verbatim to `references/logging-external-work.md`) and a command prompt subject to the rules in `.metis/conventions/command-prompts.md` — augment / flag scope expansion / acknowledge use / resolve named skills. Acknowledge use in the return per rule 3.
 
 Unlike most invocation prompts, the description is durable: for named-task work it appends to that task's Notes; for unnamed work it becomes the new task's Context.
 

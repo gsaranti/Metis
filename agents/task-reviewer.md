@@ -28,9 +28,9 @@ If a criterion cannot be evaluated from this set, surface a review finding rathe
 - `decisions/`.
 - `scratch/CURRENT.md`, `scratch/questions.md`.
 
-## Skills
+## Read first
 
-Invoke `metis:reviewing-against-criteria` by reference — read the skill file before writing the review.
+`../references/reviewing-against-criteria.md` — read before writing the review.
 
 ## Write scope
 
@@ -64,4 +64,4 @@ One message back to the parent, and the matching review block appended to the ta
 - **Scope reduction findings** — surfaced from the implementer's return.
 - **Code-quality notes** — separate from spec compliance.
 
-**If the precondition check in `metis:reviewing-against-criteria` reveals the diff is empty**, no review block. Return a finding stating what you saw — the branch, the baseline compared against, and the conclusion that there is nothing to judge. Do not manufacture per-criterion results against an absent implementation.
+**If the precondition check in `../references/reviewing-against-criteria.md` reveals the diff is empty**, no review block. Return a finding stating what you saw — the branch, the baseline compared against, and the conclusion that there is nothing to judge. Do not manufacture per-criterion results against an absent implementation.

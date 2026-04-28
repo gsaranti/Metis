@@ -1,0 +1,81 @@
+# Doing domain research
+
+Domain research is filling a technical gap the user's docs do not cover — what library to use, what algorithm class fits, what the standard pattern is for a class of problem. The job of this skill is to do that work in a way the user can actually act on: scoped tightly enough to finish, honest about what it found and what it did not, anchored to the project's stated constraints rather than to the topic in the abstract.
+
+Two failure modes pull against each other. Underdelivering — three sources, surface-level summary, a recommendation a thoughtful guess would have produced — wastes the round-trip and teaches the user that research is a token sink. Overcommitting — picking a winner the evidence does not support, hiding legitimate alternatives, presenting a partial view as definitive — gets technically-sound findings rubber-stamped by users who can't independently judge the call. The first underdelivers; the second oversells.
+
+## Read first
+
+- `.metis/conventions/decision-format.md` — when a research finding becomes a project commitment, the decision entry that records it follows this shape. The research note itself does not.
+
+## Scoping the question
+
+A good research question fits in one sentence and decomposes into three to seven sub-questions that each have observable answers. "What's the best way to detect highlight moments in gameplay video?" is a research question. "What's a good video stack?" is not — it has no observable answer.
+
+The decomposition is the work. *What signals indicate a highlight (audio peaks, scene changes, kill events)? Which detectors run on commodity hardware? Which integrate with the user's frame source? What's the false-positive rate of the published approaches?* Each sub-question has an answer the investigation can land on. A sub-question whose answer is "depends" is not yet decomposed; push one level deeper before searching.
+
+If the parent skill arrives with the question already decomposed, accept the decomposition. If not, decompose first and surface the sub-questions before searching — a decomposition the user disagrees with would have wasted the search anyway.
+
+## Where to look, in order
+
+Source quality is uneven. The order to consult, roughly:
+
+- **Official documentation** of the library, framework, or standard. The canonical reference for what the thing does.
+- **The project's own source** when the doc is thin — the README, the test suite, the example directory. Often more current than the doc.
+- **Tested examples** — established projects using the library. Their `package.json` / `requirements.txt` / equivalent shows version, their integration shows real usage.
+- **Comparative benchmarks** when published by neutral parties. Vendor-published benchmarks of their own product are noted but not load-bearing.
+- **Long-form posts** from practitioners writing about real production use. Skimmable for tradeoffs the docs gloss over.
+- **Forum and Q&A** content (StackOverflow, GitHub issues) for known gotchas. Not for canonical claims.
+- **Marketing pages** as last resort, and only for "is this the right product class" framing — never for capability claims.
+
+A finding that rests entirely on forum posts and blog posts is a finding with weak support. Surface that.
+
+## Citation discipline
+
+Every concrete claim cites a source. Format: a URL plus a retrieval date in parentheses — `https://ffmpeg.org/ffmpeg-filters.html#scenedetect (retrieved 2026-04-27)`. The retrieval date is what makes the claim auditable; the page may have changed since.
+
+A claim with no citation is a guess. A guess in research-register prose is the worst shape — it reads as authoritative because the surrounding text is. When the evidence is weaker than the claim demands, weaken the claim.
+
+## Surfacing tradeoffs, not preferences
+
+For each option, name what it costs and what it forecloses, not whether you "like" it. "FFmpeg's scenedetect is fast and well-tested but only detects visual cuts, missing audio-driven highlights" describes a real tradeoff. "FFmpeg's scenedetect is the best choice" describes a preference dressed as a finding.
+
+The recommendation, if the evidence supports one, is the *last* paragraph, not the first. A reader who reaches it should already understand why they would or wouldn't agree — the recommendation's job is to commit to one, not to persuade.
+
+## Calibrating confidence
+
+Confidence is a separate field from the recommendation. The standards:
+
+- **High** — multiple independent sources agree, the project's constraints are clear and honored, no significant unknowns. The recommendation is what the evidence says.
+- **Medium** — sources mostly agree but disagree on edges, or the project's constraints favor a non-obvious choice, or one significant unknown remains. The recommendation is the best read of the evidence; surface the edge.
+- **Low** — sources conflict materially, or the constraints make the standard answer wrong without a clear alternative, or multiple significant unknowns. The recommendation is the best the investigation could do; the user is the tiebreaker.
+
+A recommendation with high confidence and only one source is calibration error. A recommendation with low confidence and ten sources is also calibration error — the unknowns are doing the work, not the source count.
+
+## Anchoring to the project
+
+The project's constraints are not flavor text. "Open-source only" eliminates proprietary options no matter how well they perform. "Must work offline" eliminates cloud APIs no matter how integrated. A recommendation that ignores a stated constraint is not a research finding — it is the agent overriding the user's call.
+
+When the constraints make the globally-best answer unworkable, say so explicitly and recommend the constrained-best alternative. *"On global merit, X. Given the project's offline constraint, Y is the better fit; X is unavailable."* The user can then weigh whether the constraint is worth the gap.
+
+## The note's shape
+
+A research note has these sections, in order:
+
+- **Question** — verbatim from the parent (or the subagent's restatement if the parent passed it bare).
+- **Why** — the originating context. One paragraph.
+- **Sub-questions** — the decomposition the investigation worked from.
+- **Findings** — per sub-question, what the evidence says, with citations.
+- **Options** — the alternatives considered, each with what it costs and what it forecloses.
+- **Recommendation** — one to two sentences. Names the recommended option and the single biggest factor that would shift it.
+- **Confidence** — high / medium / low, with one line on what would shift it.
+- **Open questions** — anything the investigation could not settle. Empty list is `(none)`, not a missing section.
+- **Sources** — every URL cited above, with retrieval dates.
+
+## Sizing as feedback
+
+A useful research note is one to three pages. Less is usually under-investigation. More is usually scope creep — a question that wanted to be split into multiple notes, or an investigation that wandered into adjacent topics. If the note is past three pages and the recommendation is still hedged, the question was too broad. Split it and re-run.
+
+## Staleness
+
+The same question researched within the last 60 days is the existing note's territory unless the parent asked for a refresh. If sources cited in the existing note have a chance of having changed (a library released a major version, a benchmark was published) and the parent is leaning on the recommendation, surface the staleness explicitly — `"existing note from <date>; libfoo released a 2.0 in <date>; consider refresh"` — and let the parent decide.

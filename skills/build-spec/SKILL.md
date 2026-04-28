@@ -32,9 +32,9 @@ Determined from the preflight + the trailing prompt:
 - `docs/CONTRADICTIONS.md`, `docs/QUESTIONS.md`, `docs/RESOLVED.md`.
 - `tasks/`, `epics/`, `scratch/`.
 
-## Skills
+## Read first
 
-Invoke `metis:writing-build-spec` by reference — read the skill file before drafting.
+`references/writing-build-spec.md` — read before drafting.
 
 ## Write scope
 

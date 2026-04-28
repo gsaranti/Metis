@@ -22,15 +22,15 @@ Run `.metis/scripts/epic-breakdown-preflight.sh` before drafting. It exits non-z
 - Source docs under `docs/`.
 - `decisions/`, `tasks/`, `scratch/`.
 
-## Skills
+## Read first
 
-- `metis:decomposing-build-into-epics` — read before proposing the epic set.
-- `metis:writing-an-epic-file` — read before scaffolding files.
+- `../../references/decomposing-build-into-epics.md` — read before proposing the epic set.
+- `../../references/writing-an-epic-file.md` — read before scaffolding files.
 
 ## Two-phase flow
 
 1. **Propose.** Surface the proposed epic list with name, one-line capability, one-line exit criterion, and `depends_on` where applicable. Wait for user approval or redirection before writing anything.
-2. **Scaffold.** On approval, create `epics/NNN-kebab-name/` for each, with `EPIC.md` populated per `metis:writing-an-epic-file`. Do not create `tasks/` subdirectories.
+2. **Scaffold.** On approval, create `epics/NNN-kebab-name/` for each, with `EPIC.md` populated per `../../references/writing-an-epic-file.md`. Do not create `tasks/` subdirectories.
 
 ## Write scope
 

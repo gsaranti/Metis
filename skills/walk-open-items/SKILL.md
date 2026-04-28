@@ -38,9 +38,9 @@ Non-sequential navigation is first-class — after resolving an out-of-order ite
 - Other open items.
 - `decisions/`, `tasks/`, `epics/`, `scratch/`.
 
-## Skills
+## Read first
 
-Invoke `metis:walking-open-items` by reference — read the skill file before offering options on the first item.
+`references/walking-open-items.md` — read before offering options on the first item.
 
 ## Write scope
 

@@ -29,12 +29,12 @@ Run `.metis/scripts/feature-preflight.sh`. It exits non-zero if `BUILD.md` is mi
 - `decisions/`, `scratch/`.
 - `docs/CONTRADICTIONS.md`, `docs/QUESTIONS.md`, `docs/RESOLVED.md`.
 
-## Skills
+## Read first
 
-- `metis:decomposing-build-into-epics` — epic mode, before proposing the new epic.
-- `metis:writing-an-epic-file` — epic mode, before scaffolding the epic.
-- `metis:decomposing-work-into-tasks` — before proposing tasks.
-- `metis:writing-a-task-file` — before writing tasks.
+- `../../references/decomposing-build-into-epics.md` — epic mode, before proposing the new epic.
+- `../../references/writing-an-epic-file.md` — epic mode, before scaffolding the epic.
+- `../../references/decomposing-work-into-tasks.md` — before proposing tasks.
+- `../../references/writing-a-task-file.md` — before writing tasks.
 
 ## Two-phase flow
 

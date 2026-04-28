@@ -42,11 +42,9 @@ Write the retro at `epics/<name>/retro.md` after an epic has closed.
 - `BUILD.md`.
 - `scratch/CURRENT.md`.
 
-## Skills
+## Read first
 
-Invoke by reference:
-
-- `metis:writing-retros` — read before drafting the retro.
+- `references/writing-retros.md` — read before drafting the retro.
 
 ## Write scope
 

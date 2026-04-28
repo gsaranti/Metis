@@ -23,10 +23,10 @@ Run `.metis/scripts/generate-tasks-preflight.sh <epic-name>` (omit the argument 
 - Other task files.
 - `decisions/`, `scratch/`, `docs/CONTRADICTIONS.md`, `docs/QUESTIONS.md`.
 
-## Skills
+## Read first
 
-- `metis:decomposing-work-into-tasks` — read before proposing the decomposition.
-- `metis:writing-a-task-file` — read before writing task files.
+- `../../references/decomposing-work-into-tasks.md` — read before proposing the decomposition.
+- `../../references/writing-a-task-file.md` — read before writing task files.
 
 ## Two-phase flow
 

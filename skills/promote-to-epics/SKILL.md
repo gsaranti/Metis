@@ -24,17 +24,15 @@ Invoke `.metis/scripts/promote-to-epics-preflight.sh` first. If it exits non-zer
 - `decisions/`, `scratch/`.
 - Source docs directly.
 
-## Skills
+## Read first
 
-Invoke by reference:
-
-- `metis:decomposing-build-into-epics` — read before proposing the groups. The existing task set is the input rather than a `BUILD.md` section.
-- `metis:writing-an-epic-file` — invoked once the grouping is approved, to render each `EPIC.md`.
+- `../../references/decomposing-build-into-epics.md` — read before proposing the groups. The existing task set is the input rather than a `BUILD.md` section.
+- `../../references/writing-an-epic-file.md` — invoked once the grouping is approved, to render each `EPIC.md`.
 
 ## Three-phase flow
 
 1. **Propose.** Group the existing tasks into candidate epics. One line per proposed epic: name, one-line capability, one-line exit criterion, the list of task ids it would own. Flag any tasks the grouping could not place cleanly (ambiguous ownership, work that predates current `BUILD.md` capabilities). Ask for approval before anything moves.
-2. **Scaffold.** On approval, create `epics/NNN-kebab-name/EPIC.md` for each approved group per `metis:writing-an-epic-file`.
+2. **Scaffold.** On approval, create `epics/NNN-kebab-name/EPIC.md` for each approved group per `../../references/writing-an-epic-file.md`.
 3. **Migrate.** Move task files from `tasks/<id>-*.md` to `epics/<name>/tasks/<id>-*.md`. Update each moved task's frontmatter: add `epic: <name>`. Task ids do not change. After all moves are complete, remove the (now empty) `tasks/` directory.
 
 ## Write scope

@@ -24,9 +24,9 @@ Take one question (and the sub-questions the parent already scoped), investigate
 - `BUILD.md` beyond the cited section.
 - `scratch/CURRENT.md`, `scratch/questions.md`, other plans, other research notes' bodies.
 
-## Skills
+## Read first
 
-Invoke `metis:doing-domain-research` by reference — read the skill file before investigating.
+`../references/doing-domain-research.md` — read before investigating.
 
 ## Write scope
 

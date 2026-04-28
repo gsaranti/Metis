@@ -43,10 +43,10 @@ If the brief is not enough to implement the task, surface the gap rather than wi
 - `scratch/CURRENT.md`, `scratch/questions.md`.
 - Other plans in `scratch/plans/`.
 
-## Skills
+## Read first
 
-- `metis:planning-a-task` — load when `PLAN_EXISTS=no`.
-- `metis:honest-scope-reporting` — read before writing the closing Notes block.
+- `../../references/planning-a-task.md` — load when `PLAN_EXISTS=no`.
+- `../../references/honest-scope-reporting.md` — read before writing the closing Notes block.
 
 ## Write scope
 
@@ -75,7 +75,7 @@ The prompt is ephemeral — only its rule-3 acknowledgment (in the Notes append)
 Before returning:
 
 1. Run the task's verification command (or the plan's, if one was produced). Paste the actual output into Notes — not a claim of what it said.
-2. Append a Notes block: what was built, the scope report (per `metis:honest-scope-reporting`), any divergence from the plan, and the rule-3 prompt-usage acknowledgment if applicable.
+2. Append a Notes block: what was built, the scope report (per `../../references/honest-scope-reporting.md`), any divergence from the plan, and the rule-3 prompt-usage acknowledgment if applicable.
 3. Transition `status` to `in-review`. Do not set `done`; that's the reviewer's call.
 
 ## Return
