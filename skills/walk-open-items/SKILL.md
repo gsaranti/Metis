@@ -14,6 +14,10 @@ Run `${CLAUDE_PLUGIN_ROOT}/.metis/scripts/walk-open-items-preflight.sh` before s
 
 If `OPEN + DEFERRED + STALE == 0`, report the empty set and suggest `/metis:build-spec`. Otherwise show the counts and offer four navigation choices: continue from next, list all, pick by number, quit. After resolving an out-of-order item, ask whether to continue or pick another.
 
+## Pacing
+
+After each item: present the proposal and wait for the user's input — confirm / redirect / defer / quit — before opening the next item. Do not chain. The narrow auto-land carve-out in `references/walking-open-items.md` is the exception; the rhythm is one item, one user response.
+
 ## Load (per item)
 
 - The one open item being walked — its status header, cited passages, and framing from the active file.

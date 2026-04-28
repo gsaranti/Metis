@@ -32,7 +32,13 @@ When research lands, the source-doc update cites the note inline and the `docs/R
 
 ## Asking the user vs. deciding
 
-Even with a strong recommendation, some resolutions must be confirmed by the user rather than landed by the agent. The threshold is downstream reach: a resolution that shapes `BUILD.md`, spans epics, or forecloses future options is the user's to make. A resolution that specifies a local detail with no architectural spread — a specific error code, a log field name — can be landed by the agent, with the doc update and the `docs/RESOLVED.md` pointer making the choice legible for later review. The tiebreaker: a reader six months later wants the user's name on architectural resolutions; if the doc would read oddly without that fingerprint, ask.
+Default: ask. Most resolutions wait for user confirmation before landing. The agent reads the corpus, frames the choice, and recommends; the user commits.
+
+The narrow exception is filling in a specific value within a shape the corpus has already committed to — picking `400` when the doc says "reject invalid input," naming a log field when the surrounding behavior is pinned, documenting existing code with a `code-explorer` trace. The shape was already decided; the resolution is naming a value inside it.
+
+Anything that picks the shape itself — a response contract, error semantics, a validation rule, a cache strategy, a new constraint downstream code has to live with — is the user's call. When unsure, confirm.
+
+The test: would a thoughtful reader of the source doc say *"this is the answer the doc was already pointing at"*? If yes, auto-land. If they'd say *"this is one of several reasonable readings the doc didn't pin down"* — confirm.
 
 ## The source-doc update
 
