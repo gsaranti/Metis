@@ -36,8 +36,9 @@ Run `.metis/scripts/generate-tasks-preflight.sh <epic-name>` (omit the argument 
 ## Write scope
 
 - Task files under `TARGET` from the preflight. Create the directory if absent.
+- `scratch/questions.md` — append an entry when task-writing surfaces a local ambiguity that the main session should pick up later.
 
-Do not write to `BUILD.md`, `EPIC.md`, `decisions/`, `docs/`, or `scratch/`.
+Do not write to `BUILD.md`, `EPIC.md`, `decisions/`, `docs/`, or `scratch/` beyond `questions.md`.
 
 ## Invocation prompt
 

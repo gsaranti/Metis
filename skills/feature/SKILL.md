@@ -45,6 +45,7 @@ Run `.metis/scripts/feature-preflight.sh`. It exits non-zero if `BUILD.md` is mi
 
 - **Flat mode.** Task files in `tasks/`.
 - **Epic mode.** `epics/NNN-kebab-name/EPIC.md` and task files under `epics/NNN-kebab-name/tasks/`. Create the parent directory if absent.
+- `scratch/questions.md` — append an entry when task-writing surfaces a local ambiguity that the main session should pick up later.
 
 ### Do not write to
 
@@ -52,7 +53,7 @@ Run `.metis/scripts/feature-preflight.sh`. It exits non-zero if `BUILD.md` is mi
 - Sibling epics' files.
 - `decisions/`.
 - `docs/`.
-- `scratch/`.
+- `scratch/` beyond `questions.md` (per Write scope).
 
 ## Invocation prompt
 
