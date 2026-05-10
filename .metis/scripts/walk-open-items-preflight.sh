@@ -2,28 +2,25 @@
 #
 # .metis/scripts/walk-open-items-preflight.sh
 #
-# Mechanical preflight for /metis:walk-open-items. Reports the state of
+# Mechanical preflight for /metis-walk-open-items. Reports the state of
 # captured items so the skill can plan the walk.
 #
 # Output: key=value lines on stdout.
-# Exits non-zero if docs/ is missing or if neither CONTRADICTIONS.md nor
-# QUESTIONS.md exists (skill surfaces the error, points at /metis:reconcile).
+# Exits non-zero if docs/ is missing or if neither .metis/CONTRADICTIONS.md
+# nor .metis/QUESTIONS.md exists (skill surfaces the error and points the
+# user at /metis-reconcile).
 #
 # Fields emitted:
 #   OPEN                   total open items across both active files
-#   OPEN_CONTRADICTIONS    open items in CONTRADICTIONS.md
-#   OPEN_QUESTIONS         open items in QUESTIONS.md
+#   OPEN_CONTRADICTIONS    open items in .metis/CONTRADICTIONS.md
+#   OPEN_QUESTIONS         open items in .metis/QUESTIONS.md
 #   DEFERRED               total deferred items across both files
 #   STALE                  total stale items across both files
-#   RESOLVED_PRIOR         items archived in RESOLVED.md from prior sessions
+#   RESOLVED_PRIOR         items archived in .metis/RESOLVED.md from prior sessions
 
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="${PWD}"
-
-# shellcheck source=lib/common.sh
-source "${SCRIPT_DIR}/lib/common.sh"
 
 DOCS_DIR="docs"
 [[ -d "$DOCS_DIR" ]] || {
@@ -31,27 +28,36 @@ DOCS_DIR="docs"
   exit 1
 }
 
-CONTRADICTIONS="$DOCS_DIR/CONTRADICTIONS.md"
-QUESTIONS="$DOCS_DIR/QUESTIONS.md"
-RESOLVED="$DOCS_DIR/RESOLVED.md"
+CONTRADICTIONS=".metis/CONTRADICTIONS.md"
+QUESTIONS=".metis/QUESTIONS.md"
+RESOLVED=".metis/RESOLVED.md"
 
 if [[ ! -f "$CONTRADICTIONS" && ! -f "$QUESTIONS" ]]; then
-  printf 'error: no CONTRADICTIONS.md or QUESTIONS.md in docs/ — run /metis:reconcile first\n' >&2
+  printf 'error: no CONTRADICTIONS.md or QUESTIONS.md in .metis/ — run /metis-reconcile first\n' >&2
   exit 1
 fi
 
-OPEN_CONTRADICTIONS=$(metis_count_status "$CONTRADICTIONS" open)
-OPEN_QUESTIONS=$(metis_count_status "$QUESTIONS" open)
+# Inline helper: print count of "^Status: <value>" lines in <file>.
+# Prints 0 if file absent. (Previously sourced from lib/common.sh.)
+count_status() {
+  local file="$1" value="$2" n
+  [[ -f "$file" ]] || { printf '0'; return; }
+  n=$(grep -c "^Status: ${value}" "$file" 2>/dev/null) || n=0
+  printf '%d' "$n"
+}
+
+OPEN_CONTRADICTIONS=$(count_status "$CONTRADICTIONS" open)
+OPEN_QUESTIONS=$(count_status "$QUESTIONS" open)
 OPEN=$(( OPEN_CONTRADICTIONS + OPEN_QUESTIONS ))
 
 DEFERRED=$((
-  $(metis_count_status "$CONTRADICTIONS" deferred) +
-  $(metis_count_status "$QUESTIONS" deferred)
+  $(count_status "$CONTRADICTIONS" deferred) +
+  $(count_status "$QUESTIONS" deferred)
 ))
 
 STALE=$((
-  $(metis_count_status "$CONTRADICTIONS" stale) +
-  $(metis_count_status "$QUESTIONS" stale)
+  $(count_status "$CONTRADICTIONS" stale) +
+  $(count_status "$QUESTIONS" stale)
 ))
 
 # RESOLVED.md entries are top-level "## " headings (one per resolved item)

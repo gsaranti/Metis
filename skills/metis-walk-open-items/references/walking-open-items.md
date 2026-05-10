@@ -1,6 +1,6 @@
 # Walking open items
 
-An open item is a captured entry in `docs/CONTRADICTIONS.md` or `docs/QUESTIONS.md` — a contradiction or gray area surfaced during reconcile and waiting for a position. The job of this skill is to walk one open item to resolution: judging whether the corpus implies an answer, offering 1–2 genuine alternatives, or calling for the user's input; updating the relevant source doc with the chosen answer; and moving the item's lifecycle state so the on-disk files are the next session's resume point.
+An open item is a captured entry in `.metis/CONTRADICTIONS.md` or `.metis/QUESTIONS.md` — a contradiction or gray area surfaced during reconcile and waiting for a position. The job of this skill is to walk one open item to resolution: judging whether the corpus implies an answer, offering 1–2 genuine alternatives, or calling for the user's input; updating the relevant source doc with the chosen answer; and moving the item's lifecycle state so the on-disk files are the next session's resume point.
 
 Two failure modes pull against each other: resolving too eagerly, so the agent picks a side the docs do not actually commit to; and punting every item back to the user with no real thinking, so the walk reverts to the user explaining every call from scratch.
 
@@ -22,19 +22,39 @@ For each open item, pick one of three registers. The pick is the core judgment t
 
 The test for which register fits: how much does each candidate answer lean on what the docs say vs. on invention? Heavily on docs → recommendation. Evenly between two doc-supported reads → alternatives. On invention → ask.
 
+## Presenting the choice
+
+After the reasoning prose (citations, what each candidate implies, tradeoffs), present the choice as a lettered menu:
+
+```
+[A] - <option A label, brief>
+[B] - <option B label, brief>
+[C] - Other (type your own answer)
+```
+
+The shape of the menu follows the register:
+
+- **Two alternatives** — three options. [A] and [B] are the doc-supported readings; [C] is the custom-input escape hatch.
+- **One recommendation** — two options. [A] is the recommendation; [B] is the custom-input escape hatch. Don't pad to three by inventing a weaker [B] — the reason there's only one option is that inventing another would mean reaching outside the corpus.
+- **Ask** — no menu. Ask plainly: "Type your answer here." The user types whatever they want.
+
+`defer` and `quit` are text commands the user can type at any prompt; they don't need to appear as menu letters every time. The menu is for the *resolution choice*, not for navigation.
+
+The user types the letter (A / B / C / D as the case may be) for a labeled option, or types a free-text answer that overrides the menu, or types `defer` / `quit`. The agent waits for the response — no timeout, no chaining — before opening the next item.
+
 ## Research, when a question is technically researchable
 
-Some questions in `docs/QUESTIONS.md` are factual gaps the open web can settle, not preference calls. When the question is technically researchable, dispatch `domain-researcher` rather than punting to the user.
+Some questions in `.metis/QUESTIONS.md` are factual gaps the open web can settle, not preference calls. When the question is technically researchable, dispatch `metis-domain-researcher` rather than punting to the user.
 
 The judgment for *researchable* vs. *user-only*: if the answer would be the same regardless of who you asked (a fact, a benchmark, a published recommendation), it is researchable. If the answer depends on project preferences, business constraints, or values the corpus has not stated, it is the user's to make. A library comparison is researchable; *which library do we want* is the user's call.
 
-When research lands, the source-doc update cites the note inline and the `docs/RESOLVED.md` pointer notes that the resolution turned on research. The substance of the answer goes into the source doc.
+The subagent returns its findings inline — no file is written. The substance of the answer goes into the source doc; the `.metis/RESOLVED.md` pointer notes that the resolution turned on research, without citing a research note (there isn't one to cite).
 
 ## Asking the user vs. deciding
 
 Default: ask. Most resolutions wait for user confirmation before landing. The agent reads the corpus, frames the choice, and recommends; the user commits.
 
-The narrow exception is filling in a specific value within a shape the corpus has already committed to — picking `400` when the doc says "reject invalid input," naming a log field when the surrounding behavior is pinned, documenting existing code with a `code-explorer` trace. The shape was already decided; the resolution is naming a value inside it.
+The narrow exception is filling in a specific value within a shape the corpus has already committed to — picking `400` when the doc says "reject invalid input," naming a log field when the surrounding behavior is pinned, recording an established code path that the docs are silent about. The shape was already decided; the resolution is naming a value inside it.
 
 Anything that picks the shape itself — a response contract, error semantics, a validation rule, a cache strategy, a new constraint downstream code has to live with — is the user's call. When unsure, confirm.
 
@@ -48,7 +68,7 @@ Whether the agent lands the edit or the user confirms it, prefer the smallest ch
 
 `deferred` is a conscious "not now." The item stays in its active file with the reason for deferral recorded in the body, so a later walk does not re-offer the same options. It remains open from the walk's perspective — deferral is not a quiet way to archive.
 
-`resolved` means the source doc has been updated so it no longer reads as open. The item is removed from its active file and a pointer is appended to `docs/RESOLVED.md`.
+`resolved` means the source doc has been updated so it no longer reads as open. The item is removed from its active file and a pointer is appended to `.metis/RESOLVED.md`.
 
 `stale` is the re-read outcome above: the capture no longer matches the docs. The item stays in its active file until the next reconcile replaces it, or until the user confirms the topic is no longer live.
 
@@ -56,7 +76,7 @@ The three are not interchangeable. Flipping `open` straight to `resolved` withou
 
 ## Shape of the resolved pointer
 
-The `docs/RESOLVED.md` entry is minimal — title, date resolved, and a one-line summary of the answer that was written into the doc:
+The `.metis/RESOLVED.md` entry is minimal — title, date resolved, and a one-line summary of the answer that was written into the doc:
 
 ```markdown
 ## Q3: Session duration
@@ -68,4 +88,4 @@ The resolution's substance lives in the updated source doc, not the pointer. The
 
 ## Follow-ups from a walk
 
-A walk can produce new captures, not just close old ones. When a resolution answers the item at hand but exposes a downstream uncertainty — a new term introduced, a consequence that wasn't specified, a sibling question the chosen answer raises — append a fresh item to `docs/QUESTIONS.md` or `docs/CONTRADICTIONS.md` for a later pass. Closing one item by quietly hiding the follow-up it spawned is a form of over-resolving.
+A walk can produce new captures, not just close old ones. When a resolution answers the item at hand but exposes a downstream uncertainty — a new term introduced, a consequence that wasn't specified, a sibling question the chosen answer raises — append a fresh item to `.metis/QUESTIONS.md` or `.metis/CONTRADICTIONS.md` for a later pass. Closing one item by quietly hiding the follow-up it spawned is a form of over-resolving.

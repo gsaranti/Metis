@@ -4,10 +4,6 @@ Domain research is filling a technical gap the user's docs do not cover — what
 
 Two failure modes pull against each other. Underdelivering — three sources, surface-level summary, a recommendation a thoughtful guess would have produced — wastes the round-trip and teaches the user that research is a token sink. Overcommitting — picking a winner the evidence does not support, hiding legitimate alternatives, presenting a partial view as definitive — gets technically-sound findings rubber-stamped by users who can't independently judge the call. The first underdelivers; the second oversells.
 
-## Read first
-
-- `${CLAUDE_PLUGIN_ROOT}/.metis/conventions/decision-format.md` — when a research finding becomes a project commitment, the decision entry that records it follows this shape. The research note itself does not.
-
 ## Scoping the question
 
 A good research question fits in one sentence and decomposes into three to seven sub-questions that each have observable answers. "What's the best way to detect highlight moments in gameplay video?" is a research question. "What's a good video stack?" is not — it has no observable answer.
@@ -58,9 +54,9 @@ The project's constraints are not flavor text. "Open-source only" eliminates pro
 
 When the constraints make the globally-best answer unworkable, say so explicitly and recommend the constrained-best alternative. *"On global merit, X. Given the project's offline constraint, Y is the better fit; X is unavailable."* The user can then weigh whether the constraint is worth the gap.
 
-## The note's shape
+## The return shape
 
-A research note has these sections, in order:
+The return is a single structured report back to the parent. It has these sections, in order:
 
 - **Question** — verbatim from the parent (or the subagent's restatement if the parent passed it bare).
 - **Originating context** — why the question is being asked. One paragraph.
@@ -74,18 +70,10 @@ A research note has these sections, in order:
 
 ## Sizing as feedback
 
-A useful research note is one to three pages. Less is usually under-investigation. More is usually scope creep — a question that wanted to be split into multiple notes, or an investigation that wandered into adjacent topics. If the note is past three pages and the recommendation is still hedged, the question was too broad. Split it and re-run.
-
-## Staleness
-
-The same question researched within the last 60 days is the existing note's territory unless the parent asked for a refresh. If sources cited in the existing note have a chance of having changed (a library released a major version, a benchmark was published) and the parent is leaning on the recommendation, surface the staleness explicitly — `"existing note from <date>; libfoo released a 2.0 in <date>; consider refresh"` — and let the parent decide.
+A useful return is roughly 1,500–4,500 tokens — enough for the findings to carry their support, not so much that the parent has to wade through scope creep. Less is usually under-investigation. More is usually a question that wanted to be split into multiple dispatches, or an investigation that wandered into adjacent topics. If the report is past that range and the recommendation is still hedged, the question was too broad. Split it and re-run.
 
 ## Dispatching from a calling skill
 
-Calling skills dispatch this subagent automatically when a commitment turns on a technical choice the project's docs do not cover. The protocol is the same across callers:
+The dispatching skill passes the question and project constraints; the subagent returns findings inline; the dispatching skill applies the findings to whatever artifact prompted the dispatch (a source doc update, a `BUILD.md` section, a task-plan note).
 
-1. **Check `docs/research/INDEX.md` first.** If a recent note already answers the question, cite it rather than commissioning a new one. The note's *Recommendation* is what the caller commits to; the rest of the note is the audit trail.
-2. **Refresh past 60 days.** If the existing note is older than 60 days and the source landscape may have shifted, dispatch a refresh.
-3. **Cite inline.** Format: `(see docs/research/<slug>-<date>.md)`. Cite once per commitment, not once per paragraph.
-4. **Surface staleness.** A cited note older than 60 days carries the flag inline — `(see docs/research/<slug>-<date>.md; past 60-day staleness window, verify before committing)`.
-5. **No user gate.** The dispatching skill decides whether the question is research-worthy. Reserve "ask the user" for what research cannot resolve — preference calls, business constraints, value judgments.
+The dispatching skill decides whether the question is research-worthy. Reserve "ask the user" for what research cannot resolve — preference calls, business constraints, value judgments.
