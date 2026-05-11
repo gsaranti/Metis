@@ -70,5 +70,5 @@ Calling skills dispatch this subagent when a commitment turns on what the existi
 
 1. **One question per dispatch.** A bulk question gets a tour; a focused question gets a finding. Dispatch per architectural seam, per candidate task, or per unfamiliar surface — not for the codebase as a whole.
 2. **Pass the framing.** What the caller is about to commit to, and why. Without it the report can be technically correct and operationally useless.
-3. **Cite file:line refs.** The refs land in the calling artifact (BUILD.md section, task Context excerpt, plan step). The cite is what makes the commitment auditable.
+3. **Cite file:line refs.** The refs land in the calling artifact (a `.metis/BUILD.md` section, a plan step, a source-doc resolution). The cite is what makes the commitment auditable.
 4. **Surface surprises upstream.** When the report contradicts the question's framing, re-decide before writing through. Absorbing the surprise into a footnote hides the seam.

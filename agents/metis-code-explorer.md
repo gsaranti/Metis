@@ -1,6 +1,6 @@
 ---
-name: code-explorer
-description: Investigates one question against the existing codebase. Returns an inline report; writes nothing.
+name: metis-code-explorer
+description: Investigate one question against the existing codebase. Returns an inline report; writes nothing.
 tools: Read, Glob, Grep
 color: green
 ---
@@ -17,8 +17,8 @@ Investigate one question against the repo's source tree. Return a compressed rep
 
 ## Do not load
 
-- `BUILD.md`, `EPIC.md` files, task files, `decisions/`, `docs/`, `scratch/`, `docs/research/`.
-- `node_modules/`, `vendor/`, `dist/`, `build/`, `.git/`, `.metis/`, `.claude/`, lockfiles, generated artifacts.
+- `.metis/`, `docs/` — Metis state and user docs are the parent's territory; this subagent investigates code only.
+- `node_modules/`, `vendor/`, `dist/`, `build/`, `.git/`, `.claude/`, lockfiles, generated artifacts.
 
 ## Read first
 
@@ -30,7 +30,7 @@ This subagent writes nothing. The report returns inline as the tool result.
 
 ### Do not write to
 
-- Anywhere in the repo. No file edits, no scratch artifact, no research note, no summary file.
+- Anywhere in the repo. No file edits, no scratch artifact, no summary file.
 
 ## Return
 
