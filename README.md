@@ -80,11 +80,12 @@ Per session      →   /metis-session-start         (rehydrate)
                      /metis-session-end           (update CURRENT.md)
 ```
 
-For prompt-seeded projects (no `docs/` corpus), skip reconcile / walk-open-items and start with `/metis-build-spec "<description of what's being built>"`.
+Two independent variations on the flow above:
 
-For existing-codebase projects (adding work on top of code that already exists), use `/metis-build-spec "<description of the delta>"` — the build-spec skill auto-dispatches `metis-code-explorer` per architectural seam.
+- **No `docs/` corpus.** Skip `/metis-reconcile` and `/metis-walk-open-items`. Pass a description directly: `/metis-build-spec "<description>"`.
+- **Existing codebase.** `/metis-build-spec` auto-dispatches `metis-code-explorer` per architectural seam to anchor the brief to the existing code; the brief becomes a delta describing what this build adds, changes, or replaces. This is independent of the docs question — you can have both `docs/` and existing code, in which case the brief is a docs-driven delta.
 
-Plans and scope reports live in chat by default; only `CURRENT.md` persists session-to-session. The "/metis-session-end" skill captures enough of an in-flight plan or scope report in `CURRENT.md` for the next session to resume cleanly.
+Plans and scope reports live in chat by default; only `CURRENT.md` persists session-to-session. `/metis-session-end` captures enough of an in-flight plan or scope report in `CURRENT.md` for the next session to resume cleanly.
 
 ---
 
