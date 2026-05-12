@@ -1,7 +1,7 @@
 {
   "name": "metis",
-  "version": "0.1.2",
-  "description": "Docs-first agentic development framework for Claude Code. Structures the project, not the agent — so context survives across sessions.",
+  "version": "0.2.0",
+  "description": "A lightweight toolset for keeping a project's intent, status, and history legible across Claude Code sessions.",
   "license": "MIT",
   "author": {
     "name": "George Sarantinos"
