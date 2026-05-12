@@ -6,14 +6,14 @@ Two failure modes pull against each other. Under-reporting absorbs reductions in
 
 ## Read first
 
-- The task file or other specification the work is being reported against, so each reduction can be named relative to a criterion a reader can see.
+- The plan, description, or other specification the work is being reported against, so each reduction can be named relative to a criterion a reader can see.
 - The diff or change-set the report is summarizing, so entries cite the actual shape that shipped rather than the intent the reporter remembers.
 
 An entry is any place where what shipped diverges from what was asked; the four categories below sort by the kind of divergence.
 
 ## Artifact shape
 
-There is no convention file for a scope report. The shape — one block, usually appended to a task file's Notes — sits here:
+There is no convention file for a scope report. The shape — one block, returned in chat as part of the implementing skill's response — sits here:
 
 - **Skipped** — criteria or scope items that were not addressed and are not planned. One line per entry, naming the criterion.
 - **Deferred** — criteria or scope items that were not addressed but are explicitly pending later work. One line per entry, naming the criterion and the follow-up that will carry it.
