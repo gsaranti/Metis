@@ -8,7 +8,9 @@
 # What it does:
 #   - Create .metis/ if absent
 #   - Populate .metis/config.yaml with name + metis_version + created
-#   - Splice the delimited block into CLAUDE.md (body from claude-block.md)
+#   - Splice the delimited block into CLAUDE.md and AGENTS.md (body from
+#     claude-block.md). Both files get the same Metis-managed block but stay
+#     independent — runtime-specific content outside the markers is preserved.
 #   - Write a .metis/CURRENT.md stub if absent
 #
 # Idempotent. Re-runs preserve a populated config.yaml unless --reinit is
@@ -155,7 +157,7 @@ fi
 populate_config=1
 if [[ -n "$existing_name" && "$REINIT" -eq 0 ]]; then
   populate_config=0
-  log "Metis already initialized (name: ${existing_name}). Re-applying CLAUDE.md block..."
+  log "Metis already initialized (name: ${existing_name}). Re-applying CLAUDE.md and AGENTS.md blocks..."
 fi
 
 # -- determine project name ---------------------------------------------------
@@ -193,10 +195,13 @@ else
   log "Preserved existing ${CONFIG}."
 fi
 
-# -- splice the CLAUDE.md block ----------------------------------------------
+# -- splice the CLAUDE.md and AGENTS.md blocks -------------------------------
 
 splice_block "CLAUDE.md" "<!-- metis:start -->" "<!-- metis:end -->" "$CLAUDE_BLOCK_FILE"
 log "Updated CLAUDE.md (delimited block)."
+
+splice_block "AGENTS.md" "<!-- metis:start -->" "<!-- metis:end -->" "$CLAUDE_BLOCK_FILE"
+log "Updated AGENTS.md (delimited block)."
 
 # -- .metis/CURRENT.md stub --------------------------------------------------
 

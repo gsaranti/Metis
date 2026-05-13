@@ -124,15 +124,20 @@ def toml_escape_basic(s: str) -> str:
 # Skill porting: copy folder, rewrite paths, copy referenced files, add openai.yaml
 
 def port_skill(skill_src: Path, out_root: Path) -> None:
-    skill_out = out_root / "skills" / skill_src.name
-    if skill_out.exists():
-        shutil.rmtree(skill_out, ignore_errors=True)
-    shutil.copytree(skill_src, skill_out, dirs_exist_ok=True)
-
-    skill_md = skill_out / "SKILL.md"
-    if not skill_md.exists():
+    # Validate before doing any work: copying a folder and then erroring on a
+    # missing SKILL.md would leave a half-populated output directory.
+    if not (skill_src / "SKILL.md").exists():
         raise RuntimeError(f"{skill_src} has no SKILL.md")
 
+    # generate() wipes the entire out_root before calling port_skill, so
+    # skill_out is guaranteed not to exist yet. dirs_exist_ok=True is kept as
+    # cheap insurance against future refactors of generate().
+    skill_out = out_root / "skills" / skill_src.name
+    shutil.copytree(skill_src, skill_out, dirs_exist_ok=True)
+
+    # From here on, operate on the output copy. The source is canonical and
+    # must not be touched.
+    skill_md = skill_out / "SKILL.md"
     text = skill_md.read_text()
 
     # Collect referenced (kind, filename) pairs while rewriting paths.
@@ -313,15 +318,22 @@ def main() -> int:
     )
     args = parser.parse_args()
 
+    # Display path relative to ROOT when possible, absolute otherwise — so a
+    # custom --out outside the repo doesn't crash the success message.
+    try:
+        display = args.out.relative_to(ROOT)
+    except ValueError:
+        display = args.out
+
     if args.check:
         with tempfile.TemporaryDirectory() as tmp:
             tmp_out = Path(tmp) / "codex"
             generate(tmp_out)
             equal, diffs = trees_equal(tmp_out, args.out)
             if equal:
-                print(f"OK  .codex/ is up to date")
+                print(f"OK  {display} is up to date")
                 return 0
-            print("FAIL  .codex/ is stale — run `python scripts/gen-codex.py`")
+            print(f"FAIL  {display} is stale — run `python scripts/gen-codex.py`")
             for d in diffs[:20]:
                 print(f"  {d}")
             if len(diffs) > 20:
@@ -329,7 +341,7 @@ def main() -> int:
             return 1
 
     generate(args.out)
-    print(f"OK  regenerated {args.out.relative_to(ROOT)}")
+    print(f"OK  regenerated {display}")
     return 0
 
 
