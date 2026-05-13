@@ -2,7 +2,7 @@
 
 > *Wisdom before code.*
 
-A lightweight toolset for keeping a project's intent, status, and history legible across Claude Code sessions.
+A lightweight toolset for keeping a project's intent, status, and history legible across agent sessions.
 
 Metis structures the project, not the agent — it puts a small, predictable set of artifacts on disk so a fresh session can rehydrate cleanly, no matter how the work was done between sessions. The runtime surface is minimal: a handful of markdown files in one directory, nine slash commands, three subagents.
 
@@ -55,8 +55,8 @@ Metis ships as a plugin for both Claude Code and Codex. Pick the section for you
 ### Claude Code
 
 ```
-/plugin marketplace add gsaranti/Metis
-/plugin install metis@metis
+/plugin marketplace add gsaranti/pantheon
+/plugin install metis@pantheon
 ```
 
 ### Codex
@@ -64,10 +64,10 @@ Metis ships as a plugin for both Claude Code and Codex. Pick the section for you
 Register the Metis marketplace from your shell:
 
 ```bash
-codex plugin marketplace add gsaranti/Metis
+codex plugin marketplace add gsaranti/pantheon
 ```
 
-Then open Codex, browse to the `metis` marketplace in the plugin directory, and install Metis:
+Then open Codex, browse to the `pantheon` marketplace in the plugin directory, and install Metis:
 
 ```
 codex
@@ -181,4 +181,4 @@ The load-bearing opinions. Everything else is convention.
 
 **License**: MIT. See [`LICENSE`](LICENSE).
 
-**Repository**: <https://github.com/gsaranti/Metis>
+**Repository**: <https://github.com/gsaranti/pantheon>
