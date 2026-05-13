@@ -1,7 +1,6 @@
 ---
 name: metis-session-end
 description: Update .metis/CURRENT.md with the session handoff.
-disable-model-invocation: true
 ---
 
 # /metis-session-end
@@ -38,7 +37,7 @@ Close out the session: rewrite `.metis/CURRENT.md`.
 
 ## Invocation prompt
 
-Trailing prompt: see `${CLAUDE_PLUGIN_ROOT}/references/command-prompts.md`.
+Trailing prompt: see `references/command-prompts.md`.
 
 ## Return
 

@@ -1,7 +1,6 @@
 ---
 name: metis-walk-open-items
 description: Walk captured open items one at a time, resolving each into the relevant source doc.
-disable-model-invocation: true
 ---
 
 # /metis-walk-open-items
@@ -10,7 +9,7 @@ Walk open items — contradictions and gray areas — one at a time, resolving e
 
 ## Preflight
 
-Run `${CLAUDE_PLUGIN_ROOT}/.metis/scripts/walk-open-items-preflight.sh` before starting. It exits non-zero if `docs/` is missing or if neither `.metis/CONTRADICTIONS.md` nor `.metis/QUESTIONS.md` exists (surface the error, point the user at `/metis-reconcile`, and stop). Otherwise it reports `OPEN`, `OPEN_CONTRADICTIONS`, `OPEN_QUESTIONS`, `DEFERRED`, `STALE`, and `RESOLVED_PRIOR`.
+Run `scripts/walk-open-items-preflight.sh` before starting. It exits non-zero if `docs/` is missing or if neither `.metis/CONTRADICTIONS.md` nor `.metis/QUESTIONS.md` exists (surface the error, point the user at `/metis-reconcile`, and stop). Otherwise it reports `OPEN`, `OPEN_CONTRADICTIONS`, `OPEN_QUESTIONS`, `DEFERRED`, `STALE`, and `RESOLVED_PRIOR`.
 
 If `OPEN + DEFERRED + STALE == 0`, report the empty set and suggest `/metis-build-spec`. Otherwise show the counts and present a lettered navigation menu:
 
@@ -54,7 +53,7 @@ Do not write to `.metis/BUILD.md`.
 
 ## Invocation prompt
 
-Trailing prompt: see `${CLAUDE_PLUGIN_ROOT}/references/command-prompts.md`.
+Trailing prompt: see `references/command-prompts.md`.
 
 ## Return
 

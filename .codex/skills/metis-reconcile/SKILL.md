@@ -1,7 +1,6 @@
 ---
 name: metis-reconcile
 description: Read the docs corpus and produce SYNTHESIS.md, INDEX.md, CONTRADICTIONS.md, and QUESTIONS.md in .metis/.
-disable-model-invocation: true
 ---
 
 # /metis-reconcile
@@ -10,7 +9,7 @@ Read everything under `docs/`. Produce four reconcile artifacts: `.metis/SYNTHES
 
 ## Preflight
 
-Run `${CLAUDE_PLUGIN_ROOT}/.metis/scripts/reconcile-preflight.sh` before reading. It exits non-zero if `docs/` is missing (surface the error and stop). Otherwise it reports `STATUS` (`fresh` / `rereconcile`), `SIZE_CLASS` (`small` / `medium` / `large`), and counts for the corpus and any prior items.
+Run `scripts/reconcile-preflight.sh` before reading. It exits non-zero if `docs/` is missing (surface the error and stop). Otherwise it reports `STATUS` (`fresh` / `rereconcile`), `SIZE_CLASS` (`small` / `medium` / `large`), and counts for the corpus and any prior items.
 
 On `SIZE_CLASS=large`, apply the slicing guidance in `references/reconciling-docs.md`.
 
@@ -41,7 +40,7 @@ Do not write to `.metis/RESOLVED.md`, any source doc under `docs/`, or `.metis/B
 
 ## Invocation prompt
 
-Trailing prompt: see `${CLAUDE_PLUGIN_ROOT}/references/command-prompts.md`.
+Trailing prompt: see `references/command-prompts.md`.
 
 ## Return
 

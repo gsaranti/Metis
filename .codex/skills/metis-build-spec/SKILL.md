@@ -1,7 +1,6 @@
 ---
 name: metis-build-spec
 description: Produce BUILD.md — the project's forward-looking architecture brief.
-disable-model-invocation: true
 ---
 
 # /metis-build-spec
@@ -10,7 +9,7 @@ Produce `.metis/BUILD.md`.
 
 ## Preflight
 
-Run `${CLAUDE_PLUGIN_ROOT}/.metis/scripts/build-spec-preflight.sh` before drafting. It exits non-zero if `.metis/BUILD.md` already exists (surface the error, suggest the user delete the file manually if a fresh rewrite is intended, and stop). Otherwise it reports `DOCS_PRESENT`, `RECONCILE_DONE`, and `WALK_PENDING`.
+Run `scripts/build-spec-preflight.sh` before drafting. It exits non-zero if `.metis/BUILD.md` already exists (surface the error, suggest the user delete the file manually if a fresh rewrite is intended, and stop). Otherwise it reports `DOCS_PRESENT`, `RECONCILE_DONE`, and `WALK_PENDING`.
 
 ## Input shape
 
@@ -39,7 +38,7 @@ One file: `.metis/BUILD.md`.
 
 ## Invocation prompt
 
-Trailing prompt: see `${CLAUDE_PLUGIN_ROOT}/references/command-prompts.md`.
+Trailing prompt: see `references/command-prompts.md`.
 
 ## Return
 
