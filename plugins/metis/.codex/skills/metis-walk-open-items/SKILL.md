@@ -9,7 +9,7 @@ Walk open items — contradictions and gray areas — one at a time, resolving e
 
 ## Preflight
 
-Run `references/walk-open-items-preflight.sh` before starting. It exits non-zero if `docs/` is missing or if neither `.metis/CONTRADICTIONS.md` nor `.metis/QUESTIONS.md` exists (surface the error, point the user at `$metis-reconcile`, and stop). Otherwise it reports `OPEN`, `OPEN_CONTRADICTIONS`, `OPEN_QUESTIONS`, `DEFERRED`, `STALE`, and `RESOLVED_PRIOR`.
+Run this skill's `references/walk-open-items-preflight.sh` before starting. It exits non-zero if `docs/` is missing or if neither `.metis/CONTRADICTIONS.md` nor `.metis/QUESTIONS.md` exists (surface the error, point the user at `$metis-reconcile`, and stop). Otherwise it reports `OPEN`, `OPEN_CONTRADICTIONS`, `OPEN_QUESTIONS`, `DEFERRED`, `STALE`, and `RESOLVED_PRIOR`.
 
 If `OPEN + DEFERRED + STALE == 0`, report the empty set and suggest `$metis-build-spec`. Otherwise show the counts and present a lettered navigation menu:
 
@@ -24,7 +24,7 @@ After resolving an out-of-order item, ask whether to continue or pick another us
 
 ## Pacing
 
-After each item: present the proposal in the lettered-menu format from `references/walking-open-items.md`, then wait for the user's input — pick a letter, type a custom answer, type `defer`, or type `quit`. The user has unbounded thinking time; do not chain items. The narrow auto-land carve-out in `references/walking-open-items.md` is the exception; the rhythm is one item, one user response.
+After each item: present the proposal in the lettered-menu format from this skill's `references/walking-open-items.md`, then wait for the user's input — pick a letter, type a custom answer, type `defer`, or type `quit`. The user has unbounded thinking time; do not chain items. The narrow auto-land carve-out in this skill's `references/walking-open-items.md` is the exception; the rhythm is one item, one user response.
 
 ## Load (per item)
 
@@ -39,7 +39,7 @@ After each item: present the proposal in the lettered-menu format from `referenc
 
 ## Read first
 
-`references/walking-open-items.md` — read before offering options on the first item.
+This skill's `references/walking-open-items.md` — read before offering options on the first item.
 
 ## Write scope
 

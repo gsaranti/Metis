@@ -73,18 +73,33 @@ CODEX_OUT_DEFAULT = METIS / ".codex"
 CODEX_OWNED_SUBDIRS = ("skills", "agents")
 
 # ---------------------------------------------------------------------------
-# Pattern: ${CLAUDE_PLUGIN_ROOT}/references/<name>.md
+# Reference path patterns.
 #
-# Captures the filename so we can both copy the file into the destination
-# skill folder and rewrite the path string to point at the skill-local copy.
-# Optionally consumes surrounding markdown backticks so the rewrite preserves
-# the whole code-span (skill output re-wraps in backticks; agent output uses
-# prose with only the filename in backticks).
+# SKILL_REF_RE matches any backtick-wrapped reference path inside SKILL.md,
+# in either of two forms:
+#   `references/X.(md|sh)`                   — skill-local (.md or .sh)
+#   `${CLAUDE_PLUGIN_ROOT}/references/X.md`  — shared cross-skill markdown
 #
-# Only shared references (under .claude-code/references/) match — scripts and
-# any other skill-local content already ride along via copytree when the
-# whole skill folder is duplicated, so they need no rewriting.
-PLUGIN_ROOT_RE = re.compile(
+# Group 1 captures whether the shared prefix was present (truthy iff the path
+# is a shared ref that needs to be copied into the skill folder). Group 2
+# captures the filename. Backticks are mandatory: only code-span occurrences
+# get rewritten — references mentioned in plain prose or non-code contexts
+# are left alone.
+#
+# Both forms get the "this skill's `references/X`" rewrite in the Codex
+# output. The Codex tree puts every skill's local references/ and every
+# shared markdown copy in the same place (the skill's own references/), so a
+# single rendered form is correct for both inputs and keeps the output
+# consistent across paths.
+SKILL_REF_RE = re.compile(
+    r"`(\$\{CLAUDE_PLUGIN_ROOT\}/)?references/([\w.\-]+\.(?:md|sh))`"
+)
+
+# AGENT_REF_RE is the narrower pattern used when porting agents — they only
+# ever reference shared markdown via ${CLAUDE_PLUGIN_ROOT}/, and the rewrite
+# is in-prose ("the X reference embedded below") rather than a code-span, so
+# the surrounding backticks are optional and consumed.
+AGENT_REF_RE = re.compile(
     r"`?\$\{CLAUDE_PLUGIN_ROOT\}/references/([\w.\-]+\.md)`?"
 )
 
@@ -206,14 +221,17 @@ def port_skill(skill_src: Path, out_root: Path, skill_command_re: re.Pattern[str
     skill_md = skill_out / "SKILL.md"
     text = skill_md.read_text()
 
-    # Collect referenced filenames while rewriting paths. Only shared
-    # markdown references match — all other skill-local content (scripts,
-    # local-only refs) already rides along via the copytree above.
+    # Collect shared-reference filenames that need to be copied into the
+    # skill folder. Bare `references/X` references (skill-local) get the
+    # same prose rewrite but don't need copying — they already ride along
+    # via the copytree above.
     referenced: set[str] = set()
 
     def replace(m: re.Match[str]) -> str:
-        filename = m.group(1)
-        referenced.add(filename)
+        is_shared = m.group(1) is not None
+        filename = m.group(2)
+        if is_shared:
+            referenced.add(filename)
         # The rewritten path is relative to the skill folder, not the repo
         # root or CWD — Codex has no way to infer that from the path alone,
         # so we prepend "this skill's" to disambiguate. Capitalize when the
@@ -226,7 +244,7 @@ def port_skill(skill_src: Path, out_root: Path, skill_command_re: re.Pattern[str
         prefix = "This skill's" if at_line_start else "this skill's"
         return f"{prefix} `references/{filename}`"
 
-    new_text = PLUGIN_ROOT_RE.sub(replace, text)
+    new_text = SKILL_REF_RE.sub(replace, text)
 
     # Translate Claude's `/skill-name` slash-command references into Codex's
     # `$skill-name` form. Codex addresses skills with `$`; leaving `/` in
@@ -290,7 +308,7 @@ def port_agent(agent_md: Path, out_root: Path, skill_command_re: re.Pattern[str]
         # replacement is plain prose with only the filename in backticks.
         return f"the `{filename}` reference embedded below"
 
-    new_body = PLUGIN_ROOT_RE.sub(replace, body)
+    new_body = AGENT_REF_RE.sub(replace, body)
 
     for filename in referenced:
         src = src_for_ref(filename)

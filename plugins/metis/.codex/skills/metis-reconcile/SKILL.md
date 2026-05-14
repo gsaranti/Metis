@@ -9,14 +9,14 @@ Read everything under `docs/`. Produce four reconcile artifacts: `.metis/SYNTHES
 
 ## Preflight
 
-Run `references/reconcile-preflight.sh` before reading. It exits non-zero if `docs/` is missing (surface the error and stop). Otherwise it reports `STATUS` (`fresh` / `rereconcile`), `SIZE_CLASS` (`small` / `medium` / `large`), and counts for the corpus and any prior items.
+Run this skill's `references/reconcile-preflight.sh` before reading. It exits non-zero if `docs/` is missing (surface the error and stop). Otherwise it reports `STATUS` (`fresh` / `rereconcile`), `SIZE_CLASS` (`small` / `medium` / `large`), and counts for the corpus and any prior items.
 
-On `SIZE_CLASS=large`, apply the slicing guidance in `references/reconciling-docs.md`.
+On `SIZE_CLASS=large`, apply the slicing guidance in this skill's `references/reconciling-docs.md`.
 
 ## Load
 
 - The source docs under `docs/`.
-- On `rereconcile`, the prior `.metis/CONTRADICTIONS.md` and `.metis/QUESTIONS.md`. Re-reconcile preserves prior items and re-checks them against the current corpus (per the `references/reconciling-docs.md` skill) rather than starting over.
+- On `rereconcile`, the prior `.metis/CONTRADICTIONS.md` and `.metis/QUESTIONS.md`. Re-reconcile preserves prior items and re-checks them against the current corpus (per the this skill's `references/reconciling-docs.md` skill) rather than starting over.
 
 ## Do not load
 
@@ -25,7 +25,7 @@ On `SIZE_CLASS=large`, apply the slicing guidance in `references/reconciling-doc
 
 ## Read first
 
-`references/reconciling-docs.md` — read before drafting any of the output artifacts.
+This skill's `references/reconciling-docs.md` — read before drafting any of the output artifacts.
 
 ## Write scope
 

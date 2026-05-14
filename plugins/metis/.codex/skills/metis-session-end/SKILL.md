@@ -23,7 +23,7 @@ Close out the session: rewrite `.metis/CURRENT.md`.
 
 ## Read first
 
-`references/session-handoff.md` — read before writing the handoff.
+This skill's `references/session-handoff.md` — read before writing the handoff.
 
 ## Write scope
 
