@@ -261,18 +261,22 @@ def port_skill(skill_src: Path, out_root: Path, skill_command_re: re.Pattern[str
     # Copy each referenced shared-markdown file into the skill's local
     # references/. The slash-command rewrite is applied along the way —
     # Codex reads these files too, and mixed `/skill` / `$skill` syntax
-    # across the same skill folder would be confusing.
-    refs_dir = skill_out / "references"
-    refs_dir.mkdir(exist_ok=True)
-    for filename in sorted(referenced):
-        src = src_for_ref(filename)
-        if not src.exists():
-            raise RuntimeError(
-                f"{skill_src.name}/SKILL.md references {filename}, "
-                f"but {src} does not exist."
-            )
-        content = rewrite_skill_commands(src.read_text(), skill_command_re)
-        (refs_dir / filename).write_text(content)
+    # across the same skill folder would be confusing. Skipped entirely
+    # when the skill has no shared refs: a skill with no local references/
+    # in source and no shared-ref mentions in SKILL.md (e.g., metis-session-
+    # start) ends up with no references/ folder rather than an empty one.
+    if referenced:
+        refs_dir = skill_out / "references"
+        refs_dir.mkdir(exist_ok=True)
+        for filename in sorted(referenced):
+            src = src_for_ref(filename)
+            if not src.exists():
+                raise RuntimeError(
+                    f"{skill_src.name}/SKILL.md references {filename}, "
+                    f"but {src} does not exist."
+                )
+            content = rewrite_skill_commands(src.read_text(), skill_command_re)
+            (refs_dir / filename).write_text(content)
 
     # Codex's "explicit invocation only" equivalent of disable-model-invocation.
     yaml_dir = skill_out / "agents"
