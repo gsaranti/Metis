@@ -30,27 +30,38 @@ INPUT="$(cat)"
 if [ "$ROLE" = "user" ]; then
   CONTENT="$(printf '%s' "$INPUT" | jq -r '.prompt // empty')"
 else
-  TRANSCRIPT="$(printf '%s' "$INPUT" | jq -r '.transcript_path // empty')"
-  if [ -z "$TRANSCRIPT" ] || [ ! -f "$TRANSCRIPT" ]; then
-    exit 0
-  fi
-  # Pull the last assistant message's text content from the JSONL transcript.
-  # Walk forward (no `tac` — not available on macOS by default) and remember
-  # the most recent line whose JSON contains "type":"assistant".
-  LAST_ASSISTANT_LINE="$(awk '
-    /"type":"assistant"/ { last = $0 }
-    END { if (length(last)) print last }
-  ' "$TRANSCRIPT" 2>/dev/null)" || LAST_ASSISTANT_LINE=""
+  # Try the payload's direct field first. Per anthropics/claude-code#10610
+  # this isn't shipped yet (as of writing) but is on the roadmap, and if it
+  # ever lands we avoid the transcript race entirely.
+  CONTENT="$(printf '%s' "$INPUT" | jq -r '.last_assistant_message // empty' 2>/dev/null)" || CONTENT=""
 
-  CONTENT=""
-  if [ -n "$LAST_ASSISTANT_LINE" ]; then
-    CONTENT="$(printf '%s' "$LAST_ASSISTANT_LINE" | jq -r '
-      .message.content
-      | if type == "array"
-        then map(select(.type == "text") | .text) | join("\n")
-        else . // empty
-        end
-    ' 2>/dev/null)" || CONTENT=""
+  if [ -z "${CONTENT// }" ]; then
+    # Fall back to reading the transcript JSONL. Race per anthropics/claude-code#15813:
+    # the Stop hook fires before Claude Code finishes flushing the latest
+    # assistant message to disk, so a naive read picks up the previous turn's
+    # message (off-by-one). Brief pause lets the write settle.
+    TRANSCRIPT="$(printf '%s' "$INPUT" | jq -r '.transcript_path // empty' 2>/dev/null)" || TRANSCRIPT=""
+    if [ -z "$TRANSCRIPT" ] || [ ! -f "$TRANSCRIPT" ]; then
+      exit 0
+    fi
+    sleep 2
+
+    # Walk forward (no `tac` — not available on macOS by default) and remember
+    # the most recent line whose JSON contains "type":"assistant".
+    LAST_ASSISTANT_LINE="$(awk '
+      /"type":"assistant"/ { last = $0 }
+      END { if (length(last)) print last }
+    ' "$TRANSCRIPT" 2>/dev/null)" || LAST_ASSISTANT_LINE=""
+
+    if [ -n "$LAST_ASSISTANT_LINE" ]; then
+      CONTENT="$(printf '%s' "$LAST_ASSISTANT_LINE" | jq -r '
+        .message.content
+        | if type == "array"
+          then map(select(.type == "text") | .text) | join("\n")
+          else . // empty
+          end
+      ' 2>/dev/null)" || CONTENT=""
+    fi
   fi
 fi
 
