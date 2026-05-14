@@ -3,7 +3,7 @@ name: metis-reconcile
 description: Read the docs corpus and produce SYNTHESIS.md, INDEX.md, CONTRADICTIONS.md, and QUESTIONS.md in .metis/.
 ---
 
-# /metis-reconcile
+# $metis-reconcile
 
 Read everything under `docs/`. Produce four reconcile artifacts: `.metis/SYNTHESIS.md`, `.metis/INDEX.md`, `.metis/CONTRADICTIONS.md`, `.metis/QUESTIONS.md`.
 
@@ -48,4 +48,4 @@ One message to the user:
 
 - **Files written** — four paths with item counts per `CONTRADICTIONS.md` / `QUESTIONS.md` (open / deferred / stale).
 - **Coverage** — which docs were read in full vs. sliced, and any passages deliberately deferred to a later pass. On `SIZE_CLASS=large`, include the completeness caveat here.
-- **Next step** — `/metis-walk-open-items` when there are open or stale items; `/metis-build-spec` when the open set is empty.
+- **Next step** — `$metis-walk-open-items` when there are open or stale items; `$metis-build-spec` when the open set is empty.

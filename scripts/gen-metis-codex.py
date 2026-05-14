@@ -117,6 +117,38 @@ def map_tools_to_sandbox(tools_str: str) -> str:
     return DEFAULT_SANDBOX
 
 
+def build_skill_command_re(skill_names: list[str]) -> re.Pattern[str]:
+    """Pattern matching Claude `/skill-name` slash commands for rewrite to
+    Codex's `$skill-name` form.
+
+    Built from the live skill directory listing rather than a hardcoded
+    pattern, so the rewrite only fires on exact known skill names — never
+    on an arbitrary `/foo` prefix. Names sort longest-first under
+    alternation so the most specific match wins if a future skill name is
+    ever a prefix of another (Python's `re` alternation is leftmost, not
+    longest).
+
+    The `(?<!\\w)` lookbehind keeps the rewrite from firing inside path
+    fragments like `plugins/metis/skills/metis-init/SKILL.md`, where the
+    slash is a path separator rather than a command introducer. The
+    trailing `\\b` stops the match at a word boundary so we don't bleed
+    into a longer identifier (e.g., a hypothetical `/metis-init-extra`
+    would not be partially matched as `/metis-init`).
+    """
+    if not skill_names:
+        # `(?!)` is the standard "never matches" regex — preserves the type
+        # signature so callers don't need an Optional[Pattern] guard.
+        return re.compile(r"(?!)")
+    sorted_names = sorted(skill_names, key=len, reverse=True)
+    alt = "|".join(re.escape(name) for name in sorted_names)
+    return re.compile(rf"(?<!\w)/({alt})\b")
+
+
+def rewrite_skill_commands(text: str, skill_command_re: re.Pattern[str]) -> str:
+    """Apply the Claude → Codex slash-command rewrite to a block of text."""
+    return skill_command_re.sub(lambda m: f"${m.group(1)}", text)
+
+
 def src_for_ref(kind: str, filename: str) -> Path:
     """Resolve a (kind, filename) pair against Metis's canonical source dirs."""
     if kind == "scripts":
@@ -134,7 +166,7 @@ def toml_escape_basic(s: str) -> str:
 # ---------------------------------------------------------------------------
 # Skill porting: copy folder, rewrite paths, copy referenced files, add openai.yaml
 
-def port_skill(skill_src: Path, out_root: Path) -> None:
+def port_skill(skill_src: Path, out_root: Path, skill_command_re: re.Pattern[str]) -> None:
     # Validate before doing any work: copying a folder and then erroring on a
     # missing SKILL.md would leave a half-populated output directory.
     if not (skill_src / "SKILL.md").exists():
@@ -171,6 +203,11 @@ def port_skill(skill_src: Path, out_root: Path) -> None:
 
     new_text = PLUGIN_ROOT_RE.sub(replace, text)
 
+    # Translate Claude's `/skill-name` slash-command references into Codex's
+    # `$skill-name` form. Codex addresses skills with `$`; leaving `/` in
+    # the SKILL.md would surface the wrong invocation syntax to the agent.
+    new_text = rewrite_skill_commands(new_text, skill_command_re)
+
     # Drop disable-model-invocation: true — Codex equivalent goes in openai.yaml.
     fm, body = parse_frontmatter(new_text)
     fm.pop("disable-model-invocation", None)
@@ -179,6 +216,13 @@ def port_skill(skill_src: Path, out_root: Path) -> None:
     skill_md.write_text(new_text)
 
     # Copy referenced files into the skill's local scripts/ or references/.
+    # Reference markdown gets the same slash-command rewrite as SKILL.md —
+    # Codex reads these files too, and mixed `/skill` / `$skill` syntax
+    # across the same skill folder would be confusing. Scripts are copied
+    # raw: shell sources can carry user-facing slash-command strings, but
+    # init.sh specifically writes both CLAUDE.md and AGENTS.md blocks with
+    # different syntax requirements, so a blanket rewrite there would be
+    # wrong. Script-side handling is a separate concern.
     for kind, filename in sorted(referenced):
         src = src_for_ref(kind, filename)
         if not src.exists():
@@ -189,8 +233,11 @@ def port_skill(skill_src: Path, out_root: Path) -> None:
         dst_dir = skill_out / kind
         dst_dir.mkdir(exist_ok=True)
         dst = dst_dir / filename
-        shutil.copyfile(src, dst)
-        if kind == "scripts":
+        if kind == "references":
+            content = rewrite_skill_commands(src.read_text(), skill_command_re)
+            dst.write_text(content)
+        else:  # scripts
+            shutil.copyfile(src, dst)
             # preserve the executable bit
             os.chmod(dst, os.stat(src).st_mode)
 
@@ -205,7 +252,7 @@ def port_skill(skill_src: Path, out_root: Path) -> None:
 # ---------------------------------------------------------------------------
 # Agent porting: convert .md → .toml, inline references into developer_instructions
 
-def port_agent(agent_md: Path, out_root: Path) -> None:
+def port_agent(agent_md: Path, out_root: Path, skill_command_re: re.Pattern[str]) -> None:
     name = agent_md.stem
     out_path = out_root / "agents" / f"{name}.toml"
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -240,6 +287,13 @@ def port_agent(agent_md: Path, out_root: Path) -> None:
             )
         content = src.read_text().rstrip()
         new_body = new_body.rstrip() + f"\n\n## Reference: {filename}\n\n{content}\n"
+
+    # Translate Claude's `/skill-name` slash commands into Codex's `$skill-name`
+    # form. Applied after inlining so the rewrite covers both the agent's own
+    # body and the inlined reference sections in one pass — Codex sees the
+    # whole TOML as a single document, so the syntax has to be consistent
+    # across it.
+    new_body = rewrite_skill_commands(new_body, skill_command_re)
 
     toml_name = fm.get("name", name)
     description = fm.get("description", "")
@@ -280,13 +334,22 @@ def generate(out_root: Path) -> None:
     (out_root / "skills").mkdir(exist_ok=True)
     (out_root / "agents").mkdir(exist_ok=True)
 
-    if SKILLS_SRC.is_dir():
-        for skill_dir in sorted(p for p in SKILLS_SRC.iterdir() if p.is_dir()):
-            port_skill(skill_dir, out_root)
+    # Discover skill names up front so the slash-command rewrite pattern is
+    # built from the live directory listing — a future skill folder is
+    # picked up automatically; spurious `/foo` strings that don't match any
+    # real skill name are left alone.
+    skill_dirs = (
+        sorted(p for p in SKILLS_SRC.iterdir() if p.is_dir())
+        if SKILLS_SRC.is_dir() else []
+    )
+    skill_command_re = build_skill_command_re([p.name for p in skill_dirs])
+
+    for skill_dir in skill_dirs:
+        port_skill(skill_dir, out_root, skill_command_re)
 
     if AGENTS_SRC.is_dir():
         for agent_md in sorted(AGENTS_SRC.glob("*.md")):
-            port_agent(agent_md, out_root)
+            port_agent(agent_md, out_root, skill_command_re)
 
 
 # ---------------------------------------------------------------------------

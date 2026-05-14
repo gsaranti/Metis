@@ -3,15 +3,15 @@ name: metis-walk-open-items
 description: Walk captured open items one at a time, resolving each into the relevant source doc.
 ---
 
-# /metis-walk-open-items
+# $metis-walk-open-items
 
 Walk open items — contradictions and gray areas — one at a time, resolving each into the source doc it points at and appending a minimal pointer to `.metis/RESOLVED.md`.
 
 ## Preflight
 
-Run this skill's `scripts/walk-open-items-preflight.sh` before starting. It exits non-zero if `docs/` is missing or if neither `.metis/CONTRADICTIONS.md` nor `.metis/QUESTIONS.md` exists (surface the error, point the user at `/metis-reconcile`, and stop). Otherwise it reports `OPEN`, `OPEN_CONTRADICTIONS`, `OPEN_QUESTIONS`, `DEFERRED`, `STALE`, and `RESOLVED_PRIOR`.
+Run this skill's `scripts/walk-open-items-preflight.sh` before starting. It exits non-zero if `docs/` is missing or if neither `.metis/CONTRADICTIONS.md` nor `.metis/QUESTIONS.md` exists (surface the error, point the user at `$metis-reconcile`, and stop). Otherwise it reports `OPEN`, `OPEN_CONTRADICTIONS`, `OPEN_QUESTIONS`, `DEFERRED`, `STALE`, and `RESOLVED_PRIOR`.
 
-If `OPEN + DEFERRED + STALE == 0`, report the empty set and suggest `/metis-build-spec`. Otherwise show the counts and present a lettered navigation menu:
+If `OPEN + DEFERRED + STALE == 0`, report the empty set and suggest `$metis-build-spec`. Otherwise show the counts and present a lettered navigation menu:
 
 ```
 [A] - Continue from the next open item
@@ -62,4 +62,4 @@ When the user quits the walk or the open set is empty:
 - **Resolved this session** — count plus the pointers appended to `.metis/RESOLVED.md`.
 - **Remaining** — open, deferred, stale counts split by file.
 - **Doc edits** — list of source docs changed, one line per edit.
-- **Next step** — `/metis-build-spec` when the open set is empty (or consciously deferred); otherwise a note that the walk can be resumed next session.
+- **Next step** — `$metis-build-spec` when the open set is empty (or consciously deferred); otherwise a note that the walk can be resumed next session.

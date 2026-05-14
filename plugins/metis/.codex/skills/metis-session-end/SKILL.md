@@ -3,13 +3,13 @@ name: metis-session-end
 description: Update .metis/CURRENT.md with the session handoff.
 ---
 
-# /metis-session-end
+# $metis-session-end
 
 Close out the session: rewrite `.metis/CURRENT.md`.
 
 ## Preconditions
 
-`.metis/` must exist. If it does not, stop and point at `/metis-init`.
+`.metis/` must exist. If it does not, stop and point at `$metis-init`.
 
 ## Load
 
