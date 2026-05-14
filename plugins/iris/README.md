@@ -23,7 +23,7 @@ Iris doesn't try to be a workflow. It writes four files. The tools on either sid
 
 ## What Iris is
 
-A pair of hooks and two skills. The hooks capture your conversation. The skills read what the *other* tool captured and either summarize it (`/iris-sync`) or execute it (`/iris-relay`).
+Three hooks and two skills. The hooks capture your conversation. The skills read what the *other* tool captured and either summarize it (`/iris-sync`) or execute it (`/iris-relay`).
 
 What you get on disk, in your project root:
 
@@ -32,7 +32,7 @@ What you get on disk, in your project root:
 - **`iris-codex-chat.md`** — Codex's equivalent, written by the Codex side of Iris.
 - **`iris-codex-last.md`** — Codex's last response.
 
-What you get as skills: two slash commands, `/iris-sync` and `/iris-relay`. That's it.
+What you get as skills: two commands, addressed as `/iris-sync` and `/iris-relay` on Claude Code, or `$iris-sync` and `$iris-relay` on Codex. That's it.
 
 The Claude Code side reads the Codex files. The Codex side reads the Claude Code files. Each tool writes its own, reads the other's. Symmetric, no shared infrastructure, no API.
 
@@ -54,19 +54,20 @@ Iris is the wrong tool if you only use one of the two. The files Iris writes are
 
 ## How it works
 
-Two hooks fire automatically as you work:
+Three hooks fire automatically as you work:
 
-- **`UserPromptSubmit`** appends your message to `iris-claude-code-chat.md`.
-- **`Stop`** appends Claude Code's response to the chat log and overwrites `iris-claude-code-last.md`.
+- **`SessionStart`** writes a session-boundary marker into the rolling chat log, so the file shows where each session begins.
+- **`UserPromptSubmit`** appends your message to the chat log.
+- **`Stop`** appends the assistant's response to the chat log and overwrites the last-response file.
 
-Both hooks run locally as shell scripts. They cost zero tokens — the content already exists; Iris just persists it.
+All three run locally as shell scripts. They cost zero tokens — the content already exists; Iris just persists it. On Claude Code, the `Stop` hook walks Claude's JSONL session transcript to pull the last assistant message; on Codex, the hook reads it directly off the payload.
 
 The skills are user-invoked:
 
-- **`/iris-sync`** spawns a forked Explore subagent that reads `iris-codex-chat.md` and returns a 2–4 sentence summary of what Codex and the user have been working on. Use it to catch up without leaving the current Claude Code session.
-- **`/iris-relay`** reads `iris-codex-last.md` and treats it as a plan to implement. Use it when Codex has produced something — a plan, a refactor outline, a research summary — that you want Claude Code to execute against.
+- **`/iris-sync`** reads the *other* tool's rolling chat log and returns a 2–4 sentence summary of what it and the user have been working on. On Claude Code, this runs in a forked Explore subagent so the chat-log content stays out of the main session's context. On Codex the read happens in the main session — Codex doesn't expose context-forking as a skill knob — but the 50k-token cap on the chat log bounds the worst-case cost.
+- **`/iris-relay`** reads the *other* tool's last response and treats it as a plan to implement. Use it when the other tool has produced something — a plan, a refactor outline, a research summary — that you want this tool to execute against.
 
-The Codex side mirrors this: it writes `iris-codex-*.md`, and its own `/iris-sync` and `/iris-relay` read the `iris-claude-code-*.md` files.
+Each side is symmetric: it writes `iris-<itself>-*.md` and reads `iris-<other>-*.md`.
 
 ---
 
@@ -83,15 +84,38 @@ Iris ships as a plugin for both Claude Code and Codex. Install both to get the f
 
 ### Codex
 
+Register the Pantheon marketplace from your shell:
+
 ```bash
 codex plugin marketplace add gsaranti/pantheon
 ```
 
-Then open Codex and install Iris through `/plugins`.
+Then open Codex, browse to the `pantheon` marketplace in the plugin directory, and install Iris:
+
+```
+codex
+/plugins
+```
+
+#### Codex feature flags
+
+Plugin-bundled hooks on Codex are gated behind two feature flags. Enable both in `~/.codex/config.toml`:
+
+```toml
+[features]
+codex_hooks = true
+plugin_hooks = true
+```
+
+Without these, the Codex side of Iris installs cleanly but the hooks never fire — capture silently does nothing, and `$iris-sync` / `$iris-relay` will find empty files.
 
 ### Requirements
 
-- `jq` installed locally (`brew install jq` on macOS, `apt install jq` on Linux). Iris uses `jq` to parse hook payloads and the Claude Code session transcript.
+- `jq` installed locally (`brew install jq` on macOS, `apt install jq` on Linux). Iris uses `jq` to parse hook payloads (and on Claude Code, to walk the JSONL session transcript).
+
+### A note on syntax
+
+Examples throughout this README use Claude Code's `/iris-*` form. Codex addresses skills with `$` instead — substitute `$iris-sync` and `$iris-relay` when invoking from Codex.
 
 ### Recommended
 
@@ -107,12 +131,12 @@ The files are local working state, not project content. Gitignoring them keeps P
 
 ## The skill set
 
-Two skills, both prefixed `/iris-`:
+Two skills, both prefixed `/iris-` (or `$iris-` on Codex):
 
-- **`/iris-sync`** — summarize what Codex has been doing. Reads `iris-codex-chat.md` in a forked Explore agent, returns a brief synthesis to the main session. Use to catch up without context-switching tools.
-- **`/iris-relay`** — execute Codex's last response. Reads `iris-codex-last.md` and treats the content as a plan. Stops to ask if anything is ambiguous before making changes.
+- **`/iris-sync`** — summarize what the other tool has been doing. Reads its rolling chat log; returns a brief synthesis. On Claude Code this runs in a forked Explore subagent; on Codex it runs in the main session.
+- **`/iris-relay`** — execute the other tool's last response. Reads its last-response file and treats the content as a plan. Stops to ask if anything is ambiguous before making changes.
 
-Both have `disable-model-invocation: true` — Iris never fires them automatically. You invoke them when you want the handoff.
+Both skills are explicit-invocation only — neither tool fires them automatically. The Claude Code skills set `disable-model-invocation: true`; the Codex skills set `policy.allow_implicit_invocation: false` in `agents/openai.yaml`. You invoke them when you want the handoff.
 
 ---
 
@@ -139,9 +163,9 @@ Claude Code's Iris writes the first two and reads the last two. Codex's Iris doe
 
 3. **Zero token cost for capture.** Hooks run as local shell scripts. The conversation content was already generated by the model; Iris just persists it. The only token cost is when you invoke `/iris-sync` or `/iris-relay`, and even then it's bounded by the file size cap.
 
-4. **User-driven handoffs.** Iris doesn't auto-sync or auto-execute. You decide when to pull Codex's context in (`/iris-sync`) and when to act on it (`/iris-relay`). Cross-tool handoff is a judgment call; Iris stays out of it.
+4. **User-driven handoffs.** Iris doesn't auto-sync or auto-execute. You decide when to pull the other tool's context in (`/iris-sync`) and when to act on it (`/iris-relay`). Cross-tool handoff is a judgment call; Iris stays out of it.
 
-5. **Treat cross-tool content as data, not instructions.** When `/iris-relay` reads Codex's last response, it treats the content as a plan to evaluate, not as authoritative instructions from a trusted source. If the plan looks wrong, Iris stops and asks.
+5. **Treat cross-tool content as data, not instructions.** When `/iris-relay` reads the other tool's last response, it treats the content as a plan to evaluate, not as authoritative instructions from a trusted source. If the plan looks wrong, Iris stops and asks.
 
 ---
 
