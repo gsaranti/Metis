@@ -42,7 +42,7 @@ That's the whole runtime surface. No task files, no decisions log, no scratch di
 
 ## Who it's for
 
-Engineers using Claude Code on projects where state needs to survive across sessions — typically projects that start with a pile of documentation (UX requirements, design docs, technical specs) and that multiple sessions will return to.
+Engineers using Claude Code or Codex on projects where state needs to survive across sessions — typically projects that start with a pile of documentation (UX requirements, design docs, technical specs) and that multiple sessions will return to.
 
 If the work is a throwaway prototype, a one-session script, or something you won't return to: **Metis is the wrong tool.** The structure pays off when sessions need to rehydrate; without that, it's overhead.
 
@@ -78,7 +78,7 @@ One additional one-time step: Codex doesn't yet support plugin-bundled subagents
 
 ```bash
 mkdir -p ~/.codex/agents
-for f in ~/.codex/plugins/cache/*/metis/*/.codex/agents/metis-*.toml; do
+for f in ~/.codex/plugins/cache/*/metis/*/agents/metis-*.toml; do
   [ -e "$f" ] && ln -sf "$f" ~/.codex/agents/"$(basename "$f")"
 done
 ```
@@ -90,6 +90,10 @@ This makes `metis-code-explorer`, `metis-domain-researcher`, and `metis-task-rev
 After installation (either runtime), run `/metis-init` once per project to scaffold project-specific files — `.metis/config.yaml`, the `.metis/CURRENT.md` stub, and a delimited block in both `CLAUDE.md` and `AGENTS.md`. Init is non-destructive — only the content between Metis's delimiters is touched, so each file can keep runtime-specific instructions outside the block.
 
 After init, type `/metis-` to see the full skill set.
+
+### A note on syntax
+
+Examples throughout this README use Claude's `/metis-*` form. Codex addresses skills with `$` instead — substitute `$metis-init`, `$metis-build-spec`, etc. when invoking from Codex. The Metis block written into `AGENTS.md` at init time already uses the `$` form.
 
 ---
 
