@@ -49,7 +49,7 @@ fi
 # Append to rolling chat log
 TIMESTAMP="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 {
-  printf '\n---\n## %s (%s)\n\n' "$ROLE" "$TIMESTAMP"
+  printf '\n### %s (%s)\n' "$ROLE" "$TIMESTAMP"
   printf '%s\n' "$CONTENT"
 } >> "$CHAT_FILE"
 
@@ -60,7 +60,7 @@ if [ -f "$CHAT_FILE" ]; then
     KEEP_CHARS=$((MAX_CHARS * 8 / 10))
     # Keep the tail, then snap to the next message boundary so we don't start mid-message
     TAIL_CONTENT="$(tail -c "$KEEP_CHARS" "$CHAT_FILE")"
-    CLEAN="$(printf '%s' "$TAIL_CONTENT" | awk '/^---$/{found=1} found' )"
+    CLEAN="$(printf '%s' "$TAIL_CONTENT" | awk '/^### (user|assistant|iris) [^)]*\(20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]Z\)$/{found=1} found' )"
     if [ -z "$CLEAN" ]; then
       # No boundary found in the tail; fall back to the raw tail
       CLEAN="$TAIL_CONTENT"

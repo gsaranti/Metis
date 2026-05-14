@@ -25,7 +25,7 @@ fi
 # Write a session-start marker so the chat log shows boundaries between sessions.
 TIMESTAMP="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 {
-  printf '\n---\n## iris session-start (%s)\n\n' "$TIMESTAMP"
+  printf '\n### iris session-start (%s)\n' "$TIMESTAMP"
   printf 'source: %s\n' "$SOURCE"
   printf 'session_id: %s\n' "$SESSION_ID"
 } >> "$CHAT_FILE"
