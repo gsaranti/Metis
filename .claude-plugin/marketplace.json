@@ -6,7 +6,7 @@
   "plugins": [
     {
       "name": "metis",
-      "source": "./plugins/metis",
+      "source": "./plugins/metis/.claude-code",
       "description": "A lightweight toolset for keeping a project's intent, status, and history legible across Claude Code sessions.",
       "version": "0.3.0",
       "author": { "name": "George Sarantinos" }

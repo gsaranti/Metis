@@ -8,7 +8,7 @@
   },
   "homepage": "https://github.com/gsaranti/pantheon/tree/main/plugins/metis",
   "repository": "https://github.com/gsaranti/pantheon/tree/main/plugins/metis",
-  "skills": "./.codex/skills/",
+  "skills": "./skills/",
   "interface": {
     "displayName": "Metis",
     "developerName": "George Sarantinos",
