@@ -26,49 +26,14 @@ MAX_CHARS=$((MAX_TOKENS * CHARS_PER_TOKEN))
 # Read the JSON payload from stdin
 INPUT="$(cat)"
 
-# Debug — log the entire payload to iris-debug.log. Remove after troubleshooting.
-{
-  printf '\n=== %s hook fired at %s ===\n' "$ROLE" "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-  printf 'payload:\n%s\n' "$INPUT"
-} >> "${PROJECT_DIR}/iris-debug.log"
-
-# Extract content based on role
+# Extract content based on role.
+# Claude Code's hook payloads expose the user prompt at .prompt and the
+# assistant's last message at .last_assistant_message — no transcript
+# parsing required.
 if [ "$ROLE" = "user" ]; then
-  CONTENT="$(printf '%s' "$INPUT" | jq -r '.prompt // empty')"
+  CONTENT="$(printf '%s' "$INPUT" | jq -r '.prompt // empty' 2>/dev/null)" || CONTENT=""
 else
-  # Try the payload's direct field first. Per anthropics/claude-code#10610
-  # this isn't shipped yet (as of writing) but is on the roadmap, and if it
-  # ever lands we avoid the transcript race entirely.
   CONTENT="$(printf '%s' "$INPUT" | jq -r '.last_assistant_message // empty' 2>/dev/null)" || CONTENT=""
-
-  if [ -z "${CONTENT// }" ]; then
-    # Fall back to reading the transcript JSONL. Race per anthropics/claude-code#15813:
-    # the Stop hook fires before Claude Code finishes flushing the latest
-    # assistant message to disk, so a naive read picks up the previous turn's
-    # message (off-by-one). Brief pause lets the write settle.
-    TRANSCRIPT="$(printf '%s' "$INPUT" | jq -r '.transcript_path // empty' 2>/dev/null)" || TRANSCRIPT=""
-    if [ -z "$TRANSCRIPT" ] || [ ! -f "$TRANSCRIPT" ]; then
-      exit 0
-    fi
-    sleep 10
-
-    # Walk forward (no `tac` — not available on macOS by default) and remember
-    # the most recent line whose JSON contains "type":"assistant".
-    LAST_ASSISTANT_LINE="$(awk '
-      /"type":"assistant"/ { last = $0 }
-      END { if (length(last)) print last }
-    ' "$TRANSCRIPT" 2>/dev/null)" || LAST_ASSISTANT_LINE=""
-
-    if [ -n "$LAST_ASSISTANT_LINE" ]; then
-      CONTENT="$(printf '%s' "$LAST_ASSISTANT_LINE" | jq -r '
-        .message.content
-        | if type == "array"
-          then map(select(.type == "text") | .text) | join("\n")
-          else . // empty
-          end
-      ' 2>/dev/null)" || CONTENT=""
-    fi
-  fi
 fi
 
 # Skip empty content silently (e.g. tool-only turns)

@@ -60,7 +60,7 @@ Three hooks fire automatically as you work:
 - **`UserPromptSubmit`** appends your message to the chat log.
 - **`Stop`** appends the assistant's response to the chat log and overwrites the last-response file.
 
-All three run locally as shell scripts. They cost zero tokens — the content already exists; Iris just persists it. On Claude Code, the `Stop` hook walks Claude's JSONL session transcript to pull the last assistant message; on Codex, the hook reads it directly off the payload.
+All three run locally as shell scripts. They cost zero tokens — the content already exists; Iris just persists it. Both runtimes expose the assistant's last message directly on the `Stop` hook payload (`last_assistant_message`), so the script just reads it from there — no transcript parsing required.
 
 The skills are user-invoked:
 
@@ -119,7 +119,7 @@ After installing, run `/iris-on` (Claude Code) or `$iris-on` (Codex) once per pr
 
 ### Requirements
 
-- `jq` installed locally (`brew install jq` on macOS, `apt install jq` on Linux). Iris uses `jq` to parse hook payloads (and on Claude Code, to walk the JSONL session transcript).
+- `jq` installed locally (`brew install jq` on macOS, `apt install jq` on Linux). Iris uses `jq` to parse hook payloads.
 
 ### A note on syntax
 
