@@ -1,0 +1,15 @@
+{
+  "name": "iris",
+  "version": "0.0.1",
+  "description": "Cross-tool context bridge between Claude Code and Codex. Logs your conversation and exposes it to the other tool so you can hand off plans, share context, and pick up where the other tool left off.",
+  "license": "MIT",
+  "author": {
+    "name": "George Sarantinos"
+  },
+  "homepage": "https://github.com/gsaranti/pantheon/tree/main/plugins/iris",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gsaranti/pantheon.git"
+  },
+  "keywords": ["codex", "context", "handoff", "interop", "messenger", "pantheon"]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "iris",
+  "version": "0.0.0",
+  "description": "",
+  "license": "MIT",
+  "author": {
+    "name": "George Sarantinos"
+  },
+  "homepage": "https://github.com/gsaranti/pantheon/tree/main/plugins/iris",
+  "repository": "https://github.com/gsaranti/pantheon",
+  "skills": "./.codex/skills/",
+  "hooks": "./.codex/hooks/",
+  "interface": {
+    "displayName": "Iris",
+    "developerName": "George Sarantinos",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://github.com/gsaranti/pantheon/tree/main/plugins/iris"
+  }
+}
