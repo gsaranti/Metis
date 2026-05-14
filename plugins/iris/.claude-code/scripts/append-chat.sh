@@ -26,6 +26,12 @@ MAX_CHARS=$((MAX_TOKENS * CHARS_PER_TOKEN))
 # Read the JSON payload from stdin
 INPUT="$(cat)"
 
+# Debug — log the entire payload to iris-debug.log. Remove after troubleshooting.
+{
+  printf '\n=== %s hook fired at %s ===\n' "$ROLE" "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  printf 'payload:\n%s\n' "$INPUT"
+} >> "${PROJECT_DIR}/iris-debug.log"
+
 # Extract content based on role
 if [ "$ROLE" = "user" ]; then
   CONTENT="$(printf '%s' "$INPUT" | jq -r '.prompt // empty')"
@@ -44,7 +50,7 @@ else
     if [ -z "$TRANSCRIPT" ] || [ ! -f "$TRANSCRIPT" ]; then
       exit 0
     fi
-    sleep 2
+    sleep 10
 
     # Walk forward (no `tac` — not available on macOS by default) and remember
     # the most recent line whose JSON contains "type":"assistant".
