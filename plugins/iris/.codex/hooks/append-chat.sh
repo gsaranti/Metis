@@ -19,6 +19,9 @@ PROJECT_DIR="${PROJECT_DIR:-$PWD}"
 CHAT_FILE="${PROJECT_DIR}/iris-codex-chat.md"
 LAST_FILE="${PROJECT_DIR}/iris-codex-last.md"
 
+# Capture is enabled only when .iris-config.yaml exists and contains `is_on: true`.
+grep -qE '^[[:space:]]*is_on:[[:space:]]*true[[:space:]]*(#.*)?$' "${PROJECT_DIR}/.iris-config.yaml" 2>/dev/null || exit 0
+
 # Budget
 MAX_TOKENS=50000
 CHARS_PER_TOKEN=4

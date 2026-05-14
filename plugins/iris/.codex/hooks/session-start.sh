@@ -10,6 +10,9 @@ PROJECT_DIR="$(printf '%s' "$INPUT" | jq -r '.cwd // empty' 2>/dev/null || true)
 PROJECT_DIR="${PROJECT_DIR:-$PWD}"
 CHAT_FILE="${PROJECT_DIR}/iris-codex-chat.md"
 
+# Capture is enabled only when .iris-config.yaml exists and contains `is_on: true`.
+grep -qE '^[[:space:]]*is_on:[[:space:]]*true[[:space:]]*(#.*)?$' "${PROJECT_DIR}/.iris-config.yaml" 2>/dev/null || exit 0
+
 SOURCE="$(printf '%s' "$INPUT" | jq -r '.source // "unknown"' 2>/dev/null || echo "unknown")"
 SESSION_ID="$(printf '%s' "$INPUT" | jq -r '.session_id // "unknown"' 2>/dev/null || echo "unknown")"
 

@@ -6,6 +6,9 @@ set -euo pipefail
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$PWD}"
 CHAT_FILE="${PROJECT_DIR}/iris-claude-code-chat.md"
 
+# Capture is enabled only when .iris-config.yaml exists and contains `is_on: true`.
+grep -qE '^[[:space:]]*is_on:[[:space:]]*true[[:space:]]*(#.*)?$' "${PROJECT_DIR}/.iris-config.yaml" 2>/dev/null || exit 0
+
 # Read the JSON payload (we only need source and session_id)
 INPUT="$(cat)"
 SOURCE="$(printf '%s' "$INPUT" | jq -r '.source // "unknown"' 2>/dev/null || echo "unknown")"
