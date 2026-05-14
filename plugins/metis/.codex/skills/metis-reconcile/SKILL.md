@@ -16,7 +16,7 @@ On `SIZE_CLASS=large`, apply the slicing guidance in this skill's `references/re
 ## Load
 
 - The source docs under `docs/`.
-- On `rereconcile`, the prior `.metis/CONTRADICTIONS.md` and `.metis/QUESTIONS.md`. Re-reconcile preserves prior items and re-checks them against the current corpus (per the this skill's `references/reconciling-docs.md` skill) rather than starting over.
+- On `rereconcile`, the prior `.metis/CONTRADICTIONS.md` and `.metis/QUESTIONS.md`. Re-reconcile preserves prior items and re-checks them against the current corpus (per this skill's `references/reconciling-docs.md`) rather than starting over.
 
 ## Do not load
 
