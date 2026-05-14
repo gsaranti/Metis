@@ -5,5 +5,5 @@ description: Enable Iris conversation capture for this project. Sets is_on to tr
 
 # $iris-on
 
-1. Run this skill's `resources/iris-toggle.sh` with `true` as the argument.
+1. Run this skill's `references/iris-toggle.sh` with `true` as the argument.
 2. Confirm to the user that Iris is now on. The next `UserPromptSubmit` / `Stop` will be captured to disk.

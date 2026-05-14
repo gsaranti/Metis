@@ -5,5 +5,5 @@ description: Pause Iris conversation capture for this project. Sets is_on to fal
 
 # $iris-off
 
-1. Run this skill's `resources/iris-toggle.sh` with `false` as the argument.
+1. Run this skill's `references/iris-toggle.sh` with `false` as the argument.
 2. Confirm to the user that Iris is now off. The hooks will no-op until they run `$iris-on`. Existing files on disk are untouched.

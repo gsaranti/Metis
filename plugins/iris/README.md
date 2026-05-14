@@ -4,7 +4,7 @@
 
 A thin context bridge between Claude Code and Codex. Iris logs your conversation to disk and exposes it to the other tool, so you can hand off plans, share context, and pick up where each tool left off.
 
-Iris doesn't try to be a workflow. It writes four files. The tools on either side decide what to do with them.
+Iris doesn't try to be a workflow. It writes plain markdown files at known paths. The tools on either side decide what to do with them.
 
 ---
 
