@@ -6,6 +6,8 @@ A marketplace of plugins for AI coding agents.
 
 - **[Metis](./plugins/metis/README.md)** — wisdom before code. Keeps a
   project's intent, status, and history legible across agent sessions.
+- **[Iris](./plugins/iris/README.md)** — the messenger between worlds.
+  Hands off context between Claude Code and Codex without copy-pasting.
 
 ## Install
 
